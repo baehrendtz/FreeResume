@@ -1,0 +1,99 @@
+---
+import { BRAND } from "@freeresume/shared/brand";
+
+interface Props {
+  title: string;
+  description: string;
+  lang: string;
+}
+
+const { title, description, lang } = Astro.props;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://freeresume.eu');
+const ogImage = new URL('/og-image.png', canonicalURL.origin).href;
+const locale = lang === 'sv' ? 'sv_SE' : 'en_US';
+const altLocale = lang === 'sv' ? 'en_US' : 'sv_SE';
+const altHref = lang === 'sv'
+  ? new URL('/en/', canonicalURL.origin).href
+  : new URL('/', canonicalURL.origin).href;
+
+const keywords = lang === 'sv'
+  ? 'gratis CV, free resume, skapa CV, CV-mall, LinkedIn CV, CV online, gratis CV-verktyg, CV-generator, free CV builder'
+  : 'free resume, free CV, resume builder, CV template, LinkedIn CV, online CV, free resume builder, CV generator, create CV free';
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Free Resume",
+  "url": canonicalURL.origin,
+  "description": description,
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "SEK"
+  },
+  "inLanguage": [lang],
+};
+---
+
+<!doctype html>
+<html lang={lang} class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="keywords" content={keywords} />
+    <meta name="theme-color" content={BRAND.themeColor} />
+    <link rel="canonical" href={canonicalURL.href} />
+    <link rel="alternate" hreflang={lang === 'sv' ? 'en' : 'sv'} href={altHref} />
+    <link rel="alternate" hreflang={lang} href={canonicalURL.href} />
+    <link rel="alternate" hreflang="x-default" href={canonicalURL.origin} />
+    <link rel="icon" type="image/png" href="/logowithouttext.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <title>{title}</title>
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL.href} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Free Resume — Skapa gratis CV från LinkedIn" />
+    <meta property="og:locale" content={locale} />
+    <meta property="og:locale:alternate" content={altLocale} />
+    <meta property="og:site_name" content="Free Resume" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- Structured Data -->
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src={`https://www.googletagmanager.com/gtag/js?id=${BRAND.ga.measurementId}`}></script>
+    <script is:inline define:vars={{ gaId: BRAND.ga.measurementId, linkerDomains: BRAND.ga.linkerDomains }}>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', gaId, {
+        linker: {
+          domains: linkerDomains
+        }
+      });
+    </script>
+  </head>
+  <body class="bg-white text-gray-900 font-['Inter',sans-serif] antialiased">
+    <slot />
+  </body>
+</html>

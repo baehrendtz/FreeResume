@@ -1,0 +1,78 @@
+"use client";
+
+import { Suspense, useRef, useState, useEffect } from "react";
+import type { RenderModel } from "@/lib/fitting/types";
+import { templates } from "@/templates/templateRegistry";
+
+/** Full-width of an A4 page in px at 96 dpi */
+const A4_WIDTH = 794;
+/** Full-height of an A4 page in px at 96 dpi */
+const A4_HEIGHT = 1123;
+
+interface CvPreviewProps {
+  renderModel: RenderModel;
+  templateId: string;
+  zoomLevel?: number;
+}
+
+export function CvPreview({ renderModel, templateId, zoomLevel }: CvPreviewProps) {
+  const entry = templates[templateId] ?? templates.basic;
+  const Template = entry.component;
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [autoScale, setAutoScale] = useState(1);
+
+  const isZoomMode = zoomLevel !== undefined;
+  const scale = isZoomMode ? zoomLevel : autoScale;
+
+  useEffect(() => {
+    if (isZoomMode) return;
+    const el = containerRef.current;
+    if (!el) return;
+
+    const updateScale = () => {
+      const width = el.clientWidth;
+      setAutoScale(Math.min(1, width / A4_WIDTH));
+    };
+
+    updateScale();
+
+    const ro = new ResizeObserver(updateScale);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [isZoomMode]);
+
+  return (
+    <div
+      ref={containerRef}
+      className={isZoomMode ? undefined : "overflow-hidden"}
+      style={isZoomMode
+        ? { width: A4_WIDTH * scale, height: A4_HEIGHT * scale }
+        : { height: A4_HEIGHT * scale + 4 }
+      }
+    >
+      {/* Light-scope wrapper: CV preview is always rendered with light theme */}
+      <div className="cv-preview-light">
+        <div
+          id="cv-preview"
+          className="bg-white shadow-xl border border-gray-200 overflow-hidden rounded-sm"
+          style={{
+            width: A4_WIDTH,
+            transform: `scale(${scale})`,
+            transformOrigin: "top left",
+          }}
+        >
+          <Suspense
+            fallback={
+              <div className="p-8 text-center text-gray-500">
+                Loading template...
+              </div>
+            }
+          >
+            <Template cv={renderModel} />
+          </Suspense>
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,36 @@
+---
+interface Props {
+  lang: 'sv' | 'en';
+}
+
+const { lang } = Astro.props;
+
+const t = {
+  sv: {
+    text: 'Att göra ett CV borde vara enkelt. LinkedIn har redan all info — så jag byggde ett verktyg som gör jobbet åt dig. Ditt CV skapas direkt i webbläsaren och ingen persondata sparas. Vi samlar bara in anonym statistik.',
+    name: 'Fabian Baehrendtz',
+  },
+  en: {
+    text: 'Making a CV should be easy. LinkedIn already has all your info — so I built a tool that does the work for you. Your CV is generated right in the browser and no personal data is stored. We only collect anonymous statistics.',
+    name: 'Fabian Baehrendtz',
+  },
+}[lang];
+---
+
+<section class="py-10 sm:py-14">
+  <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="bg-gray-50 rounded-2xl p-8 sm:p-10 border-l-4 border-brand-500">
+      <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+        <img src="/profile.webp" alt={t.name} class="w-20 h-20 rounded-full object-cover flex-shrink-0" />
+        <div class="text-center sm:text-left">
+          <p class="text-gray-600 leading-relaxed text-base">
+            "{t.text}"
+          </p>
+          <a href="https://www.fabianbaehrendtz.se/" target="_blank" rel="noopener noreferrer" class="mt-4 inline-block text-sm font-medium text-gray-900 hover:text-brand-600 transition-colors">
+            — {t.name}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

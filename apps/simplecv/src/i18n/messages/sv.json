@@ -1,0 +1,170 @@
+{
+  "app": {
+    "title": "Free Resume",
+    "subtitle": "Skapa ditt CV på några minuter"
+  },
+  "upload": {
+    "title": "Ladda upp din LinkedIn-PDF",
+    "description": "Exportera din LinkedIn-profil som PDF och ladda upp den här för att komma igång",
+    "dropzone": "Dra och släpp din PDF här, eller klicka för att bläddra",
+    "processing": "Bearbetar PDF...",
+    "startFromScratch": "Eller börja från grunden"
+  },
+  "editor": {
+    "tabs": {
+      "basics": "Grunduppgifter",
+      "summary": "Sammanfattning",
+      "experience": "Erfarenhet",
+      "education": "Utbildning",
+      "skills": "Kompetenser",
+      "languages": "Språk",
+      "extras": "Övrigt",
+      "visibility": "Inställningar"
+    },
+    "basics": {
+      "name": "Fullständigt namn",
+      "headline": "Rubrik",
+      "email": "E-post",
+      "phone": "Telefon",
+      "location": "Plats",
+      "linkedIn": "LinkedIn URL",
+      "website": "Webbplats",
+      "photo": "Profilfoto",
+      "photoUpload": "Ladda upp foto",
+      "photoRemove": "Ta bort"
+    },
+    "summary": {
+      "label": "Professionell sammanfattning",
+      "placeholder": "Skriv en kort sammanfattning av din professionella bakgrund..."
+    },
+    "experience": {
+      "title": "Jobbtitel",
+      "company": "Företag",
+      "location": "Plats",
+      "startDate": "Startdatum",
+      "endDate": "Slutdatum",
+      "description": "Beskrivning",
+      "bullets": "Punkter (en per rad)",
+      "add": "Lägg till erfarenhet",
+      "remove": "Ta bort",
+      "hide": "Dölj",
+      "show": "Visa"
+    },
+    "education": {
+      "institution": "Lärosäte",
+      "degree": "Examen",
+      "field": "Studieområde",
+      "startDate": "Startdatum",
+      "endDate": "Slutdatum",
+      "description": "Beskrivning",
+      "add": "Lägg till utbildning",
+      "remove": "Ta bort",
+      "hide": "Dölj",
+      "show": "Visa"
+    },
+    "skills": {
+      "label": "Kompetenser",
+      "placeholder": "Skriv en kompetens och tryck Enter",
+      "add": "Lägg till"
+    },
+    "languages": {
+      "label": "Språk",
+      "placeholder": "Skriv ett språk och tryck Enter",
+      "add": "Lägg till"
+    },
+    "extras": {
+      "label": "Övrigt",
+      "placeholder": "Skriv en rad och tryck Enter",
+      "add": "Lägg till",
+      "addCategory": "Lägg till kategori",
+      "removeCategory": "Ta bort kategori"
+    },
+    "extrasCategories": {
+      "certifications": "Certifieringar",
+      "honors": "Utmärkelser",
+      "publications": "Publikationer",
+      "volunteering": "Ideellt arbete",
+      "organizations": "Organisationer",
+      "courses": "Kurser",
+      "projects": "Projekt",
+      "patents": "Patent",
+      "other": "Övrigt"
+    },
+    "visibility": {
+      "title": "Sektioner",
+      "description": "Välj vilka sektioner som visas",
+      "summary": "Sammanfattning",
+      "experience": "Erfarenhet",
+      "education": "Utbildning",
+      "skills": "Kompetenser",
+      "languages": "Språk",
+      "extras": "Övrigt",
+      "contentLimitsTitle": "Innehållsbegränsningar",
+      "contentLimitsDescription": "Styr hur mycket innehåll som visas för att passa en sida",
+      "maxExperience": "Max antal erfarenheter",
+      "maxEducation": "Max antal utbildningar",
+      "maxSkills": "Max antal kompetenser",
+      "maxBulletsPerJob": "Max punkter per jobb",
+      "summaryMaxChars": "Max tecken i sammanfattning",
+      "maxExtras": "Max antal övrigt",
+      "simplifyLocationsTitle": "Platsformatering",
+      "simplifyLocationsDescription": "Rensa upp överdrivna LinkedIn-platsformat",
+      "simplifyLocations": "Förenkla platser (t.ex. Stockholm, Stockholms län, Sverige → Stockholm, Sverige)",
+      "template": "Mall",
+      "fitsOnePage": "Innehållet passar på en sida",
+      "overflows": "Innehållet svämmar över (~{pages} sidor)",
+      "autoFit": "Autopassa till en sida",
+      "fitting": "Passar in..."
+    }
+  },
+  "preview": {
+    "title": "CV-förhandsgranskning",
+    "trimWarning": "Innehåll trimmat för att passa: {details}. Justera under Inställningar.",
+    "fullscreen": "Helskärmsvy"
+  },
+  "template": {
+    "title": "Mall",
+    "basic": "Basic"
+  },
+  "onboarding": {
+    "title": "Skapa ditt CV",
+    "description": "Välj hur du vill komma igång",
+    "uploadTitle": "Ladda upp LinkedIn-PDF",
+    "uploadDescription": "Importera din profil för att fylla i ditt CV automatiskt",
+    "scratchTitle": "Börja från grunden",
+    "scratchDescription": "Börja med ett tomt CV"
+  },
+  "actions": {
+    "downloadPdf": "Ladda ner PDF",
+    "generating": "Genererar...",
+    "preview": "Förhandsgranska",
+    "backToUpload": "Tillbaka till uppladdning",
+    "importPdf": "Importera PDF",
+    "importWarning": "Detta ersätter ditt nuvarande CV",
+    "moreActions": "Fler åtgärder",
+    "cancel": "Avbryt"
+  },
+  "theme": {
+    "light": "Ljust",
+    "dark": "Mörkt",
+    "toggle": "Byt tema"
+  },
+  "language": {
+    "en": "English",
+    "sv": "Svenska"
+  },
+  "help": {
+    "trigger": "Hjälp",
+    "title": "Om Free Resume",
+    "intro": "Ett enkelt, gratis och snabbt sätt att skapa ett professionellt CV.",
+    "howItWorksTitle": "Så fungerar det",
+    "step1": "Ladda upp din LinkedIn-PDF (eller börja från grunden)",
+    "step2": "Redigera innehåll, välj mall och anpassa",
+    "step3": "Ladda ner som PDF — klart!",
+    "downloadTitle": "Ladda ner ditt CV",
+    "downloadText": "Klicka på \"Ladda ner PDF\"-knappen i övre menyn. CV:t genereras direkt i webbläsaren.",
+    "dataTitle": "Din data",
+    "dataText": "All data sparas lokalt i din webbläsare (sessionStorage). Inget skickas till någon server. Stänger du fliken försvinner datan.",
+    "footer": "Free Resume är gratis och open source."
+  }
+}

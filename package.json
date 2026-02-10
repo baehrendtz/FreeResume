@@ -1,0 +1,13 @@
+{
+  "name": "freeresume",
+  "private": true,
+  "scripts": {
+    "dev:app": "pnpm --filter @freeresume/app dev",
+    "dev:landing": "pnpm --filter @freeresume/landing dev",
+    "build:app": "pnpm --filter @freeresume/app build",
+    "build:landing": "pnpm --filter @freeresume/landing build",
+    "build": "pnpm -r build",
+    "deploy:app": "pnpm --filter @freeresume/app deploy:firebase",
+    "deploy:landing": "pnpm --filter @freeresume/landing deploy:firebase"
+  }
+}

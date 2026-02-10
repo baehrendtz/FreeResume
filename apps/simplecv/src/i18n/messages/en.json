@@ -1,0 +1,170 @@
+{
+  "app": {
+    "title": "Free Resume",
+    "subtitle": "Create your CV in minutes"
+  },
+  "upload": {
+    "title": "Upload your LinkedIn PDF",
+    "description": "Export your LinkedIn profile as PDF and upload it here to get started",
+    "dropzone": "Drag and drop your PDF here, or click to browse",
+    "processing": "Processing PDF...",
+    "startFromScratch": "Or start from scratch"
+  },
+  "editor": {
+    "tabs": {
+      "basics": "Basics",
+      "summary": "Summary",
+      "experience": "Experience",
+      "education": "Education",
+      "skills": "Skills",
+      "languages": "Languages",
+      "extras": "Extras",
+      "visibility": "Settings"
+    },
+    "basics": {
+      "name": "Full Name",
+      "headline": "Headline",
+      "email": "Email",
+      "phone": "Phone",
+      "location": "Location",
+      "linkedIn": "LinkedIn URL",
+      "website": "Website",
+      "photo": "Profile Photo",
+      "photoUpload": "Upload Photo",
+      "photoRemove": "Remove"
+    },
+    "summary": {
+      "label": "Professional Summary",
+      "placeholder": "Write a brief summary of your professional background..."
+    },
+    "experience": {
+      "title": "Job Title",
+      "company": "Company",
+      "location": "Location",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "description": "Description",
+      "bullets": "Bullet points (one per line)",
+      "add": "Add Experience",
+      "remove": "Remove",
+      "hide": "Hide",
+      "show": "Show"
+    },
+    "education": {
+      "institution": "Institution",
+      "degree": "Degree",
+      "field": "Field of Study",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "description": "Description",
+      "add": "Add Education",
+      "remove": "Remove",
+      "hide": "Hide",
+      "show": "Show"
+    },
+    "skills": {
+      "label": "Skills",
+      "placeholder": "Type a skill and press Enter",
+      "add": "Add"
+    },
+    "languages": {
+      "label": "Languages",
+      "placeholder": "Type a language and press Enter",
+      "add": "Add"
+    },
+    "extras": {
+      "label": "Extras",
+      "placeholder": "Type an item and press Enter",
+      "add": "Add",
+      "addCategory": "Add category",
+      "removeCategory": "Remove category"
+    },
+    "extrasCategories": {
+      "certifications": "Certifications",
+      "honors": "Honors & Awards",
+      "publications": "Publications",
+      "volunteering": "Volunteer Experience",
+      "organizations": "Organizations",
+      "courses": "Courses",
+      "projects": "Projects",
+      "patents": "Patents",
+      "other": "Other"
+    },
+    "visibility": {
+      "title": "Sections",
+      "description": "Choose which sections to show",
+      "summary": "Summary",
+      "experience": "Experience",
+      "education": "Education",
+      "skills": "Skills",
+      "languages": "Languages",
+      "extras": "Extras",
+      "contentLimitsTitle": "Content Limits",
+      "contentLimitsDescription": "Control how much content is shown to fit one page",
+      "maxExperience": "Max experience entries",
+      "maxEducation": "Max education entries",
+      "maxSkills": "Max skills",
+      "maxBulletsPerJob": "Max bullets per job",
+      "summaryMaxChars": "Summary max characters",
+      "maxExtras": "Max extras",
+      "simplifyLocationsTitle": "Location Formatting",
+      "simplifyLocationsDescription": "Clean up verbose LinkedIn location formats",
+      "simplifyLocations": "Simplify locations (e.g. Stockholm, Stockholm County, Sweden → Stockholm, Sweden)",
+      "template": "Template",
+      "fitsOnePage": "Content fits on one page",
+      "overflows": "Content overflows (~{pages} pages)",
+      "autoFit": "Auto-fit to one page",
+      "fitting": "Fitting..."
+    }
+  },
+  "preview": {
+    "title": "CV Preview",
+    "trimWarning": "Content trimmed to fit: {details}. Adjust in Settings.",
+    "fullscreen": "Fullscreen preview"
+  },
+  "template": {
+    "title": "Template",
+    "basic": "Basic"
+  },
+  "onboarding": {
+    "title": "Create your CV",
+    "description": "Choose how you'd like to get started",
+    "uploadTitle": "Upload LinkedIn PDF",
+    "uploadDescription": "Import your profile to auto-fill your CV",
+    "scratchTitle": "Start from Scratch",
+    "scratchDescription": "Begin with a blank CV"
+  },
+  "actions": {
+    "downloadPdf": "Download PDF",
+    "generating": "Generating...",
+    "preview": "Preview",
+    "backToUpload": "Back to Upload",
+    "importPdf": "Import PDF",
+    "importWarning": "This will replace your current CV data",
+    "moreActions": "More actions",
+    "cancel": "Cancel"
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark",
+    "toggle": "Toggle theme"
+  },
+  "language": {
+    "en": "English",
+    "sv": "Svenska"
+  },
+  "help": {
+    "trigger": "Help",
+    "title": "About Free Resume",
+    "intro": "A simple, free, and fast way to create a professional CV.",
+    "howItWorksTitle": "How it works",
+    "step1": "Upload your LinkedIn PDF (or start from scratch)",
+    "step2": "Edit content, choose a template, and customize",
+    "step3": "Download as PDF — done!",
+    "downloadTitle": "Download your CV",
+    "downloadText": "Click the \"Download PDF\" button in the top menu. Your CV is generated directly in the browser.",
+    "dataTitle": "Your data",
+    "dataText": "All data is stored locally in your browser (sessionStorage). Nothing is sent to any server. If you close the tab, the data is lost.",
+    "footer": "Free Resume is free and open source."
+  }
+}

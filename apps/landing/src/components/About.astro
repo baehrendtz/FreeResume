@@ -1,0 +1,18 @@
+---
+interface Props {
+  lang: 'sv' | 'en';
+}
+
+const { lang } = Astro.props;
+
+const t = {
+  sv: { text: 'Byggt av Fabian' },
+  en: { text: 'Built by Fabian' },
+}[lang];
+---
+
+<section class="py-8 sm:py-10">
+  <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <p class="text-sm text-gray-400">{t.text}</p>
+  </div>
+</section>

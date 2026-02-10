@@ -1,0 +1,60 @@
+---
+interface Props {
+  lang: 'sv' | 'en';
+}
+
+const { lang } = Astro.props;
+
+const t = {
+  sv: {
+    steps: [
+      { title: 'Ladda ner', desc: 'Exportera din LinkedIn-profil som PDF' },
+      { title: 'Ladda upp', desc: 'Dra in PDF:en i Free Resume' },
+      { title: 'Klar', desc: 'Välj mall, anpassa och ladda ner ditt CV' },
+    ],
+  },
+  en: {
+    steps: [
+      { title: 'Download', desc: 'Export your LinkedIn profile as a PDF' },
+      { title: 'Upload', desc: 'Drop the PDF into Free Resume' },
+      { title: 'Done', desc: 'Pick a template, customize, and download your CV' },
+    ],
+  },
+}[lang];
+
+const icons = [
+  // Download arrow
+  `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+  </svg>`,
+  // Upload arrow
+  `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
+  </svg>`,
+  // Check
+  `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+  </svg>`,
+];
+---
+
+<section class="py-10 sm:py-14">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-4 relative">
+      {/* Connecting line — desktop only */}
+      <div class="hidden sm:block absolute top-6 left-[calc(16.67%+12px)] right-[calc(16.67%+12px)] h-px bg-gray-200" aria-hidden="true"></div>
+
+      {t.steps.map((step, i) => (
+        <div class="flex sm:flex-col items-start sm:items-center gap-4 sm:gap-3 text-left sm:text-center relative">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-brand-50 text-brand-600 flex items-center justify-center relative z-10">
+            <Fragment set:html={icons[i]} />
+          </div>
+          <div>
+            <h3 class="font-semibold text-gray-900">{step.title}</h3>
+            <p class="text-sm text-gray-500 mt-0.5">{step.desc}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
