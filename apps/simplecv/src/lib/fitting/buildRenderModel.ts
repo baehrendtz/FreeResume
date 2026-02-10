@@ -98,7 +98,7 @@ export function buildRenderModel(
       : [];
 
   // Extras: respect capability + visibility, then slice across groups
-  let extras: RenderModel["extras"] = [];
+  const extras: RenderModel["extras"] = [];
   if (capabilities.supportsExtras && vis.extras) {
     let remaining = settings.maxExtras;
     for (const group of cv.extras ?? []) {

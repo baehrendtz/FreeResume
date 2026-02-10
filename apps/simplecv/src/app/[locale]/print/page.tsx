@@ -15,23 +15,14 @@ export default function PrintPage() {
 
   useEffect(() => {
     const session = loadSession();
-    if (session?.templateId) {
-      setTemplateId(session.templateId);
-    }
-    if (session?.displaySettings) {
-      setDisplaySettings(session.displaySettings);
-    }
-
     const data = loadCvForPrint();
-    if (data) {
-      setCv(data);
-      // Give the template time to render, then trigger print
-      setTimeout(() => {
-        window.print();
-      }, 500);
-    } else {
-      setCv(createEmptyCvModel());
-    }
+    /* eslint-disable react-hooks/set-state-in-effect -- Hydration: must set initial state from sessionStorage on mount */
+    if (session?.templateId) setTemplateId(session.templateId);
+    if (session?.displaySettings) setDisplaySettings(session.displaySettings);
+    setCv(data ?? createEmptyCvModel());
+    /* eslint-enable react-hooks/set-state-in-effect */
+    const timer = setTimeout(() => window.print(), 500);
+    return () => clearTimeout(timer);
   }, []);
 
   const templateMeta = useMemo(() => getTemplateMeta(templateId), [templateId]);

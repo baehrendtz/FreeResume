@@ -42,16 +42,16 @@ const icons = [
   <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-4 relative">
       {/* Connecting line — desktop only */}
-      <div class="hidden sm:block absolute top-6 left-[calc(16.67%+12px)] right-[calc(16.67%+12px)] h-px bg-gray-200" aria-hidden="true"></div>
+      <div class="hidden sm:block absolute top-6 left-[calc(16.67%+12px)] right-[calc(16.67%+12px)] h-px bg-gray-200 dark:bg-gray-700" aria-hidden="true"></div>
 
       {t.steps.map((step, i) => (
         <div class="flex sm:flex-col items-start sm:items-center gap-4 sm:gap-3 text-left sm:text-center relative">
-          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-brand-50 text-brand-600 flex items-center justify-center relative z-10">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-brand-50 dark:bg-brand-950 text-brand-600 dark:text-brand-400 flex items-center justify-center relative z-10">
             <Fragment set:html={icons[i]} />
           </div>
           <div>
-            <h3 class="font-semibold text-gray-900">{step.title}</h3>
-            <p class="text-sm text-gray-500 mt-0.5">{step.desc}</p>
+            <h3 class="font-semibold text-gray-900 dark:text-white">{step.title}</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{step.desc}</p>
           </div>
         </div>
       ))}

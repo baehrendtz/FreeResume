@@ -1,8 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
+const subscribe = () => () => {};
+const getSnapshot = () => true;
+const getServerSnapshot = () => false;
 
 function getInitialTheme(): "light" | "dark" {
   if (typeof window === "undefined") return "light";
@@ -12,13 +16,8 @@ function getInitialTheme(): "light" | "dark" {
 }
 
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<"light" | "dark">("light");
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setTheme(getInitialTheme());
-    setMounted(true);
-  }, []);
+  const [theme, setTheme] = useState<"light" | "dark">(getInitialTheme);
+  const mounted = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
   useEffect(() => {
     if (!mounted) return;

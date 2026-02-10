@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -70,14 +70,9 @@ export function AppHeader({
   labels,
   helpLabels,
 }: AppHeaderProps) {
-  const [theme, setTheme] = useState<"light" | "dark">("light");
-  const [mounted, setMounted] = useState(false);
+  const [theme, setTheme] = useState<"light" | "dark">(getInitialTheme);
+  const mounted = useSyncExternalStore(() => () => {}, () => true, () => false);
   const [showHelp, setShowHelp] = useState(false);
-
-  useEffect(() => {
-    setTheme(getInitialTheme());
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     if (!mounted) return;
