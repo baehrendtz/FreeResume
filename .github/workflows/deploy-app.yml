@@ -5,6 +5,7 @@ on:
     paths:
       - 'apps/simplecv/**'
       - 'packages/shared/**'
+  workflow_dispatch:
 
 jobs:
   deploy:

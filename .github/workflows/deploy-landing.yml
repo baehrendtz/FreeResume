@@ -5,6 +5,7 @@ on:
     paths:
       - 'apps/landing/**'
       - 'packages/shared/**'
+  workflow_dispatch:
 
 jobs:
   deploy:
