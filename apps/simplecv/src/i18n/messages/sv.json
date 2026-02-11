@@ -132,7 +132,37 @@
     "uploadTitle": "Ladda upp LinkedIn-PDF",
     "uploadDescription": "Importera din profil för att fylla i ditt CV automatiskt",
     "scratchTitle": "Börja från grunden",
-    "scratchDescription": "Börja med ett tomt CV"
+    "scratchDescription": "Börja med ett tomt CV",
+    "welcome": {
+      "title": "Välkommen till Free Resume",
+      "subtitle": "Skapa ett professionellt CV på några minuter",
+      "valuePropImport": "Importera från LinkedIn-PDF",
+      "valuePropTemplates": "Flera professionella mallar",
+      "valuePropPdf": "Ladda ner som PDF",
+      "getStarted": "Kom igång",
+      "skipLink": "Hoppa över — börja med tomt CV"
+    },
+    "guide": {
+      "title": "Så här får du din LinkedIn-PDF",
+      "step1": "Gå till din LinkedIn-profil",
+      "step2": "Klicka 'Mer' > 'Spara som PDF'",
+      "step3": "Ladda upp filen här",
+      "next": "Nästa: Ladda upp PDF",
+      "back": "Tillbaka",
+      "skip": "Hoppa över"
+    },
+    "upload": {
+      "scratchLink": "Eller börja från grunden"
+    },
+    "success": {
+      "title": "Ditt CV är redo att redigera!",
+      "scratchTitle": "Ditt tomma CV är redo",
+      "scratchDescription": "Låt oss börja med grunduppgifterna — ditt namn och kontaktuppgifter.",
+      "cta": "Börja redigera",
+      "experience": "erfarenheter",
+      "education": "utbildningar",
+      "skills": "kompetenser"
+    }
   },
   "actions": {
     "downloadPdf": "Ladda ner PDF",

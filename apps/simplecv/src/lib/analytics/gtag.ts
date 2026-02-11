@@ -91,3 +91,15 @@ export function trackSkillAdd() {
 export function trackSkillRemove() {
   gtagEvent("skill_remove");
 }
+
+export function trackOnboardingStep(step: string) {
+  gtagEvent("onboarding_step", { step });
+}
+
+export function trackOnboardingComplete(method: "upload" | "scratch") {
+  gtagEvent("onboarding_complete", { method });
+}
+
+export function trackOnboardingSkip(fromStep: string) {
+  gtagEvent("onboarding_skip", { from_step: fromStep });
+}

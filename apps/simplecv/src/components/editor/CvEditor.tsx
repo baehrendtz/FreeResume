@@ -111,7 +111,7 @@ export function CvEditor({
   onTemplateSelect,
   labels,
 }: CvEditorProps) {
-  const [activeStep, setActiveStep] = useState("visibility");
+  const [activeStep, setActiveStep] = useState("basics");
   const [collapsed, setCollapsed] = useState(false);
   const formContentRef = useRef<HTMLDivElement>(null);
 

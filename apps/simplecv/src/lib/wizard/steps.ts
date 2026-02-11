@@ -15,7 +15,6 @@ export interface WizardStep {
 }
 
 export const WIZARD_STEPS: WizardStep[] = [
-  { id: "visibility", icon: Settings },
   { id: "basics", icon: User },
   { id: "summary", icon: FileText },
   { id: "experience", icon: Briefcase },
@@ -23,4 +22,5 @@ export const WIZARD_STEPS: WizardStep[] = [
   { id: "skills", icon: Wrench },
   { id: "languages", icon: Globe },
   { id: "extras", icon: Award },
+  { id: "visibility", icon: Settings },
 ];

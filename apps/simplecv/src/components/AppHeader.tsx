@@ -91,99 +91,78 @@ export function AppHeader({
     trackThemeToggle(next);
   };
 
+  const openHelp = () => { setShowHelp(true); trackHelpOpened(); };
+  const ThemeIcon = theme === "dark" ? Sun : Moon;
+
+  const actions = [
+    { id: "import", label: labels.importPdf, icon: Upload, onClick: onImportPdf, disabled: false },
+    { id: "download", label: downloading ? labels.generating : labels.downloadPdf, icon: FileDown, onClick: onDownloadPdf, disabled: downloading },
+  ] as const;
+
   return (
     <header className="print:hidden border-b bg-background/80 backdrop-blur-sm sticky top-0 z-10">
       <div className="h-1 bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600" />
       <div className="container mx-auto px-4 py-2.5 flex items-center justify-between">
-        {/* Logo */}
         <img src="/logo.png" alt={title} className="h-9 w-auto" />
 
-        {/* Desktop actions */}
         <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onImportPdf}
-            className="hidden md:inline-flex"
-          >
-            <Upload className="h-4 w-4 mr-1" />
-            {labels.importPdf}
-          </Button>
-          <Button
-            size="sm"
-            onClick={onDownloadPdf}
-            disabled={downloading}
-            className="hidden md:inline-flex"
-          >
-            <FileDown className="h-4 w-4 mr-1" />
-            {downloading ? labels.generating : labels.downloadPdf}
-          </Button>
+          {/* Desktop action buttons */}
+          {actions.map((action) => (
+            <Button
+              key={action.id}
+              variant={action.id === "download" ? "default" : "ghost"}
+              size="sm"
+              onClick={action.onClick}
+              disabled={action.disabled}
+              className="hidden md:inline-flex"
+            >
+              <action.icon className="h-4 w-4 mr-1" />
+              {action.label}
+            </Button>
+          ))}
 
           <LanguageSwitcher locale={locale} />
 
-          {/* Desktop help button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 hidden md:inline-flex"
-            onClick={() => { setShowHelp(true); trackHelpOpened(); }}
-            aria-label={labels.help}
-          >
+          {/* Desktop help */}
+          <Button variant="ghost" size="icon" className="h-8 w-8 hidden md:inline-flex" onClick={openHelp} aria-label={labels.help}>
             <CircleHelp className="h-4 w-4" />
           </Button>
 
           {/* Desktop theme toggle */}
           {mounted && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 hidden md:inline-flex"
-              onClick={toggleTheme}
-              aria-label={labels.themeToggle}
-            >
-              {theme === "dark" ? (
-                <Sun className="h-4 w-4" />
-              ) : (
-                <Moon className="h-4 w-4" />
-              )}
+            <Button variant="ghost" size="icon" className="h-8 w-8 hidden md:inline-flex" onClick={toggleTheme} aria-label={labels.themeToggle}>
+              <ThemeIcon className="h-4 w-4" />
             </Button>
           )}
 
           {/* Mobile menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 md:hidden"
-                aria-label={labels.moreActions}
-              >
+              <Button variant="ghost" size="icon" className="h-8 w-8 md:hidden" aria-label={labels.moreActions}>
                 <MoreVertical className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={onImportPdf}>
-                <Upload className="h-4 w-4" />
-                {labels.importPdf}
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={onDownloadPdf} disabled={downloading}>
-                <FileDown className="h-4 w-4" />
-                {downloading ? labels.generating : labels.downloadPdf}
-              </DropdownMenuItem>
+              {actions.map((action, i) => (
+                <span key={action.id}>
+                  {i > 0 && <DropdownMenuSeparator />}
+                  <DropdownMenuItem onClick={action.onClick} disabled={action.disabled}>
+                    <action.icon className="h-4 w-4" />
+                    {action.label}
+                  </DropdownMenuItem>
+                </span>
+              ))}
               <DropdownMenuSeparator />
               {mounted && (
-                <DropdownMenuItem onClick={toggleTheme}>
-                  {theme === "dark" ? (
-                    <Sun className="h-4 w-4" />
-                  ) : (
-                    <Moon className="h-4 w-4" />
-                  )}
-                  {labels.themeToggle}
-                </DropdownMenuItem>
+                <>
+                  <DropdownMenuItem onClick={toggleTheme}>
+                    <ThemeIcon className="h-4 w-4" />
+                    {labels.themeToggle}
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                </>
               )}
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => { setShowHelp(true); trackHelpOpened(); }}>
+              <DropdownMenuItem onClick={openHelp}>
                 <CircleHelp className="h-4 w-4" />
                 {labels.help}
               </DropdownMenuItem>
