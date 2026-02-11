@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { seedSession, dismissCookieConsent, toggleTheme } from "./helpers";
+import { seedSession, dismissCookieConsent, toggleTheme, waitForEditor } from "./helpers";
 
 test.describe("Dark mode", () => {
   test.beforeEach(async ({ context, page }) => {
@@ -9,14 +9,14 @@ test.describe("Dark mode", () => {
 
   test("defaults to light mode (no dark class)", async ({ page }) => {
     await page.goto("/en");
-    await expect(page.locator("#cv-preview")).toBeVisible({ timeout: 15_000 });
+    await waitForEditor(page);
     const html = page.locator("html");
     await expect(html).not.toHaveClass(/dark/);
   });
 
   test("toggles to dark mode", async ({ page, isMobile }) => {
     await page.goto("/en");
-    await expect(page.locator("#cv-preview")).toBeVisible({ timeout: 15_000 });
+    await waitForEditor(page);
 
     await toggleTheme(page, isMobile);
     await expect(page.locator("html")).toHaveClass(/dark/);
@@ -24,7 +24,7 @@ test.describe("Dark mode", () => {
 
   test("toggles back to light mode", async ({ page, isMobile }) => {
     await page.goto("/en");
-    await expect(page.locator("#cv-preview")).toBeVisible({ timeout: 15_000 });
+    await waitForEditor(page);
 
     // Toggle to dark
     await toggleTheme(page, isMobile);
@@ -36,20 +36,20 @@ test.describe("Dark mode", () => {
 
   test("persists dark mode across page reload", async ({ page, isMobile }) => {
     await page.goto("/en");
-    await expect(page.locator("#cv-preview")).toBeVisible({ timeout: 15_000 });
+    await waitForEditor(page);
 
     await toggleTheme(page, isMobile);
     await expect(page.locator("html")).toHaveClass(/dark/);
 
     // Reload
     await page.reload();
-    await expect(page.locator("#cv-preview")).toBeVisible({ timeout: 15_000 });
+    await waitForEditor(page);
     await expect(page.locator("html")).toHaveClass(/dark/);
   });
 
   test("stores theme value in localStorage", async ({ page, isMobile }) => {
     await page.goto("/en");
-    await expect(page.locator("#cv-preview")).toBeVisible({ timeout: 15_000 });
+    await waitForEditor(page);
 
     await toggleTheme(page, isMobile);
 

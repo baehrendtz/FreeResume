@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { seedSession } from "./helpers";
+import { seedSession, dismissCookieConsent, waitForEditor } from "./helpers";
 
 test.describe("Cookie consent", () => {
   test.beforeEach(async ({ page }) => {
@@ -55,17 +55,10 @@ test.describe("Cookie consent", () => {
     page,
     context,
   }) => {
-    await context.addCookies([
-      {
-        name: "cookie-consent",
-        value: "accepted",
-        domain: "localhost",
-        path: "/",
-      },
-    ]);
+    await dismissCookieConsent(context);
 
     await page.goto("/en");
-    await expect(page.locator("#cv-preview")).toBeVisible({ timeout: 15_000 });
+    await waitForEditor(page);
 
     await expect(
       page.getByText("We use cookies for anonymous analytics")
@@ -75,20 +68,11 @@ test.describe("Cookie consent", () => {
   test("footer Cookie settings button re-opens consent banner", async ({
     page,
     context,
-    isMobile,
   }) => {
-    // First accept cookies so banner is hidden
-    await context.addCookies([
-      {
-        name: "cookie-consent",
-        value: "accepted",
-        domain: "localhost",
-        path: "/",
-      },
-    ]);
+    await dismissCookieConsent(context);
 
     await page.goto("/en");
-    await expect(page.locator("#cv-preview")).toBeVisible({ timeout: 15_000 });
+    await waitForEditor(page);
 
     // Banner should not be visible
     await expect(

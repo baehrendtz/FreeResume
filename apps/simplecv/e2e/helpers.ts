@@ -1,4 +1,7 @@
-import type { Page, BrowserContext } from "@playwright/test";
+import { expect, type Page, type BrowserContext } from "@playwright/test";
+
+/** Timeout for waiting for the editor to fully render. */
+export const EDITOR_TIMEOUT = 15_000;
 
 /**
  * Minimal CV data that satisfies the CvModel zod schema.
@@ -86,6 +89,13 @@ export async function dismissCookieConsent(context: BrowserContext) {
       path: "/",
     },
   ]);
+}
+
+/**
+ * Waits for the CV preview to be visible, indicating the editor has loaded.
+ */
+export async function waitForEditor(page: Page) {
+  await expect(page.locator("#cv-preview")).toBeVisible({ timeout: EDITOR_TIMEOUT });
 }
 
 /**

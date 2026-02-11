@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { seedSession, dismissCookieConsent } from "./helpers";
+import { seedSession, dismissCookieConsent, waitForEditor } from "./helpers";
 
 test.describe("Header & Footer", () => {
   test.beforeEach(async ({ context, page }) => {
@@ -10,7 +10,7 @@ test.describe("Header & Footer", () => {
   test("Import PDF button opens import dialog", async ({ page, isMobile }) => {
     test.skip(!!isMobile, "Import button in desktop header only");
     await page.goto("/en");
-    await expect(page.locator("#cv-preview")).toBeVisible({ timeout: 15_000 });
+    await waitForEditor(page);
 
     // Use the header-scoped button to avoid matching mobile dropdown items
     await page
@@ -29,7 +29,7 @@ test.describe("Header & Footer", () => {
   test("Help button opens help dialog", async ({ page, isMobile }) => {
     test.skip(!!isMobile, "Help button in desktop header only");
     await page.goto("/en");
-    await expect(page.locator("#cv-preview")).toBeVisible({ timeout: 15_000 });
+    await waitForEditor(page);
 
     await page.locator("header").getByRole("button", { name: "Help" }).click();
 
@@ -47,7 +47,7 @@ test.describe("Header & Footer", () => {
   }) => {
     test.skip(!!isMobile, "Download button in desktop header only");
     await page.goto("/en");
-    await expect(page.locator("#cv-preview")).toBeVisible({ timeout: 15_000 });
+    await waitForEditor(page);
 
     const downloadBtn = page
       .locator("header")
@@ -58,7 +58,7 @@ test.describe("Header & Footer", () => {
 
   test("footer shows copyright and open source link", async ({ page }) => {
     await page.goto("/en");
-    await expect(page.locator("#cv-preview")).toBeVisible({ timeout: 15_000 });
+    await waitForEditor(page);
 
     const footer = page.locator("footer");
     await expect(footer).toBeVisible();

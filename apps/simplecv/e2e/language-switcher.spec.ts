@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { seedSession, dismissCookieConsent } from "./helpers";
+import { seedSession, dismissCookieConsent, waitForEditor } from "./helpers";
 
 test.describe("Language switcher", () => {
   test.beforeEach(async ({ context, page }) => {
@@ -9,7 +9,7 @@ test.describe("Language switcher", () => {
 
   test("English locale shows English content", async ({ page }) => {
     await page.goto("/en");
-    await expect(page.locator("#cv-preview")).toBeVisible({ timeout: 15_000 });
+    await waitForEditor(page);
     // The language switcher should offer to switch to Swedish
     await expect(
       page.getByRole("button", { name: "Byt till svenska" })
@@ -18,7 +18,7 @@ test.describe("Language switcher", () => {
 
   test("Swedish locale shows Swedish content", async ({ page }) => {
     await page.goto("/sv");
-    await expect(page.locator("#cv-preview")).toBeVisible({ timeout: 15_000 });
+    await waitForEditor(page);
     // The language switcher should offer to switch to English
     await expect(
       page.getByRole("button", { name: "Switch to English" })
@@ -27,7 +27,7 @@ test.describe("Language switcher", () => {
 
   test("switches from English to Swedish", async ({ page }) => {
     await page.goto("/en");
-    await expect(page.locator("#cv-preview")).toBeVisible({ timeout: 15_000 });
+    await waitForEditor(page);
 
     await page.getByRole("button", { name: "Byt till svenska" }).click();
     await page.waitForURL("**/sv");
@@ -40,7 +40,7 @@ test.describe("Language switcher", () => {
 
   test("switches from Swedish to English", async ({ page }) => {
     await page.goto("/sv");
-    await expect(page.locator("#cv-preview")).toBeVisible({ timeout: 15_000 });
+    await waitForEditor(page);
 
     await page.getByRole("button", { name: "Switch to English" }).click();
     await page.waitForURL("**/en");
@@ -56,7 +56,7 @@ test.describe("Language switcher", () => {
   }) => {
     test.skip(!!isMobile, "Sidebar tabs only visible on desktop");
     await page.goto("/en");
-    await expect(page.locator("#cv-preview")).toBeVisible({ timeout: 15_000 });
+    await waitForEditor(page);
 
     // English labels
     await expect(page.getByRole("button", { name: "Basics" })).toBeVisible();
@@ -64,7 +64,7 @@ test.describe("Language switcher", () => {
     // Switch to Swedish
     await page.getByRole("button", { name: "Byt till svenska" }).click();
     await page.waitForURL("**/sv");
-    await expect(page.locator("#cv-preview")).toBeVisible({ timeout: 15_000 });
+    await waitForEditor(page);
 
     // Swedish labels
     await expect(

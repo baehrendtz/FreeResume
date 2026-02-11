@@ -41,7 +41,7 @@ export function LanguageSwitcher({ locale }: LanguageSwitcherProps) {
   const switchLocale = () => {
     const newLocale = locale === "sv" ? "en" : "sv";
     trackLanguageSwitch(newLocale);
-    const newPath = pathname.replace(`/${locale}`, `/${newLocale}`);
+    const newPath = pathname.replace(new RegExp(`^/${locale}\\b`), `/${newLocale}`);
     router.push(newPath);
   };
 

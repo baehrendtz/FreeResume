@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { seedSession, dismissCookieConsent, MINIMAL_CV } from "./helpers";
+import { seedSession, dismissCookieConsent, MINIMAL_CV, waitForEditor } from "./helpers";
 
 test.describe("Editor", () => {
   test.beforeEach(async ({ context, page }) => {
@@ -10,7 +10,7 @@ test.describe("Editor", () => {
   test("shows all 9 sidebar tabs on desktop", async ({ page, isMobile }) => {
     test.skip(!!isMobile, "Sidebar tabs only visible on desktop");
     await page.goto("/en");
-    await expect(page.locator("#cv-preview")).toBeVisible({ timeout: 15_000 });
+    await waitForEditor(page);
 
     const expectedTabs = [
       "Template",
@@ -38,7 +38,7 @@ test.describe("Editor", () => {
   }) => {
     test.skip(!!isMobile, "Sidebar tabs only visible on desktop");
     await page.goto("/en");
-    await expect(page.locator("#cv-preview")).toBeVisible({ timeout: 15_000 });
+    await waitForEditor(page);
 
     // Click Basics tab (in sidebar nav)
     await page.locator("nav").first().getByRole("button", { name: "Basics" }).click();
@@ -55,7 +55,7 @@ test.describe("Editor", () => {
   }) => {
     test.skip(!!isMobile, "Sidebar tabs only visible on desktop");
     await page.goto("/en");
-    await expect(page.locator("#cv-preview")).toBeVisible({ timeout: 15_000 });
+    await waitForEditor(page);
 
     await page.locator("nav").first().getByRole("button", { name: "Experience" }).click();
     await expect(page.getByText("Senior Developer").first()).toBeVisible();
@@ -65,7 +65,7 @@ test.describe("Editor", () => {
   test("Skills tab shows seeded skills", async ({ page, isMobile }) => {
     test.skip(!!isMobile, "Sidebar tabs only visible on desktop");
     await page.goto("/en");
-    await expect(page.locator("#cv-preview")).toBeVisible({ timeout: 15_000 });
+    await waitForEditor(page);
 
     await page.locator("nav").first().getByRole("button", { name: "Skills" }).click();
     for (const skill of MINIMAL_CV.skills) {
@@ -76,7 +76,7 @@ test.describe("Editor", () => {
   test("editing name updates the CV preview", async ({ page, isMobile }) => {
     test.skip(!!isMobile, "Preview not visible on mobile");
     await page.goto("/en");
-    await expect(page.locator("#cv-preview")).toBeVisible({ timeout: 15_000 });
+    await waitForEditor(page);
 
     await page.locator("nav").first().getByRole("button", { name: "Basics" }).click();
     const nameInput = page.getByLabel("Full Name");
@@ -94,7 +94,7 @@ test.describe("Editor", () => {
   }) => {
     test.skip(!!isMobile, "Sidebar tabs only visible on desktop");
     await page.goto("/en");
-    await expect(page.locator("#cv-preview")).toBeVisible({ timeout: 15_000 });
+    await waitForEditor(page);
 
     await page.locator("nav").first().getByRole("button", { name: "Template" }).click();
     // Scope to the editor area and use exact match to avoid "Basics" tab matching "Basic"

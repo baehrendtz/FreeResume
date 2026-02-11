@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { dismissCookieConsent, seedSession } from "./helpers";
+import { dismissCookieConsent, seedSession, waitForEditor } from "./helpers";
 
 test.describe("Onboarding", () => {
   test.beforeEach(async ({ context }) => {
@@ -29,14 +29,14 @@ test.describe("Onboarding", () => {
     // Click the CTA to enter editor
     await page.getByRole("button", { name: "Start editing" }).click();
     // Editor should be visible with the CV preview
-    await expect(page.locator("#cv-preview")).toBeVisible({ timeout: 10_000 });
+    await waitForEditor(page);
   });
 
   test("skips onboarding when session already exists", async ({ page }) => {
     await seedSession(page);
     await page.goto("/en");
     // Should go directly to editor
-    await expect(page.locator("#cv-preview")).toBeVisible({ timeout: 10_000 });
+    await waitForEditor(page);
     // Onboarding title should not be visible
     await expect(
       page.getByRole("heading", { name: "Create your professional CV" })
