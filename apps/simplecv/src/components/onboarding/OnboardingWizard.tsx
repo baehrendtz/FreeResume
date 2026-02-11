@@ -58,11 +58,14 @@ export function OnboardingWizard({
   // Auto-advance to success when PDF processing finishes
   const wasProcessing = useRef(false);
   useEffect(() => {
-    if (wasProcessing.current && !processing && step === "choose") {
+    const prev = wasProcessing.current;
+    wasProcessing.current = processing;
+    if (!prev || processing || step !== "choose") return;
+    // Use microtask to avoid synchronous setState in effect body
+    queueMicrotask(() => {
       setStep("success");
       trackOnboardingStep("success");
-    }
-    wasProcessing.current = processing;
+    });
   }, [processing, step]);
 
   const handleFile = useCallback(

@@ -18,14 +18,15 @@ export function CookieConsent() {
     () => true,
     () => false,
   );
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return getConsent() === null;
+  });
 
   useEffect(() => {
     if (!mounted) return;
     const consent = getConsent();
-    if (consent === null) {
-      setVisible(true);
-    } else if (consent === "accepted") {
+    if (consent === "accepted") {
       loadGoogleAnalytics(BRAND.ga.measurementId, BRAND.ga.linkerDomains);
     }
   }, [mounted]);
