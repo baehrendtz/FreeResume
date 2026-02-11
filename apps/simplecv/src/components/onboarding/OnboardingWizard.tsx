@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { Upload, FileText, Loader2 } from "lucide-react";
 import { LinkedInGuide } from "./LinkedInGuide";
 import { OnboardingSuccess } from "./OnboardingSuccess";
 import { trackOnboardingStep, trackOnboardingComplete, trackOnboardingSkip } from "@/lib/analytics/gtag";
+import { usePdfDrop } from "@/hooks/usePdfDrop";
 import type { CvModel } from "@/lib/model/CvModel";
 
 type OnboardingStep = "choose" | "success";
@@ -52,8 +53,9 @@ export function OnboardingWizard({
   onComplete,
 }: OnboardingWizardProps) {
   const [step, setStep] = useState<OnboardingStep>("choose");
-  const [dragOver, setDragOver] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const { dragOver, inputRef, handleDrop, handleDragOver, handleDragLeave, error: dropError } = usePdfDrop({
+    onFileSelected,
+  });
 
   // Auto-advance to success when PDF processing finishes
   const wasProcessing = useRef(false);
@@ -67,25 +69,6 @@ export function OnboardingWizard({
       trackOnboardingStep("success");
     });
   }, [processing, step]);
-
-  const handleFile = useCallback(
-    (file: File) => {
-      if (file.type === "application/pdf") {
-        onFileSelected(file);
-      }
-    },
-    [onFileSelected],
-  );
-
-  const handleDrop = useCallback(
-    (e: React.DragEvent) => {
-      e.preventDefault();
-      setDragOver(false);
-      const file = e.dataTransfer.files[0];
-      if (file) handleFile(file);
-    },
-    [handleFile],
-  );
 
   const handleScratch = useCallback(() => {
     trackOnboardingSkip("choose");
@@ -125,8 +108,8 @@ export function OnboardingWizard({
                     ? "border-blue-500 bg-blue-50/50 dark:bg-blue-950/20"
                     : "border-border hover:border-blue-400 hover:bg-muted/30"
                 }`}
-                onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
-                onDragLeave={() => setDragOver(false)}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
                 onClick={() => !processing && inputRef.current?.click()}
               >
@@ -159,7 +142,7 @@ export function OnboardingWizard({
                 className="hidden"
                 onChange={(e) => {
                   const file = e.target.files?.[0];
-                  if (file) handleFile(file);
+                  if (file && file.type === "application/pdf") onFileSelected(file);
                 }}
               />
 
@@ -193,6 +176,10 @@ export function OnboardingWizard({
               </div>
             </button>
           </div>
+
+          {dropError && (
+            <p className="text-sm text-destructive text-center">{dropError}</p>
+          )}
         </>
       )}
 

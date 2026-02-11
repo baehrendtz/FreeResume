@@ -581,17 +581,6 @@ function appendText(existing: string, next: string): string {
 }
 
 /**
- * Join an array of text segments, removing line-break hyphens between them.
- */
-function joinTextLines(texts: string[]): string {
-  let result = "";
-  for (const text of texts) {
-    result = appendText(result, text);
-  }
-  return result;
-}
-
-/**
  * Join summary lines preserving paragraph breaks.
  * Detects paragraph breaks by comparing Y-gaps between consecutive lines:
  * gaps > 1.8× the typical (median) line spacing are treated as paragraph breaks.

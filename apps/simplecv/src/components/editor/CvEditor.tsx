@@ -10,12 +10,14 @@ import { BasicsForm } from "./BasicsForm";
 import { SummaryForm } from "./SummaryForm";
 import { ExperienceForm } from "./ExperienceForm";
 import { EducationForm } from "./EducationForm";
-import { SkillsForm } from "./SkillsForm";
-import { LanguagesForm } from "./LanguagesForm";
+import { ListForm } from "./ListForm";
 import { ExtrasForm } from "./ExtrasForm";
-import { SectionVisibilityToggles } from "./SectionVisibilityToggles";
+import { TemplateSwitcher } from "@/components/TemplateSwitcher";
+import { SectionToggles } from "./settings/SectionToggles";
+import { ContentLimits } from "./settings/ContentLimits";
+import { LocationFormatting } from "./settings/LocationFormatting";
 import { WIZARD_STEPS } from "@/lib/wizard/steps";
-import { trackWizardStep } from "@/lib/analytics/gtag";
+import { trackWizardStep, trackSkillAdd, trackSkillRemove } from "@/lib/analytics/gtag";
 
 interface CvEditorProps {
   defaultValues: CvModel;
@@ -26,6 +28,7 @@ interface CvEditorProps {
   onTemplateSelect: (id: string) => void;
   labels: {
     tabs: {
+      template: string;
       basics: string;
       summary: string;
       experience: string;
@@ -34,6 +37,11 @@ interface CvEditorProps {
       languages: string;
       extras: string;
       visibility: string;
+    };
+    groups: {
+      theme: string;
+      content: string;
+      settings: string;
     };
     basics: {
       name: string;
@@ -46,6 +54,7 @@ interface CvEditorProps {
       photo: string;
       photoUpload: string;
       photoRemove: string;
+      photoTooLarge: string;
     };
     summary: { label: string; placeholder: string };
     experience: {
@@ -80,6 +89,7 @@ interface CvEditorProps {
     visibility: {
       title: string;
       description: string;
+      photo: string;
       summary: string;
       experience: string;
       education: string;
@@ -169,6 +179,7 @@ export function CvEditor({
             activeStep={activeStep}
             onStepSelect={handleStepSelect}
             tabLabels={labels.tabs}
+            groupLabels={labels.groups}
             collapsed={collapsed}
             onToggleCollapse={() => setCollapsed((c) => !c)}
           />
@@ -186,14 +197,21 @@ export function CvEditor({
                 </div>
               );
             })()}
+            {activeStep === "template" && (
+              <div className="space-y-4">
+                <TemplateSwitcher activeId={templateId} onSelect={onTemplateSelect} />
+              </div>
+            )}
             {activeStep === "visibility" && (
-              <SectionVisibilityToggles
-                labels={labels.visibility}
-                displaySettings={displaySettings}
-                onDisplaySettingsChange={onDisplaySettingsChange}
-                templateId={templateId}
-                onTemplateSelect={onTemplateSelect}
-              />
+              <div className="space-y-4">
+                <SectionToggles labels={labels.visibility} />
+                {displaySettings && onDisplaySettingsChange && (
+                  <>
+                    <ContentLimits labels={labels.visibility} displaySettings={displaySettings} onDisplaySettingsChange={onDisplaySettingsChange} />
+                    <LocationFormatting labels={labels.visibility} displaySettings={displaySettings} onDisplaySettingsChange={onDisplaySettingsChange} />
+                  </>
+                )}
+              </div>
             )}
             {activeStep === "basics" && <BasicsForm labels={labels.basics} />}
             {activeStep === "summary" && (
@@ -204,8 +222,12 @@ export function CvEditor({
             )}
             {activeStep === "experience" && <ExperienceForm labels={labels.experience} />}
             {activeStep === "education" && <EducationForm labels={labels.education} />}
-            {activeStep === "skills" && <SkillsForm labels={labels.skills} />}
-            {activeStep === "languages" && <LanguagesForm labels={labels.languages} />}
+            {activeStep === "skills" && (
+              <ListForm fieldName="skills" labels={labels.skills} onAdd={trackSkillAdd} onRemove={trackSkillRemove} />
+            )}
+            {activeStep === "languages" && (
+              <ListForm fieldName="languages" labels={labels.languages} />
+            )}
             {activeStep === "extras" && (
               <ExtrasForm labels={labels.extras} categoryNames={labels.extrasCategories} />
             )}

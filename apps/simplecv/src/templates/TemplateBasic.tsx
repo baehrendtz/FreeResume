@@ -2,7 +2,6 @@
 
 import type { CvModel } from "@/lib/model/CvModel";
 import {
-  getContactItems,
   SectionTitle,
   CvFooter,
   ExperienceItem,
@@ -17,7 +16,6 @@ interface TemplateProps {
 }
 
 export default function TemplateBasic({ cv }: TemplateProps) {
-  const contactItems = getContactItems(cv);
   const contactStrings = [cv.email, cv.phone, cv.location, cv.linkedIn, cv.website].filter(Boolean);
 
   const sectionTitleClass = "tracking-[0.12em] text-teal-800 border-teal-200 mb-1.5";
@@ -26,15 +24,23 @@ export default function TemplateBasic({ cv }: TemplateProps) {
     <div className="cv-template font-sans text-[8.5pt] leading-[1.35] text-gray-800 p-6 max-w-[210mm] mx-auto bg-white min-h-[297mm] flex flex-col">
       {/* Header */}
       <header className="mb-3 border-l-4 border-teal-700 pl-4">
-        <h1 className="text-[18pt] font-bold tracking-tight text-gray-900">{cv.name || "Your Name"}</h1>
-        {cv.headline && (
-          <p className="text-[9pt] text-teal-700 font-medium mt-0.5">{cv.headline}</p>
-        )}
-        {contactStrings.length > 0 && (
-          <p className="text-[7.5pt] text-gray-500 mt-1">
-            {contactStrings.join(" · ")}
-          </p>
-        )}
+        <div className="flex items-start gap-3">
+          {cv.photo && (
+            <img src={cv.photo} alt=""
+              className="h-[64px] w-[64px] rounded-full object-cover border border-teal-200 shrink-0" />
+          )}
+          <div className="min-w-0">
+            <h1 className="text-[18pt] font-bold tracking-tight text-gray-900">{cv.name || "Your Name"}</h1>
+            {cv.headline && (
+              <p className="text-[9pt] text-teal-700 font-medium mt-0.5">{cv.headline}</p>
+            )}
+            {contactStrings.length > 0 && (
+              <p className="text-[7.5pt] text-gray-500 mt-1">
+                {contactStrings.join(" · ")}
+              </p>
+            )}
+          </div>
+        </div>
       </header>
 
       {/* Summary */}

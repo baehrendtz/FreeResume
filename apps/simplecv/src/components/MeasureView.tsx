@@ -4,6 +4,7 @@ import { useRef, useEffect, useCallback, Suspense } from "react";
 import type { RenderModel } from "@/lib/fitting/types";
 import type { LayoutMetrics } from "@/lib/fitting/types";
 import { templates } from "@/templates/templateRegistry";
+import { TemplateErrorBoundary } from "@/components/TemplateErrorBoundary";
 
 interface MeasureViewProps {
   templateId: string;
@@ -82,9 +83,11 @@ export function MeasureView({ templateId, renderModel, onMeasure }: MeasureViewP
 
       {/* Actual template content to measure */}
       <div ref={containerRef}>
-        <Suspense fallback={null}>
-          <Template cv={renderModel} />
-        </Suspense>
+        <TemplateErrorBoundary>
+          <Suspense fallback={null}>
+            <Template cv={renderModel} />
+          </Suspense>
+        </TemplateErrorBoundary>
       </div>
     </div>
   );

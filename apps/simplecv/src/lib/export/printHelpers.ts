@@ -38,7 +38,11 @@ export function clearSession(): void {
 }
 
 export function saveCvForPrint(cv: CvModel): void {
-  sessionStorage.setItem(STORAGE_KEY, JSON.stringify(cv));
+  try {
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(cv));
+  } catch {
+    // sessionStorage full or unavailable — ignore
+  }
 }
 
 export function loadCvForPrint(): CvModel | null {
@@ -78,9 +82,10 @@ export async function downloadPdf(name: string): Promise<void> {
   el.style.transform = "none";
   el.style.width = "794px";
 
-  // Capture at 3x for sharp text in PDF
+  // Lower scale on mobile to avoid memory issues
+  const isMobile = window.innerWidth < 1024;
   const canvas = await html2canvas(el, {
-    scale: 3,
+    scale: isMobile ? 2 : 3,
     useCORS: true,
     backgroundColor: "#ffffff",
   });

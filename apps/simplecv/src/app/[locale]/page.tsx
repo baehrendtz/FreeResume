@@ -13,7 +13,7 @@ import { AppFooter } from "@/components/AppFooter";
 import { OnboardingWizard } from "@/components/onboarding/OnboardingWizard";
 import { ImportPdfDialog } from "@/components/ImportPdfDialog";
 import { trackTemplateSwitch, trackFullscreenPreview } from "@/lib/analytics/gtag";
-import { AlertTriangle, Loader2, Maximize2 } from "lucide-react";
+import { AlertTriangle, Download, Loader2, Maximize2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FullscreenPreviewDialog } from "@/components/FullscreenPreviewDialog";
 import { useEditorLabels } from "@/hooks/useEditorLabels";
@@ -74,7 +74,7 @@ export default function MainPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-muted/30 flex flex-col">
+    <div className="min-h-screen lg:min-h-0 lg:h-screen lg:overflow-hidden bg-muted/30 flex flex-col">
       <AppHeader
         title="Free Resume"
         locale={locale}
@@ -98,7 +98,7 @@ export default function MainPage() {
             onComplete={handleOnboardingComplete}
           />
         ) : (
-          <div className="max-w-screen-2xl mx-auto px-6 py-8 flex flex-col lg:h-full">
+          <div className="max-w-screen-2xl mx-auto px-6 py-8 pb-20 lg:pb-8 flex flex-col lg:h-full">
             {metrics && !metrics.fits && (
               <div className="print:hidden mb-4 flex items-center justify-between rounded-md px-3 py-2 text-sm bg-amber-50 text-amber-800 dark:bg-amber-950/30 dark:text-amber-400">
                 <div className="flex items-center gap-2">
@@ -138,7 +138,8 @@ export default function MainPage() {
                 />
               </div>
 
-              <div className="hidden lg:block lg:overflow-y-auto lg:min-h-0">
+              {/* Desktop: visible. Mobile: off-screen but in DOM for html2canvas + MeasureView */}
+              <div className="max-lg:fixed max-lg:-left-[200vw] max-lg:w-[794px] lg:overflow-y-auto lg:min-h-0">
                 {(() => {
                   const trim = computeTrimInfo(cv, renderModel);
                   const parts: string[] = [];
@@ -185,6 +186,21 @@ export default function MainPage() {
           </div>
         )}
       </main>
+
+      {/* Mobile floating action bar */}
+      {!effectiveShowOnboarding && (
+        <div className="lg:hidden fixed bottom-0 inset-x-0 z-40 p-3 bg-background/95 backdrop-blur-sm border-t safe-area-pb">
+          <div className="flex gap-2 max-w-lg mx-auto">
+            <Button variant="outline" className="flex-1" onClick={() => { setShowPreview(true); trackFullscreenPreview(); }}>
+              <Maximize2 className="h-4 w-4 mr-2" /> {t("preview.fullscreen")}
+            </Button>
+            <Button className="flex-1" onClick={handleDownloadPdf} disabled={downloading}>
+              {downloading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Download className="h-4 w-4 mr-2" />}
+              {downloading ? t("actions.generating") : t("actions.downloadPdf")}
+            </Button>
+          </div>
+        </div>
+      )}
 
       <AppFooter labels={footer} />
 

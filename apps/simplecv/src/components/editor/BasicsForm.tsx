@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useCallback } from "react";
+import { useRef, useCallback, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -20,12 +20,14 @@ interface BasicsFormProps {
     photo: string;
     photoUpload: string;
     photoRemove: string;
+    photoTooLarge: string;
   };
 }
 
 export function BasicsForm({ labels }: BasicsFormProps) {
   const { register, watch, setValue } = useFormContext<CvModel>();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [photoError, setPhotoError] = useState<string | null>(null);
 
   const photo = watch("photo");
 
@@ -35,8 +37,13 @@ export function BasicsForm({ labels }: BasicsFormProps) {
       if (!file) return;
 
       // 2MB limit
-      if (file.size > 2 * 1024 * 1024) return;
+      if (file.size > 2 * 1024 * 1024) {
+        setPhotoError(labels.photoTooLarge);
+        e.target.value = "";
+        return;
+      }
 
+      setPhotoError(null);
       const reader = new FileReader();
       reader.onloadend = () => {
         setValue("photo", reader.result as string, { shouldDirty: true });
@@ -47,7 +54,7 @@ export function BasicsForm({ labels }: BasicsFormProps) {
       // Reset so the same file can be re-selected
       e.target.value = "";
     },
-    [setValue]
+    [setValue, labels.photoTooLarge]
   );
 
   const personalFields = [
@@ -120,6 +127,9 @@ export function BasicsForm({ labels }: BasicsFormProps) {
             onChange={handleFileChange}
           />
         </div>
+        {photoError && (
+          <p className="text-xs text-destructive">{photoError}</p>
+        )}
       </div>
 
       {/* Personal info */}

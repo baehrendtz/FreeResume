@@ -48,7 +48,9 @@ const structuredData = {
     <meta name="theme-color" content={BRAND.themeColor} />
     <script is:inline>
       (function() {
-        var saved = localStorage.getItem('theme');
+        function getCookie(n){var m=document.cookie.match('(^|; )'+n+'=([^;]*)');return m?m[2]:null}
+        function setCookie(n,v){document.cookie=n+'='+v+';domain=.freeresume.eu;path=/;max-age=31536000;SameSite=Lax'}
+        var saved = localStorage.getItem('theme') || getCookie('theme');
         var prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
         var isDark = saved === 'dark' || (!saved && prefersDark.matches);
         if (isDark) document.documentElement.classList.add('dark');
@@ -64,6 +66,7 @@ const structuredData = {
           if (!e.target.closest('#theme-toggle')) return;
           var dark = document.documentElement.classList.toggle('dark');
           localStorage.setItem('theme', dark ? 'dark' : 'light');
+          setCookie('theme', dark ? 'dark' : 'light');
           document.querySelector('meta[name="theme-color"]')
             ?.setAttribute('content', dark ? '#030712' : '#2563eb');
         });

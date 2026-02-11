@@ -14,17 +14,26 @@ export function getConsent(): ConsentValue | null {
   return value === "accepted" || value === "declined" ? value : null;
 }
 
-export function setConsent(
-  value: ConsentValue,
-  domain: string = DEFAULT_DOMAIN,
-) {
+export function setConsent(value: ConsentValue, domain?: string) {
   if (typeof document === "undefined") return;
-  document.cookie = `${COOKIE_NAME}=${value}; Domain=${domain}; Path=/; SameSite=Lax; Max-Age=${ONE_YEAR}`;
+  const effectiveDomain = domain ?? (
+    typeof location !== "undefined" && location.hostname.endsWith("freeresume.eu")
+      ? DEFAULT_DOMAIN
+      : undefined
+  );
+  const domainPart = effectiveDomain ? `; Domain=${effectiveDomain}` : "";
+  document.cookie = `${COOKIE_NAME}=${value}${domainPart}; Path=/; SameSite=Lax; Max-Age=${ONE_YEAR}`;
 }
 
-export function clearConsent(domain: string = DEFAULT_DOMAIN) {
+export function clearConsent(domain?: string) {
   if (typeof document === "undefined") return;
-  document.cookie = `${COOKIE_NAME}=; Domain=${domain}; Path=/; SameSite=Lax; Max-Age=0`;
+  const effectiveDomain = domain ?? (
+    typeof location !== "undefined" && location.hostname.endsWith("freeresume.eu")
+      ? DEFAULT_DOMAIN
+      : undefined
+  );
+  const domainPart = effectiveDomain ? `; Domain=${effectiveDomain}` : "";
+  document.cookie = `${COOKIE_NAME}=${domainPart}; Path=/; SameSite=Lax; Max-Age=0`;
 }
 
 let gaLoaded = false;

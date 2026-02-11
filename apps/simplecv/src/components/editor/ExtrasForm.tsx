@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { X, Trash2, Plus } from "lucide-react";
 import type { CvModel, ExtrasGroup } from "@/lib/model/CvModel";
 
@@ -142,17 +143,21 @@ export function ExtrasForm({ labels, categoryNames }: ExtrasFormProps) {
 
             {availableCategories.length > 0 && (
               <div className="flex gap-2 items-center">
-                <select
+                <Select
                   value={newCategory || availableCategories[0] || ""}
-                  onChange={(e) => setNewCategory(e.target.value)}
-                  className="flex h-9 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-xs transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                  onValueChange={(value) => setNewCategory(value)}
                 >
-                  {availableCategories.map((cat) => (
-                    <option key={cat} value={cat}>
-                      {categoryNames[cat] ?? cat}
-                    </option>
-                  ))}
-                </select>
+                  <SelectTrigger className="w-[200px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableCategories.map((cat) => (
+                      <SelectItem key={cat} value={cat}>
+                        {categoryNames[cat] ?? cat}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <Button
                   type="button"
                   variant="outline"

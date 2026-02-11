@@ -32,12 +32,12 @@ export default function RootLayout({
         {/* SAFE: dangerouslySetInnerHTML with static string — no user input. Inlined to prevent dark-mode flash on load. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem("theme");if(t==="dark"||(t==null&&window.matchMedia("(prefers-color-scheme:dark)").matches)){document.documentElement.classList.add("dark")}}catch(e){}})()`,
+            __html: `(function(){try{var c=document.cookie.match('(^|; )theme=([^;]*)');var t=localStorage.getItem("theme")||(c?c[2]:null);if(t==="dark"||(t==null&&window.matchMedia("(prefers-color-scheme:dark)").matches)){document.documentElement.classList.add("dark")}}catch(e){}})()`,
           }}
         />
       </head>
       <body
-        className={`${inter.variable} antialiased`}
+        className={`${inter.variable} antialiased lg:overflow-hidden`}
       >
         {children}
       </body>

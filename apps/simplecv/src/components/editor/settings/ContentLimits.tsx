@@ -38,8 +38,8 @@ export function ContentLimits({ labels, displaySettings, onDisplaySettingsChange
         <p className="text-xs text-muted-foreground">{labels.contentLimitsDescription}</p>
       </div>
       {LIMIT_FIELDS.map(({ key, min, max, step }) => (
-        <div key={key} className="flex items-center justify-between gap-4">
-          <Label htmlFor={`limit-${key}`} className="text-sm shrink-0">
+        <div key={key} className="flex items-center justify-between gap-2">
+          <Label htmlFor={`limit-${key}`} className="text-sm min-w-0 truncate" title={labels[key]}>
             {labels[key]}
           </Label>
           <div className="flex items-center gap-1">

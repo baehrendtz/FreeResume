@@ -28,6 +28,7 @@ export const extrasGroupSchema = z.object({
 export type ExtrasGroup = z.infer<typeof extrasGroupSchema>;
 
 export const sectionsVisibilitySchema = z.object({
+  photo: z.boolean(),
   summary: z.boolean(),
   experience: z.boolean(),
   education: z.boolean(),
@@ -76,6 +77,7 @@ export function createEmptyCvModel(): CvModel {
     languages: [],
     extras: [],
     sectionsVisibility: {
+      photo: true,
       summary: true,
       experience: true,
       education: true,

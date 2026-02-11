@@ -7,11 +7,13 @@
     "title": "Upload your LinkedIn PDF",
     "description": "Export your LinkedIn profile as PDF and upload it here to get started",
     "dropzone": "Drag and drop your PDF here, or click to browse",
+    "invalidFileType": "Please select a PDF file",
     "processing": "Processing PDF...",
     "startFromScratch": "Or start from scratch"
   },
   "editor": {
     "tabs": {
+      "template": "Template",
       "basics": "Basics",
       "summary": "Summary",
       "experience": "Experience",
@@ -20,6 +22,11 @@
       "languages": "Languages",
       "extras": "Extras",
       "visibility": "Settings"
+    },
+    "groups": {
+      "theme": "Template",
+      "content": "Content",
+      "settings": "Settings"
     },
     "basics": {
       "name": "Full Name",
@@ -31,7 +38,8 @@
       "website": "Website",
       "photo": "Profile Photo",
       "photoUpload": "Upload Photo",
-      "photoRemove": "Remove"
+      "photoRemove": "Remove",
+      "photoTooLarge": "Photo must be under 2MB"
     },
     "summary": {
       "label": "Professional Summary",
@@ -93,6 +101,7 @@
     "visibility": {
       "title": "Sections",
       "description": "Choose which sections to show",
+      "photo": "Profile Photo",
       "summary": "Summary",
       "experience": "Experience",
       "education": "Education",
