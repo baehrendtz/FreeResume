@@ -1,0 +1,75 @@
+---
+import type { Lang } from '../types';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+
+const t = {
+  sv: {
+    heading: 'Professionella CV-mallar',
+    subtitle: 'Alla mallar är ATS-optimerade och enkla att anpassa.',
+    cta: 'Se alla mallar',
+    templates: [
+      { name: 'Basic', img: '/template-basic.webp', alt: 'Basic CV-mall — ren och minimalistisk design' },
+      { name: 'Professional', img: '/template-professional.webp', alt: 'Professional CV-mall — klassisk professionell layout' },
+      { name: 'Creative', img: '/template-creative.webp', alt: 'Creative CV-mall — modern och kreativ design' },
+    ],
+  },
+  en: {
+    heading: 'Professional CV templates',
+    subtitle: 'All templates are ATS-optimized and easy to customize.',
+    cta: 'See all templates',
+    templates: [
+      { name: 'Basic', img: '/template-basic.webp', alt: 'Basic CV template — clean and minimalist design' },
+      { name: 'Professional', img: '/template-professional.webp', alt: 'Professional CV template — classic professional layout' },
+      { name: 'Creative', img: '/template-creative.webp', alt: 'Creative CV template — modern and creative design' },
+    ],
+  },
+}[lang];
+---
+
+<section class="py-14 sm:py-20 bg-gray-50 dark:bg-gray-900/50">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center max-w-3xl mx-auto">
+      <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">
+        {t.heading}
+      </h2>
+      <p class="mt-4 text-lg text-gray-600 dark:text-gray-300">
+        {t.subtitle}
+      </p>
+    </div>
+
+    <div class="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
+      {t.templates.map((tpl) => (
+        <a href="https://app.freeresume.eu" class="group block">
+          <div class="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm group-hover:shadow-lg transition-shadow bg-white dark:bg-gray-900">
+            <img
+              src={tpl.img}
+              alt={tpl.alt}
+              width="560"
+              height="792"
+              class="w-full h-auto"
+              loading="lazy"
+            />
+          </div>
+          <p class="mt-3 text-center text-sm font-medium text-gray-700 dark:text-gray-300">{tpl.name}</p>
+        </a>
+      ))}
+    </div>
+
+    <div class="mt-10 text-center">
+      <a
+        href="https://app.freeresume.eu"
+        class="inline-flex items-center gap-2 text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-semibold transition-colors"
+      >
+        {t.cta}
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>
