@@ -74,7 +74,7 @@ export default function MainPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-muted/30 flex flex-col">
+    <div className="min-h-screen lg:h-screen lg:overflow-hidden bg-muted/30 flex flex-col">
       <AppHeader
         title="Free Resume"
         locale={locale}
