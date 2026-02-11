@@ -1,5 +1,6 @@
 ---
 import { BRAND } from "@freeresume/shared/brand";
+import CookieConsent from "../components/CookieConsent.astro";
 
 interface Props {
   title: string;
@@ -103,20 +104,9 @@ const structuredData = {
     <!-- Structured Data -->
     <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
 
-    <!-- Google tag (gtag.js) -->
-    <script async src={`https://www.googletagmanager.com/gtag/js?id=${BRAND.ga.measurementId}`}></script>
-    <script is:inline define:vars={{ gaId: BRAND.ga.measurementId, linkerDomains: BRAND.ga.linkerDomains }}>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', gaId, {
-        linker: {
-          domains: linkerDomains
-        }
-      });
-    </script>
   </head>
   <body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 font-['Inter',sans-serif] antialiased">
     <slot />
+    <CookieConsent lang={lang as 'sv' | 'en'} />
   </body>
 </html>

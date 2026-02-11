@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { GA_MEASUREMENT_ID } from "@/lib/analytics/gtag";
 import "./globals.css";
 
 const inter = Inter({
@@ -30,21 +29,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* SAFE: dangerouslySetInnerHTML with static string — no user input. Inlined to prevent dark-mode flash on load. */}
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){try{var t=localStorage.getItem("theme");if(t==="dark"||(t==null&&window.matchMedia("(prefers-color-scheme:dark)").matches)){document.documentElement.classList.add("dark")}}catch(e){}})()`,
           }}
         />
-        {GA_MEASUREMENT_ID && (
-          <>
-            <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`} />
-            <script
-              dangerouslySetInnerHTML={{
-                __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_MEASUREMENT_ID}',{linker:{domains:['app.freeresume.eu','www.freeresume.eu']}});`,
-              }}
-            />
-          </>
-        )}
       </head>
       <body
         className={`${inter.variable} antialiased`}

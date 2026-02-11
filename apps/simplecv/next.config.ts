@@ -7,7 +7,6 @@ const nextConfig: NextConfig = {
   output: "export",
   images: { unoptimized: true },
   transpilePackages: ["@freeresume/shared"],
-  typescript: { ignoreBuildErrors: true },
 };
 
 export default withNextIntl(nextConfig);

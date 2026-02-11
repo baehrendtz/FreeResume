@@ -1,0 +1,81 @@
+---
+interface Props {
+  lang: 'sv' | 'en';
+}
+
+const { lang } = Astro.props;
+
+const t = {
+  sv: {
+    message: 'Vi använder cookies för anonym analys för att förbättra tjänsten. Ingen personlig data samlas in.',
+    accept: 'Acceptera',
+    decline: 'Avböj',
+  },
+  en: {
+    message: 'We use cookies for anonymous analytics to improve this service. No personal data is collected.',
+    accept: 'Accept',
+    decline: 'Decline',
+  },
+}[lang];
+---
+
+<div id="cookie-consent-banner" class="hidden fixed bottom-0 inset-x-0 z-50 p-4 print:hidden">
+  <div class="mx-auto max-w-lg rounded-lg border border-gray-200 dark:border-gray-700 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm shadow-lg p-4 flex flex-col sm:flex-row items-center gap-3">
+    <p class="text-sm text-gray-500 dark:text-gray-400 flex-1">
+      {t.message}
+    </p>
+    <div class="flex gap-2 shrink-0">
+      <button
+        id="cookie-decline"
+        class="inline-flex items-center justify-center rounded-md text-sm font-medium border border-gray-200 dark:border-gray-700 bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 h-8 px-3 transition-colors"
+      >
+        {t.decline}
+      </button>
+      <button
+        id="cookie-accept"
+        class="inline-flex items-center justify-center rounded-md text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 h-8 px-3 transition-colors"
+      >
+        {t.accept}
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { getConsent, setConsent, loadGoogleAnalytics, removeGoogleAnalyticsCookies } from "@freeresume/shared/consent";
+  import { BRAND } from "@freeresume/shared/brand";
+
+  const banner = document.getElementById("cookie-consent-banner")!;
+  const acceptBtn = document.getElementById("cookie-accept")!;
+  const declineBtn = document.getElementById("cookie-decline")!;
+
+  function showBanner() {
+    banner.classList.remove("hidden");
+  }
+
+  function hideBanner() {
+    banner.classList.add("hidden");
+  }
+
+  const consent = getConsent();
+  if (consent === null) {
+    showBanner();
+  } else if (consent === "accepted") {
+    loadGoogleAnalytics(BRAND.ga.measurementId, BRAND.ga.linkerDomains);
+  }
+
+  acceptBtn.addEventListener("click", () => {
+    setConsent("accepted");
+    loadGoogleAnalytics(BRAND.ga.measurementId, BRAND.ga.linkerDomains);
+    hideBanner();
+  });
+
+  declineBtn.addEventListener("click", () => {
+    setConsent("declined");
+    removeGoogleAnalyticsCookies();
+    delete window.gtag;
+    hideBanner();
+  });
+
+  window.addEventListener("show-cookie-consent", showBanner);
+</script>

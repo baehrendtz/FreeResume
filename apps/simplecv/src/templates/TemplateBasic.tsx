@@ -85,7 +85,10 @@ export default function TemplateBasic({ cv }: TemplateProps) {
       {cv.extras?.length > 0 && (
         <section className="mb-2.5">
           <SectionTitle className={sectionTitleClass}>Extras</SectionTitle>
-          <ExtrasList extras={cv.extras} />
+          <ExtrasList
+            extras={cv.extras}
+            className={cv.extras.length > 1 ? "grid grid-cols-2 gap-x-4" : undefined}
+          />
         </section>
       )}
 
