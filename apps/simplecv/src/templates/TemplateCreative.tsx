@@ -28,7 +28,7 @@ export default function TemplateCreative({ cv }: TemplateProps) {
   const contactItems = getContactItems(cv);
 
   return (
-    <div className="cv-template font-sans text-[8pt] leading-[1.3] text-gray-800 max-w-[210mm] mx-auto bg-white min-h-[297mm] flex flex-col relative">
+    <div lang={cv.cvLanguage} className="cv-template font-sans text-[8pt] leading-[1.3] text-gray-800 max-w-[210mm] mx-auto bg-white min-h-[297mm] flex flex-col relative">
       {/* Top accent gradient bar */}
       <div style={{ height: 3, background: GRADIENT_BAR }} />
 
@@ -37,7 +37,7 @@ export default function TemplateCreative({ cv }: TemplateProps) {
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
             <h1 className="text-[18pt] font-bold tracking-tight text-white">
-              {cv.name || "Your Name"}
+              {cv.name || cvLabels.yourName}
             </h1>
             {cv.headline && (
               <p className="text-[9pt] font-medium mt-0.5" style={{ color: ACCENT }}>
@@ -128,8 +128,9 @@ export default function TemplateCreative({ cv }: TemplateProps) {
               </SectionTitle>
               <ExtrasList
                 extras={cv.extras}
-                categoryClassName="font-mono text-[6.5pt] font-semibold text-gray-500 mb-0.5 capitalize"
+                categoryClassName="font-mono text-[6.5pt] font-semibold text-gray-500 mb-0.5"
                 itemClassName="text-[7pt] text-gray-600"
+                cvLanguage={cv.cvLanguage}
               />
             </div>
           )}
@@ -174,6 +175,7 @@ export default function TemplateCreative({ cv }: TemplateProps) {
                       dateClassName="font-mono text-[7pt] text-gray-400 whitespace-nowrap ml-4 tabular-nums"
                       companyClassName="text-[7.5pt]"
                       bulletClassName="text-[7.5pt] text-gray-600"
+                      cvLanguage={cv.cvLanguage}
                     />
                   </div>
                 </div>
@@ -210,6 +212,7 @@ export default function TemplateCreative({ cv }: TemplateProps) {
                       institutionClassName="font-semibold text-[8.5pt] text-gray-800"
                       dateClassName="font-mono text-[7pt] text-gray-400 whitespace-nowrap ml-4 tabular-nums"
                       degreeClassName="text-[7.5pt] text-gray-500"
+                      cvLanguage={cv.cvLanguage}
                     />
                   </div>
                 </div>
@@ -223,7 +226,7 @@ export default function TemplateCreative({ cv }: TemplateProps) {
       <footer className="mt-auto font-mono px-7">
         <div style={{ height: 6, background: GRADIENT_BAR }} />
         <div className="flex justify-between pt-1.5 pb-2 text-[8pt] text-gray-500">
-          <span className="font-medium">{cv.name || "Your Name"}</span>
+          <span className="font-medium">{cv.name || cvLabels.yourName}</span>
         </div>
       </footer>
     </div>

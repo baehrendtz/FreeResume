@@ -1,18 +1,6 @@
-const MONTHS_EN: Record<string, number> = {
-  january: 1, february: 2, march: 3, april: 4, may: 5, june: 6,
-  july: 7, august: 8, september: 9, october: 10, november: 11, december: 12,
-  jan: 1, feb: 2, mar: 3, apr: 4, jun: 6,
-  jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12,
-};
+import { MONTH_LOOKUP } from "@/lib/cvLocale";
 
-const MONTHS_SV: Record<string, number> = {
-  januari: 1, februari: 2, mars: 3, april: 4, maj: 5, juni: 6,
-  juli: 7, augusti: 8, september: 9, oktober: 10, november: 11, december: 12,
-};
-
-const ALL_MONTHS = { ...MONTHS_EN, ...MONTHS_SV };
-
-const MONTH_NAMES = Object.keys(ALL_MONTHS).join("|");
+const MONTH_NAMES = Object.keys(MONTH_LOOKUP).join("|");
 
 const DATE_PATTERN = new RegExp(
   `((?:${MONTH_NAMES})\\s+\\d{4}|\\d{4})` +
@@ -58,7 +46,7 @@ function normalizeDate(raw: string): string {
   if (parts.length === 2) {
     const monthName = parts[0];
     const year = parts[1];
-    const monthNum = ALL_MONTHS[monthName];
+    const monthNum = MONTH_LOOKUP[monthName];
     if (monthNum && /^\d{4}$/.test(year)) {
       return `${capitalize(monthName)} ${year}`;
     }

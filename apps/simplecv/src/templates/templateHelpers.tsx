@@ -8,32 +8,17 @@ import type {
   RenderExtrasGroup,
 } from "@/lib/fitting/types";
 import { cn } from "@/lib/utils";
-import { getCvStrings, resolveLanguageName, type CvLanguage } from "@/lib/cvLocale";
+import { getCvStrings, resolveLanguageName, formatCvDate, translateExtrasCategory, type CvLanguage } from "@/lib/cvLocale";
 
 /**
- * Abbreviate a month+year string: "September 2025" → "Sep 2025",
- * "Mars 2023" → "Mar 2023", "Oktober 2018" → "Okt 2018".
- * Passes through year-only ("2025"), "Present", or unrecognized strings.
+ * Format a date range like "Sep 2025 – Present" (en) or "Sep 2025 – Pågående" (sv).
+ * Uses locale-aware formatting via formatCvDate.
  */
-function shortenDate(raw: string): string {
-  const trimmed = raw.trim();
-  const match = trimmed.match(/^([A-Za-zÀ-ÖØ-öø-ÿ]+)\s+(\d{4})$/);
-  if (!match) return trimmed;
-  const month = match[1];
-  const year = match[2];
-  const short = month.charAt(0).toUpperCase() + month.slice(1, 3).toLowerCase();
-  return `${short} ${year}`;
-}
-
-/**
- * Format a date range like "Sep 2025 – Present".
- * Abbreviates month names for compact display.
- */
-export function formatDateRange(startDate: string, endDate: string): string {
+export function formatDateRange(startDate: string, endDate: string, cvLanguage: CvLanguage = "en"): string {
   if (!startDate && !endDate) return "";
-  if (startDate && !endDate) return shortenDate(startDate);
-  if (!startDate && endDate) return shortenDate(endDate);
-  return `${shortenDate(startDate)} – ${shortenDate(endDate)}`;
+  if (startDate && !endDate) return formatCvDate(startDate, cvLanguage);
+  if (!startDate && endDate) return formatCvDate(endDate, cvLanguage);
+  return `${formatCvDate(startDate, cvLanguage)} – ${formatCvDate(endDate, cvLanguage)}`;
 }
 
 export interface ContactItem {
@@ -122,6 +107,7 @@ interface ExperienceItemProps {
   titleClassName?: string;
   companyClassName?: string;
   bulletClassName?: string;
+  cvLanguage: CvLanguage;
 }
 
 export function ExperienceItem({
@@ -132,8 +118,9 @@ export function ExperienceItem({
   titleClassName = "font-bold text-[8.5pt]",
   companyClassName = "text-[7.5pt] text-gray-500",
   bulletClassName = "text-[8.5pt] text-gray-700",
+  cvLanguage,
 }: ExperienceItemProps) {
-  const dateStr = formatDateRange(exp.startDate, exp.endDate);
+  const dateStr = formatDateRange(exp.startDate, exp.endDate, cvLanguage);
   const filteredBullets = exp.bullets?.filter((b) => b.trim()) ?? [];
 
   const primaryLabel = layout === "title-first" ? exp.title : exp.company;
@@ -182,6 +169,7 @@ interface EducationItemProps {
   dateClassName?: string;
   institutionClassName?: string;
   degreeClassName?: string;
+  cvLanguage: CvLanguage;
 }
 
 export function EducationItem({
@@ -190,8 +178,9 @@ export function EducationItem({
   dateClassName = "text-[7.5pt] text-gray-500 whitespace-nowrap ml-4",
   institutionClassName = "font-bold text-[8.5pt]",
   degreeClassName = "text-[7.5pt] text-gray-500",
+  cvLanguage,
 }: EducationItemProps) {
-  const dateStr = formatDateRange(edu.startDate, edu.endDate);
+  const dateStr = formatDateRange(edu.startDate, edu.endDate, cvLanguage);
   return (
     <div className={cn("mb-1.5 break-inside-avoid", className)}>
       <div className="flex justify-between items-baseline">
@@ -307,20 +296,22 @@ interface ExtrasListProps {
   className?: string;
   categoryClassName?: string;
   itemClassName?: string;
+  cvLanguage: CvLanguage;
 }
 
 export function ExtrasList({
   extras,
   className,
-  categoryClassName = "text-[8pt] font-semibold text-teal-700 mb-0.5 capitalize",
+  categoryClassName = "text-[8pt] font-semibold text-teal-700 mb-0.5",
   itemClassName = "text-[8.5pt] text-gray-700",
+  cvLanguage,
 }: ExtrasListProps) {
   return (
     <div className={className}>
       {extras.map((group, i) => (
         <div key={i} className="mb-1.5">
           <h3 className={categoryClassName}>
-            {group.category.replace(/-/g, " ")}
+            {translateExtrasCategory(group.category, cvLanguage)}
           </h3>
           <ul className="list-disc list-outside ml-4 space-y-0">
             {group.items.map((item, j) => (

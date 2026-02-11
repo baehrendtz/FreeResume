@@ -23,7 +23,7 @@ export default function TemplateBasic({ cv }: TemplateProps) {
   const sectionTitleClass = "tracking-[0.12em] text-teal-800 border-teal-200 mb-1.5";
 
   return (
-    <div className="cv-template font-sans text-[8.5pt] leading-[1.35] text-gray-800 p-6 max-w-[210mm] mx-auto bg-white min-h-[297mm] flex flex-col">
+    <div lang={cv.cvLanguage} className="cv-template font-sans text-[8.5pt] leading-[1.35] text-gray-800 p-6 max-w-[210mm] mx-auto bg-white min-h-[297mm] flex flex-col">
       {/* Header */}
       <header className="mb-3 border-l-4 border-teal-700 pl-4">
         <div className="flex items-start gap-3">
@@ -32,7 +32,7 @@ export default function TemplateBasic({ cv }: TemplateProps) {
               className="h-[64px] w-[64px] rounded-full object-cover border border-teal-200 shrink-0" />
           )}
           <div className="min-w-0">
-            <h1 className="text-[18pt] font-bold tracking-tight text-gray-900">{cv.name || "Your Name"}</h1>
+            <h1 className="text-[18pt] font-bold tracking-tight text-gray-900">{cv.name || labels.yourName}</h1>
             {cv.headline && (
               <p className="text-[9pt] text-teal-700 font-medium mt-0.5">{cv.headline}</p>
             )}
@@ -58,7 +58,7 @@ export default function TemplateBasic({ cv }: TemplateProps) {
         <section className="mb-2.5">
           <SectionTitle className={sectionTitleClass}>{labels.experience}</SectionTitle>
           {cv.experience.map((exp, i) => (
-            <ExperienceItem key={i} exp={exp} layout="title-first" />
+            <ExperienceItem key={i} exp={exp} layout="title-first" cvLanguage={cv.cvLanguage} />
           ))}
         </section>
       )}
@@ -68,7 +68,7 @@ export default function TemplateBasic({ cv }: TemplateProps) {
         <section className="mb-2.5">
           <SectionTitle className={sectionTitleClass}>{labels.education}</SectionTitle>
           {cv.education.map((edu, i) => (
-            <EducationItem key={i} edu={edu} />
+            <EducationItem key={i} edu={edu} cvLanguage={cv.cvLanguage} />
           ))}
         </section>
       )}
@@ -96,11 +96,12 @@ export default function TemplateBasic({ cv }: TemplateProps) {
           <ExtrasList
             extras={cv.extras}
             className={cv.extras.length > 1 ? "grid grid-cols-2 gap-x-4" : undefined}
+            cvLanguage={cv.cvLanguage}
           />
         </section>
       )}
 
-      <CvFooter name={cv.name || "Your Name"} accentBar accentColor="bg-teal-700" />
+      <CvFooter name={cv.name || labels.yourName} accentBar accentColor="bg-teal-700" />
     </div>
   );
 }
