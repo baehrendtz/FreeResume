@@ -152,6 +152,7 @@ export function useEditorLabels() {
     successExperience: t("onboarding.success.experience"),
     successEducation: t("onboarding.success.education"),
     successSkills: t("onboarding.success.skills"),
+    successBack: t("onboarding.success.back"),
   };
 
   const importDialog = {

@@ -32,6 +32,7 @@ interface OnboardingWizardProps {
     successExperience: string;
     successEducation: string;
     successSkills: string;
+    successBack: string;
   };
   processing: boolean;
   cv: CvModel;
@@ -98,7 +99,9 @@ export function OnboardingWizard({
   const stepIndex = step === "choose" ? 0 : 1;
 
   return (
-    <div className="flex flex-col items-center gap-8 py-12 px-4 w-full max-w-3xl mx-auto">
+    <div className={`flex flex-col items-center gap-8 py-12 px-4 w-full mx-auto transition-[max-width] duration-500 ${
+      step === "success" && !isFromScratch ? "max-w-5xl" : "max-w-3xl"
+    }`}>
       {step === "choose" && (
         <>
           {/* Header */}
@@ -196,6 +199,7 @@ export function OnboardingWizard({
           isFromScratch={isFromScratch}
           labels={labels}
           onComplete={handleComplete}
+          onBack={() => setStep("choose")}
         />
       )}
 
