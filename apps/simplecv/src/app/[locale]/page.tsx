@@ -125,7 +125,7 @@ export default function MainPage() {
               </div>
             )}
 
-            <div className="grid grid-cols-1 lg:grid-cols-[3fr_1fr] gap-6 lg:min-h-0 lg:flex-1">
+            <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-6 lg:min-h-0 lg:flex-1">
               <div className="print:hidden lg:overflow-y-auto lg:min-h-0">
                 <CvEditor
                   defaultValues={cv}

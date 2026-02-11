@@ -55,7 +55,7 @@ export function CvPreview({ renderModel, templateId, zoomLevel }: CvPreviewProps
       <div className="cv-preview-light">
         <div
           id="cv-preview"
-          className="bg-white shadow-xl border border-gray-200 overflow-hidden rounded-sm"
+          className="bg-white shadow-xl border border-gray-200 overflow-hidden rounded-sm text-left"
           style={{
             width: A4_WIDTH,
             transform: `scale(${scale})`,
