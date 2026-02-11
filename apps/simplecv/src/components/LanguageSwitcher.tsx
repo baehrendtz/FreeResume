@@ -1,5 +1,6 @@
 "use client";
 
+import { useId } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { trackLanguageSwitch } from "@/lib/analytics/gtag";
 
@@ -17,14 +18,14 @@ function SwedishFlag() {
   );
 }
 
-function BritishFlag() {
+function BritishFlag({ clipId }: { clipId: string }) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" className="w-5 h-auto rounded-sm" aria-hidden="true">
-      <clipPath id="gb"><rect width="60" height="30" /></clipPath>
-      <g clipPath="url(#gb)">
+      <clipPath id={clipId}><rect width="60" height="30" /></clipPath>
+      <g clipPath={`url(#${clipId})`}>
         <rect width="60" height="30" fill="#012169" />
         <path d="M0 0L60 30M60 0L0 30" stroke="#fff" strokeWidth="6" />
-        <path d="M0 0L60 30M60 0L0 30" stroke="#C8102E" strokeWidth="4" clipPath="url(#gb)" style={{ clipRule: "evenodd" }} />
+        <path d="M0 0L60 30M60 0L0 30" stroke="#C8102E" strokeWidth="4" clipPath={`url(#${clipId})`} style={{ clipRule: "evenodd" }} />
         <path d="M30 0v30M0 15h60" stroke="#fff" strokeWidth="10" />
         <path d="M30 0v30M0 15h60" stroke="#C8102E" strokeWidth="6" />
       </g>
@@ -33,6 +34,7 @@ function BritishFlag() {
 }
 
 export function LanguageSwitcher({ locale }: LanguageSwitcherProps) {
+  const clipId = useId();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -50,7 +52,7 @@ export function LanguageSwitcher({ locale }: LanguageSwitcherProps) {
       className="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
       aria-label={locale === "sv" ? "Switch to English" : "Byt till svenska"}
     >
-      {locale === "sv" ? <BritishFlag /> : <SwedishFlag />}
+      {locale === "sv" ? <BritishFlag clipId={clipId} /> : <SwedishFlag />}
     </button>
   );
 }
