@@ -7,11 +7,13 @@
     "title": "Ladda upp din LinkedIn-PDF",
     "description": "Exportera din LinkedIn-profil som PDF och ladda upp den här för att komma igång",
     "dropzone": "Dra och släpp din PDF här, eller klicka för att bläddra",
+    "invalidFileType": "Välj en PDF-fil",
     "processing": "Bearbetar PDF...",
     "startFromScratch": "Eller börja från grunden"
   },
   "editor": {
     "tabs": {
+      "template": "Mall",
       "basics": "Grunduppgifter",
       "summary": "Sammanfattning",
       "experience": "Erfarenhet",
@@ -20,6 +22,11 @@
       "languages": "Språk",
       "extras": "Övrigt",
       "visibility": "Inställningar"
+    },
+    "groups": {
+      "theme": "Mall",
+      "content": "Innehåll",
+      "settings": "Inställningar"
     },
     "basics": {
       "name": "Fullständigt namn",
@@ -31,7 +38,8 @@
       "website": "Webbplats",
       "photo": "Profilfoto",
       "photoUpload": "Ladda upp foto",
-      "photoRemove": "Ta bort"
+      "photoRemove": "Ta bort",
+      "photoTooLarge": "Fotot måste vara under 2MB"
     },
     "summary": {
       "label": "Professionell sammanfattning",
@@ -93,6 +101,7 @@
     "visibility": {
       "title": "Sektioner",
       "description": "Välj vilka sektioner som visas",
+      "photo": "Profilfoto",
       "summary": "Sammanfattning",
       "experience": "Erfarenhet",
       "education": "Utbildning",

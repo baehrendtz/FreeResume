@@ -1,4 +1,4 @@
-import type { CvModel, SectionsVisibility } from "@/lib/model/CvModel";
+import type { CvModel } from "@/lib/model/CvModel";
 import type { DisplaySettings } from "@/lib/model/DisplaySettings";
 import type { TemplateMeta, LayoutMetrics, FitResult } from "./types";
 

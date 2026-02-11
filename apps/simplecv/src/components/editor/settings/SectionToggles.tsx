@@ -7,6 +7,7 @@ import type { CvModel } from "@/lib/model/CvModel";
 import { trackSectionToggle } from "@/lib/analytics/gtag";
 
 const SECTIONS = [
+  "photo",
   "summary",
   "experience",
   "education",
@@ -19,6 +20,7 @@ interface SectionTogglesProps {
   labels: {
     title: string;
     description: string;
+    photo: string;
     summary: string;
     experience: string;
     education: string;

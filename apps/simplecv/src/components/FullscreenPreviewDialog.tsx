@@ -54,13 +54,14 @@ export function FullscreenPreviewDialog({
             <ZoomOut className="h-4 w-4" />
           </Button>
 
-          <button
-            type="button"
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={() => setZoom(1.0)}
-            className="min-w-[4rem] text-center text-sm font-medium tabular-nums hover:underline"
+            className="min-w-[4rem] tabular-nums"
           >
             {Math.round(zoom * 100)}%
-          </button>
+          </Button>
 
           <Button
             variant="outline"

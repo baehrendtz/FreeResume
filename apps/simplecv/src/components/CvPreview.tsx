@@ -3,6 +3,7 @@
 import { Suspense, useRef, useState, useEffect } from "react";
 import type { RenderModel } from "@/lib/fitting/types";
 import { templates } from "@/templates/templateRegistry";
+import { TemplateErrorBoundary } from "@/components/TemplateErrorBoundary";
 
 /** Full-width of an A4 page in px at 96 dpi */
 const A4_WIDTH = 794;
@@ -62,15 +63,17 @@ export function CvPreview({ renderModel, templateId, zoomLevel }: CvPreviewProps
             transformOrigin: "top left",
           }}
         >
-          <Suspense
-            fallback={
-              <div className="p-8 text-center text-gray-500">
-                Loading template...
-              </div>
-            }
-          >
-            <Template cv={renderModel} />
-          </Suspense>
+          <TemplateErrorBoundary>
+            <Suspense
+              fallback={
+                <div className="p-8 text-center text-gray-500">
+                  Loading template...
+                </div>
+              }
+            >
+              <Template cv={renderModel} />
+            </Suspense>
+          </TemplateErrorBoundary>
         </div>
       </div>
     </div>

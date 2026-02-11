@@ -24,6 +24,7 @@ const professionalMeta: TemplateMeta = {
     hardOnePage: true,
     overflowStrategy: "truncate",
     defaultVisibility: {
+      photo: true,
       summary: true,
       experience: true,
       education: true,
@@ -49,7 +50,7 @@ const basicMeta: TemplateMeta = {
   id: "basic",
   name: "Basic",
   capabilities: {
-    supportsPhoto: false,
+    supportsPhoto: true,
     supportsSummary: true,
     supportsSkills: true,
     supportsLanguages: true,
@@ -61,6 +62,7 @@ const basicMeta: TemplateMeta = {
     hardOnePage: true,
     overflowStrategy: "truncate",
     defaultVisibility: {
+      photo: true,
       summary: true,
       experience: true,
       education: true,
@@ -98,6 +100,7 @@ const creativeMeta: TemplateMeta = {
     hardOnePage: true,
     overflowStrategy: "truncate",
     defaultVisibility: {
+      photo: true,
       summary: true,
       experience: true,
       education: true,

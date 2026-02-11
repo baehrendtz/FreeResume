@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { HelpDialog } from "@/components/HelpDialog";
 import { trackThemeToggle, trackHelpOpened } from "@/lib/analytics/gtag";
+import { useTheme } from "@/hooks/useTheme";
 
 interface HelpLabels {
   title: string;
@@ -53,15 +54,6 @@ interface AppHeaderProps {
   helpLabels: HelpLabels;
 }
 
-function getInitialTheme(): "light" | "dark" {
-  if (typeof window === "undefined") return "light";
-  const stored = localStorage.getItem("theme");
-  if (stored === "dark" || stored === "light") return stored;
-  return window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light";
-}
-
 export function AppHeader({
   title,
   locale,
@@ -72,20 +64,8 @@ export function AppHeader({
   labels,
   helpLabels,
 }: AppHeaderProps) {
-  const [theme, setTheme] = useState<"light" | "dark">(getInitialTheme);
-  const mounted = useSyncExternalStore(() => () => {}, () => true, () => false);
+  const { theme, setTheme, mounted } = useTheme();
   const [showHelp, setShowHelp] = useState(false);
-
-  useEffect(() => {
-    if (!mounted) return;
-    const root = document.documentElement;
-    if (theme === "dark") {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
-    }
-    localStorage.setItem("theme", theme);
-  }, [theme, mounted]);
 
   const toggleTheme = () => {
     const next = theme === "dark" ? "light" : "dark";

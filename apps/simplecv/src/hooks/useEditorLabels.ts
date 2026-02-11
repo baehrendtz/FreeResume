@@ -5,6 +5,7 @@ export function useEditorLabels() {
 
   const editor = {
     tabs: {
+      template: t("editor.tabs.template"),
       basics: t("editor.tabs.basics"),
       summary: t("editor.tabs.summary"),
       experience: t("editor.tabs.experience"),
@@ -13,6 +14,11 @@ export function useEditorLabels() {
       languages: t("editor.tabs.languages"),
       extras: t("editor.tabs.extras"),
       visibility: t("editor.tabs.visibility"),
+    },
+    groups: {
+      theme: t("editor.groups.theme"),
+      content: t("editor.groups.content"),
+      settings: t("editor.groups.settings"),
     },
     basics: {
       name: t("editor.basics.name"),
@@ -25,6 +31,7 @@ export function useEditorLabels() {
       photo: t("editor.basics.photo"),
       photoUpload: t("editor.basics.photoUpload"),
       photoRemove: t("editor.basics.photoRemove"),
+      photoTooLarge: t("editor.basics.photoTooLarge"),
     },
     summary: {
       label: t("editor.summary.label"),
@@ -86,6 +93,7 @@ export function useEditorLabels() {
     visibility: {
       title: t("editor.visibility.title"),
       description: t("editor.visibility.description"),
+      photo: t("editor.visibility.photo"),
       summary: t("editor.visibility.summary"),
       experience: t("editor.visibility.experience"),
       education: t("editor.visibility.education"),

@@ -30,7 +30,7 @@ export function buildRenderModel(
   const vis = cv.sectionsVisibility;
 
   // --- 1. Template capabilities ---
-  const photo = capabilities.supportsPhoto ? cv.photo : "";
+  const photo = capabilities.supportsPhoto && vis.photo ? cv.photo : "";
 
   // --- 2 + 3 + 4. Section data with visibility + limits ---
 
@@ -125,6 +125,7 @@ export function buildRenderModel(
     languages,
     extras,
     sectionsVisibility: {
+      photo: vis.photo && capabilities.supportsPhoto,
       summary: vis.summary && capabilities.supportsSummary,
       experience: vis.experience,
       education: vis.education,

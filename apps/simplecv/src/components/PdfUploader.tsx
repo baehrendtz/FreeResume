@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Upload, FileText, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { usePdfDrop } from "@/hooks/usePdfDrop";
 
 interface PdfUploaderProps {
   onFileSelected: (file: File) => void;
@@ -10,6 +10,7 @@ interface PdfUploaderProps {
   uploadLabel: string;
   dropzoneLabel: string;
   processingLabel: string;
+  invalidFileTypeLabel?: string;
   startFromScratchLabel?: string;
   onStartFromScratch?: () => void;
 }
@@ -20,38 +21,14 @@ export function PdfUploader({
   uploadLabel,
   dropzoneLabel,
   processingLabel,
+  invalidFileTypeLabel,
   startFromScratchLabel,
   onStartFromScratch,
 }: PdfUploaderProps) {
-  const [dragOver, setDragOver] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  const handleFile = useCallback(
-    (file: File) => {
-      if (file.type === "application/pdf") {
-        onFileSelected(file);
-      }
-    },
-    [onFileSelected]
-  );
-
-  const handleDrop = useCallback(
-    (e: React.DragEvent) => {
-      e.preventDefault();
-      setDragOver(false);
-      const file = e.dataTransfer.files[0];
-      if (file) handleFile(file);
-    },
-    [handleFile]
-  );
-
-  const handleChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0];
-      if (file) handleFile(file);
-    },
-    [handleFile]
-  );
+  const { dragOver, inputRef, handleDrop, handleChange, handleDragOver, handleDragLeave, error } = usePdfDrop({
+    onFileSelected,
+    invalidFileTypeMessage: invalidFileTypeLabel,
+  });
 
   return (
     <div className="flex flex-col items-center gap-6 w-full max-w-lg mx-auto">
@@ -61,11 +38,8 @@ export function PdfUploader({
             ? "border-blue-500 bg-blue-50 dark:bg-blue-950/20 scale-[1.02]"
             : "border-muted-foreground/25 hover:border-blue-400 hover:bg-muted/50"
         }`}
-        onDragOver={(e) => {
-          e.preventDefault();
-          setDragOver(true);
-        }}
-        onDragLeave={() => setDragOver(false)}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         onClick={() => inputRef.current?.click()}
       >
@@ -100,6 +74,10 @@ export function PdfUploader({
         className="hidden"
         onChange={handleChange}
       />
+
+      {error && (
+        <p className="text-sm text-destructive">{error}</p>
+      )}
 
       {onStartFromScratch && startFromScratchLabel && (
         <Button variant="ghost" onClick={onStartFromScratch} disabled={processing}>
