@@ -10,11 +10,13 @@ const t = {
     rights: 'Gratis CV - Alltid gratis',
     app: 'Gå till appen',
     github: 'GitHub',
+    cookieSettings: 'Cookieinställningar',
   },
   en: {
     rights: 'Free Resume - Forever Free',
     app: 'Go to the app',
     github: 'GitHub',
+    cookieSettings: 'Cookie settings',
   },
 }[lang];
 ---
@@ -26,12 +28,24 @@ const t = {
       <span class="text-sm text-gray-500 dark:text-gray-400">{t.rights}</span>
     </div>
     <div class="flex items-center gap-6">
+      <button
+        id="cookie-settings-btn"
+        type="button"
+        class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+      >
+        {t.cookieSettings}
+      </button>
       <a href="https://app.freeresume.eu" class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
         {t.app}
       </a>
-      <a href="https://github.com" class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+      <a href="https://github.com/baehrendtz/FreeResume" target="_blank" rel="noopener noreferrer" class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
         {t.github}
       </a>
     </div>
+    <script>
+      document.getElementById('cookie-settings-btn')?.addEventListener('click', () => {
+        window.dispatchEvent(new Event('show-cookie-consent'));
+      });
+    </script>
   </div>
 </footer>
