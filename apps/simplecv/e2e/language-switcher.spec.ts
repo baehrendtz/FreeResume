@@ -71,4 +71,26 @@ test.describe("Language switcher", () => {
       page.getByRole("button", { name: "Grunduppgifter" })
     ).toBeVisible();
   });
+
+  test("mobile stepper labels update when language changes", async ({
+    page,
+    isMobile,
+  }) => {
+    test.skip(!isMobile, "Mobile-only test");
+    await page.goto("/en");
+    await waitForEditor(page);
+
+    // English: stepper buttons have title attributes with English labels
+    await expect(page.getByRole("button", { name: "Basics" })).toBeVisible();
+
+    // Switch to Swedish
+    await page.getByRole("button", { name: "Byt till svenska" }).click();
+    await page.waitForURL("**/sv");
+    await waitForEditor(page);
+
+    // Swedish: stepper titles should update
+    await expect(
+      page.getByRole("button", { name: "Grunduppgifter" })
+    ).toBeVisible();
+  });
 });

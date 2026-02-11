@@ -12,15 +12,28 @@ test.describe("Header & Footer", () => {
     await page.goto("/en");
     await waitForEditor(page);
 
-    // Use the header-scoped button to avoid matching mobile dropdown items
     await page
       .locator("header")
       .getByRole("button", { name: "Import PDF" })
       .first()
       .click();
 
-    // The import dialog should appear with a warning message
-    // Use first() because the text appears in both sr-only DialogDescription and visible span
+    await expect(
+      page.getByText("This will replace your current CV data").first()
+    ).toBeVisible();
+  });
+
+  test("mobile menu Import PDF opens import dialog", async ({
+    page,
+    isMobile,
+  }) => {
+    test.skip(!isMobile, "Mobile-only test");
+    await page.goto("/en");
+    await waitForEditor(page);
+
+    await page.getByRole("button", { name: /More actions/ }).click();
+    await page.getByRole("menuitem", { name: /Import PDF/ }).click();
+
     await expect(
       page.getByText("This will replace your current CV data").first()
     ).toBeVisible();
@@ -41,6 +54,19 @@ test.describe("Header & Footer", () => {
     ).toBeVisible();
   });
 
+  test("mobile menu Help opens help dialog", async ({ page, isMobile }) => {
+    test.skip(!isMobile, "Mobile-only test");
+    await page.goto("/en");
+    await waitForEditor(page);
+
+    await page.getByRole("button", { name: /More actions/ }).click();
+    await page.getByRole("menuitem", { name: /Help/ }).click();
+
+    await expect(
+      page.getByRole("heading", { name: "About Free Resume" })
+    ).toBeVisible();
+  });
+
   test("Download PDF button is present in header", async ({
     page,
     isMobile,
@@ -54,6 +80,20 @@ test.describe("Header & Footer", () => {
       .getByRole("button", { name: "Download PDF" });
     await expect(downloadBtn).toBeVisible();
     await expect(downloadBtn).toBeEnabled();
+  });
+
+  test("mobile menu shows Download PDF option", async ({
+    page,
+    isMobile,
+  }) => {
+    test.skip(!isMobile, "Mobile-only test");
+    await page.goto("/en");
+    await waitForEditor(page);
+
+    await page.getByRole("button", { name: /More actions/ }).click();
+    await expect(
+      page.getByRole("menuitem", { name: /Download PDF/ })
+    ).toBeVisible();
   });
 
   test("footer shows copyright and open source link", async ({ page }) => {
