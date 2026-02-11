@@ -1,6 +1,7 @@
 "use client";
 
-import type { CvModel } from "@/lib/model/CvModel";
+import type { RenderModel } from "@/lib/fitting/types";
+import { getCvStrings } from "@/lib/cvLocale";
 import {
   SectionTitle,
   CvFooter,
@@ -12,10 +13,11 @@ import {
 } from "./templateHelpers";
 
 interface TemplateProps {
-  cv: CvModel;
+  cv: RenderModel;
 }
 
 export default function TemplateBasic({ cv }: TemplateProps) {
+  const labels = getCvStrings(cv.cvLanguage ?? "en");
   const contactStrings = [cv.email, cv.phone, cv.location, cv.linkedIn, cv.website].filter(Boolean);
 
   const sectionTitleClass = "tracking-[0.12em] text-teal-800 border-teal-200 mb-1.5";
@@ -46,7 +48,7 @@ export default function TemplateBasic({ cv }: TemplateProps) {
       {/* Summary */}
       {cv.summary && (
         <section className="mb-2.5">
-          <SectionTitle className={sectionTitleClass}>Summary</SectionTitle>
+          <SectionTitle className={sectionTitleClass}>{labels.summary}</SectionTitle>
           <p className="text-[8.5pt] text-gray-700 whitespace-pre-line">{cv.summary}</p>
         </section>
       )}
@@ -54,7 +56,7 @@ export default function TemplateBasic({ cv }: TemplateProps) {
       {/* Experience */}
       {cv.experience.length > 0 && (
         <section className="mb-2.5">
-          <SectionTitle className={sectionTitleClass}>Experience</SectionTitle>
+          <SectionTitle className={sectionTitleClass}>{labels.experience}</SectionTitle>
           {cv.experience.map((exp, i) => (
             <ExperienceItem key={i} exp={exp} layout="title-first" />
           ))}
@@ -64,7 +66,7 @@ export default function TemplateBasic({ cv }: TemplateProps) {
       {/* Education */}
       {cv.education.length > 0 && (
         <section className="mb-2.5">
-          <SectionTitle className={sectionTitleClass}>Education</SectionTitle>
+          <SectionTitle className={sectionTitleClass}>{labels.education}</SectionTitle>
           {cv.education.map((edu, i) => (
             <EducationItem key={i} edu={edu} />
           ))}
@@ -74,7 +76,7 @@ export default function TemplateBasic({ cv }: TemplateProps) {
       {/* Skills */}
       {cv.skills.length > 0 && (
         <section className="mb-2.5">
-          <SectionTitle className={sectionTitleClass}>Skills</SectionTitle>
+          <SectionTitle className={sectionTitleClass}>{labels.skills}</SectionTitle>
           <SkillsList skills={cv.skills} variant="pills" />
         </section>
       )}
@@ -82,15 +84,15 @@ export default function TemplateBasic({ cv }: TemplateProps) {
       {/* Languages */}
       {cv.languages.length > 0 && (
         <section className="mb-2.5">
-          <SectionTitle className={sectionTitleClass}>Languages</SectionTitle>
-          <LanguagesList languages={cv.languages} variant="pills" />
+          <SectionTitle className={sectionTitleClass}>{labels.languages}</SectionTitle>
+          <LanguagesList languages={cv.languages} variant="pills" cvLanguage={cv.cvLanguage} />
         </section>
       )}
 
       {/* Extras */}
       {cv.extras?.length > 0 && (
         <section className="mb-2.5">
-          <SectionTitle className={sectionTitleClass}>Extras</SectionTitle>
+          <SectionTitle className={sectionTitleClass}>{labels.extras}</SectionTitle>
           <ExtrasList
             extras={cv.extras}
             className={cv.extras.length > 1 ? "grid grid-cols-2 gap-x-4" : undefined}

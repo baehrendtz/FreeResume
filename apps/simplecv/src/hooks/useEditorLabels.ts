@@ -71,6 +71,12 @@ export function useEditorLabels() {
       label: t("editor.languages.label"),
       placeholder: t("editor.languages.placeholder"),
       add: t("editor.languages.add"),
+      levelLabel: t("editor.languages.levelLabel"),
+      native: t("editor.languages.native"),
+      full_professional: t("editor.languages.full_professional"),
+      professional_working: t("editor.languages.professional_working"),
+      limited_working: t("editor.languages.limited_working"),
+      elementary: t("editor.languages.elementary"),
     },
     extras: {
       label: t("editor.extras.label"),
@@ -111,6 +117,10 @@ export function useEditorLabels() {
       simplifyLocationsTitle: t("editor.visibility.simplifyLocationsTitle"),
       simplifyLocationsDescription: t("editor.visibility.simplifyLocationsDescription"),
       simplifyLocations: t("editor.visibility.simplifyLocations"),
+      cvLanguageTitle: t("editor.visibility.cvLanguageTitle"),
+      cvLanguageDescription: t("editor.visibility.cvLanguageDescription"),
+      cvLanguageEn: t("editor.visibility.cvLanguageEn"),
+      cvLanguageSv: t("editor.visibility.cvLanguageSv"),
       template: t("editor.visibility.template"),
     },
   };

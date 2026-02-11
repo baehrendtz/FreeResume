@@ -1,6 +1,7 @@
 "use client";
 
-import type { CvModel } from "@/lib/model/CvModel";
+import type { RenderModel } from "@/lib/fitting/types";
+import { getCvStrings } from "@/lib/cvLocale";
 import {
   getContactItems,
   SectionTitle,
@@ -13,10 +14,11 @@ import {
 } from "./templateHelpers";
 
 interface TemplateProps {
-  cv: CvModel;
+  cv: RenderModel;
 }
 
 export default function TemplateProfessional({ cv }: TemplateProps) {
+  const labels = getCvStrings(cv.cvLanguage ?? "en");
   const contactItems = getContactItems(cv);
 
   const sidebarTitleClass = "tracking-[0.15em] text-gray-700 border-gray-300";
@@ -60,7 +62,7 @@ export default function TemplateProfessional({ cv }: TemplateProps) {
           {/* Contact */}
           {contactItems.length > 0 && (
             <div>
-              <SectionTitle className={sidebarTitleClass}>Contact</SectionTitle>
+              <SectionTitle className={sidebarTitleClass}>{labels.contact}</SectionTitle>
               <ul className="space-y-1 text-[7pt] text-gray-700">
                 {contactItems.map((item, i) => (
                   <li key={i} className="flex items-center gap-2">
@@ -75,7 +77,7 @@ export default function TemplateProfessional({ cv }: TemplateProps) {
           {/* Skills */}
           {cv.skills.length > 0 && (
             <div>
-              <SectionTitle className={sidebarTitleClass}>Skills</SectionTitle>
+              <SectionTitle className={sidebarTitleClass}>{labels.skills}</SectionTitle>
               <SkillsList
                 skills={cv.skills}
                 variant="pills"
@@ -88,15 +90,15 @@ export default function TemplateProfessional({ cv }: TemplateProps) {
           {/* Languages */}
           {cv.languages.length > 0 && (
             <div>
-              <SectionTitle className={sidebarTitleClass}>Languages</SectionTitle>
-              <LanguagesList languages={cv.languages} variant="bullets" />
+              <SectionTitle className={sidebarTitleClass}>{labels.languages}</SectionTitle>
+              <LanguagesList languages={cv.languages} variant="bullets" cvLanguage={cv.cvLanguage} />
             </div>
           )}
 
           {/* Extras */}
           {cv.extras?.length > 0 && (
             <div>
-              <SectionTitle className={sidebarTitleClass}>Extras</SectionTitle>
+              <SectionTitle className={sidebarTitleClass}>{labels.extras}</SectionTitle>
               <ExtrasList
                 extras={cv.extras}
                 categoryClassName="text-[7pt] font-semibold text-gray-600 mb-0.5 capitalize"
@@ -111,7 +113,7 @@ export default function TemplateProfessional({ cv }: TemplateProps) {
           {/* Experience */}
           {cv.experience.length > 0 && (
             <section>
-              <SectionTitle className={mainTitleClass}>Professional Experience</SectionTitle>
+              <SectionTitle className={mainTitleClass}>{labels.professionalExperience}</SectionTitle>
               {cv.experience.map((exp, i) => (
                 <ExperienceItem
                   key={i}
@@ -128,7 +130,7 @@ export default function TemplateProfessional({ cv }: TemplateProps) {
           {/* Education */}
           {cv.education.length > 0 && (
             <section>
-              <SectionTitle className={mainTitleClass}>Education</SectionTitle>
+              <SectionTitle className={mainTitleClass}>{labels.education}</SectionTitle>
               {cv.education.map((edu, i) => (
                 <EducationItem
                   key={i}

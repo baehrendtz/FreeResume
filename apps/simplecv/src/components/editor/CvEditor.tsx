@@ -11,11 +11,13 @@ import { SummaryForm } from "./SummaryForm";
 import { ExperienceForm } from "./ExperienceForm";
 import { EducationForm } from "./EducationForm";
 import { ListForm } from "./ListForm";
+import { LanguageForm } from "./LanguageForm";
 import { ExtrasForm } from "./ExtrasForm";
 import { TemplateSwitcher } from "@/components/TemplateSwitcher";
 import { SectionToggles } from "./settings/SectionToggles";
 import { ContentLimits } from "./settings/ContentLimits";
 import { LocationFormatting } from "./settings/LocationFormatting";
+import { CvLanguageSetting } from "./settings/CvLanguageSetting";
 import { WIZARD_STEPS } from "@/lib/wizard/steps";
 import { trackWizardStep, trackSkillAdd, trackSkillRemove } from "@/lib/analytics/gtag";
 
@@ -83,7 +85,17 @@ interface CvEditorProps {
       show: string;
     };
     skills: { label: string; placeholder: string; add: string };
-    languages: { label: string; placeholder: string; add: string };
+    languages: {
+      label: string;
+      placeholder: string;
+      add: string;
+      levelLabel: string;
+      native: string;
+      full_professional: string;
+      professional_working: string;
+      limited_working: string;
+      elementary: string;
+    };
     extras: { label: string; placeholder: string; add: string; addCategory: string; removeCategory: string };
     extrasCategories: Record<string, string>;
     visibility: {
@@ -107,6 +119,10 @@ interface CvEditorProps {
       simplifyLocationsTitle: string;
       simplifyLocationsDescription: string;
       simplifyLocations: string;
+      cvLanguageTitle: string;
+      cvLanguageDescription: string;
+      cvLanguageEn: string;
+      cvLanguageSv: string;
       template: string;
     };
   };
@@ -209,6 +225,7 @@ export function CvEditor({
                   <>
                     <ContentLimits labels={labels.visibility} displaySettings={displaySettings} onDisplaySettingsChange={onDisplaySettingsChange} />
                     <LocationFormatting labels={labels.visibility} displaySettings={displaySettings} onDisplaySettingsChange={onDisplaySettingsChange} />
+                    <CvLanguageSetting labels={labels.visibility} displaySettings={displaySettings} onDisplaySettingsChange={onDisplaySettingsChange} />
                   </>
                 )}
               </div>
@@ -226,7 +243,7 @@ export function CvEditor({
               <ListForm fieldName="skills" labels={labels.skills} onAdd={trackSkillAdd} onRemove={trackSkillRemove} />
             )}
             {activeStep === "languages" && (
-              <ListForm fieldName="languages" labels={labels.languages} />
+              <LanguageForm labels={labels.languages} />
             )}
             {activeStep === "extras" && (
               <ExtrasForm labels={labels.extras} categoryNames={labels.extrasCategories} />

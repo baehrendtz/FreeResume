@@ -6,6 +6,7 @@ import { type DisplaySettings, defaultDisplaySettings } from "@/lib/model/Displa
 import { buildRenderModel } from "@/lib/fitting";
 import { getTemplateMeta } from "@/templates/templateRegistry";
 import { saveSession, loadSession } from "@/lib/export/printHelpers";
+import { findLanguageId } from "@/lib/cvLocale";
 
 function migrateExtras(cv: CvModel): CvModel {
   const extras = cv.extras as unknown;
@@ -15,13 +16,35 @@ function migrateExtras(cv: CvModel): CvModel {
   return cv;
 }
 
+function migrateLanguages(cv: CvModel): CvModel {
+  const languages = cv.languages as unknown;
+  if (Array.isArray(languages) && languages.length > 0 && typeof languages[0] === "string") {
+    return {
+      ...cv,
+      languages: (languages as string[]).map((name) => ({
+        name,
+        level: "professional_working" as const,
+      })),
+    };
+  }
+  return cv;
+}
+
+function migrateLanguageNames(cv: CvModel): CvModel {
+  const changed = cv.languages.map((lang) => {
+    const id = findLanguageId(lang.name);
+    return id ? { ...lang, name: id } : lang;
+  });
+  return { ...cv, languages: changed };
+}
+
 function loadInitialState() {
   const session = loadSession();
   if (session) {
     return {
-      cv: migrateExtras(session.cv),
+      cv: migrateLanguageNames(migrateLanguages(migrateExtras(session.cv))),
       templateId: session.templateId,
-      displaySettings: session.displaySettings ?? defaultDisplaySettings,
+      displaySettings: { ...defaultDisplaySettings, ...session.displaySettings },
       hadSavedSession: true,
     };
   }

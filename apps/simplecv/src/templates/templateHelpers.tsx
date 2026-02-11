@@ -1,12 +1,14 @@
 import type { ReactNode } from "react";
 import { MapPin, Mail, Phone, Linkedin, Globe } from "lucide-react";
-import type { CvModel } from "@/lib/model/CvModel";
+import type { LanguageEntry } from "@/lib/model/CvModel";
 import type {
+  RenderModel,
   RenderExperience,
   RenderEducation,
   RenderExtrasGroup,
 } from "@/lib/fitting/types";
 import { cn } from "@/lib/utils";
+import { getCvStrings, resolveLanguageName, type CvLanguage } from "@/lib/cvLocale";
 
 /**
  * Abbreviate a month+year string: "September 2025" → "Sep 2025",
@@ -43,7 +45,7 @@ export interface ContactItem {
  * Returns filtered non-empty contact items with matching icons.
  * Templates choose how to render them (list, inline, grid, etc.).
  */
-export function getContactItems(cv: CvModel): ContactItem[] {
+export function getContactItems(cv: Pick<RenderModel, "location" | "email" | "phone" | "linkedIn" | "website">): ContactItem[] {
   const items: { icon: ReactNode; value: string; raw: string }[] = [
     { icon: <MapPin className="h-3 w-3" />, value: cv.location, raw: cv.location },
     { icon: <Mail className="h-3 w-3" />, value: cv.email, raw: cv.email },
@@ -255,9 +257,16 @@ export function SkillsList({
   );
 }
 
+function formatLanguageEntry(entry: LanguageEntry, cvLanguage: CvLanguage): string {
+  const labels = getCvStrings(cvLanguage);
+  const displayName = resolveLanguageName(entry.name, cvLanguage);
+  return `${displayName} (${labels[entry.level]})`;
+}
+
 interface LanguagesListProps {
-  languages: string[];
+  languages: LanguageEntry[];
   variant: "pills" | "bullets";
+  cvLanguage?: CvLanguage;
   className?: string;
   pillClassName?: string;
 }
@@ -265,6 +274,7 @@ interface LanguagesListProps {
 export function LanguagesList({
   languages,
   variant,
+  cvLanguage = "en",
   className,
   pillClassName = "px-2 py-0.5 bg-teal-50 text-teal-800 text-[7.5pt] rounded-full border border-teal-200",
 }: LanguagesListProps) {
@@ -274,7 +284,7 @@ export function LanguagesList({
         {languages.map((lang, i) => (
           <li key={i} className="flex items-center gap-2">
             <span className="h-1.5 w-1.5 rounded-full bg-gray-500 shrink-0" />
-            {lang}
+            {formatLanguageEntry(lang, cvLanguage)}
           </li>
         ))}
       </ul>
@@ -285,7 +295,7 @@ export function LanguagesList({
     <div className={cn("flex flex-wrap gap-1", className)}>
       {languages.map((lang, i) => (
         <span key={i} className={pillClassName}>
-          {lang}
+          {formatLanguageEntry(lang, cvLanguage)}
         </span>
       ))}
     </div>

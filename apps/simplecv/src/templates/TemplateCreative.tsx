@@ -1,6 +1,7 @@
 "use client";
 
-import type { CvModel } from "@/lib/model/CvModel";
+import type { RenderModel } from "@/lib/fitting/types";
+import { getCvStrings } from "@/lib/cvLocale";
 import { Briefcase, GraduationCap, Code, Globe, Star } from "lucide-react";
 import {
   getContactItems,
@@ -13,7 +14,7 @@ import {
 } from "./templateHelpers";
 
 interface TemplateProps {
-  cv: CvModel;
+  cv: RenderModel;
 }
 
 const ACCENT = "#06b6d4"; // cyan-500
@@ -23,6 +24,7 @@ const SIDEBAR_BG = "#f8fafc";
 const GRADIENT_BAR = "linear-gradient(to right, #22d3ee, #8b5cf6)"; // cyan-400 → violet-500
 
 export default function TemplateCreative({ cv }: TemplateProps) {
+  const cvLabels = getCvStrings(cv.cvLanguage ?? "en");
   const contactItems = getContactItems(cv);
 
   return (
@@ -87,7 +89,7 @@ export default function TemplateCreative({ cv }: TemplateProps) {
               <SectionTitle className="font-mono text-[7pt] tracking-[0.15em] text-gray-500 border-0 pb-0 mb-1.5">
                 <span className="flex items-center gap-1">
                   <Code style={{ width: 10, height: 10, color: ACCENT }} />
-                  <span><span style={{ color: ACCENT }}>{"//"}</span> Skills</span>
+                  <span><span style={{ color: ACCENT }}>{"//"}</span> {cvLabels.skills}</span>
                 </span>
               </SectionTitle>
               <SkillsList
@@ -104,12 +106,13 @@ export default function TemplateCreative({ cv }: TemplateProps) {
               <SectionTitle className="font-mono text-[7pt] tracking-[0.15em] text-gray-500 border-0 pb-0 mb-1.5">
                 <span className="flex items-center gap-1">
                   <Globe style={{ width: 10, height: 10, color: ACCENT2 }} />
-                  <span><span style={{ color: ACCENT2 }}>{"//"}</span> Languages</span>
+                  <span><span style={{ color: ACCENT2 }}>{"//"}</span> {cvLabels.languages}</span>
                 </span>
               </SectionTitle>
               <LanguagesList
                 languages={cv.languages}
                 variant="pills"
+                cvLanguage={cv.cvLanguage}
                 pillClassName="font-mono px-2 py-0.5 bg-violet-50 text-violet-800 text-[6.5pt] rounded-full border border-violet-200"
               />
             </div>
@@ -120,7 +123,7 @@ export default function TemplateCreative({ cv }: TemplateProps) {
               <SectionTitle className="font-mono text-[7pt] tracking-[0.15em] text-gray-500 border-0 pb-0 mb-1.5">
                 <span className="flex items-center gap-1">
                   <Star style={{ width: 10, height: 10, color: "#f59e0b" }} />
-                  <span><span style={{ color: "#f59e0b" }}>{"//"}</span> Extras</span>
+                  <span><span style={{ color: "#f59e0b" }}>{"//"}</span> {cvLabels.extras}</span>
                 </span>
               </SectionTitle>
               <ExtrasList
@@ -140,7 +143,7 @@ export default function TemplateCreative({ cv }: TemplateProps) {
                 <SectionTitle className="font-mono text-[8pt] font-bold tracking-[0.12em] text-gray-700 border-0 pb-0 mb-1">
                   <span className="flex items-center gap-1.5">
                     <Briefcase style={{ width: 12, height: 12, color: ACCENT }} />
-                    Experience
+                    {cvLabels.experience}
                   </span>
                 </SectionTitle>
                 <div className="h-[1.5px]" style={{ background: GRADIENT_BAR }} />
@@ -184,7 +187,7 @@ export default function TemplateCreative({ cv }: TemplateProps) {
                 <SectionTitle className="font-mono text-[8pt] font-bold tracking-[0.12em] text-gray-700 border-0 pb-0 mb-1">
                   <span className="flex items-center gap-1.5">
                     <GraduationCap style={{ width: 12, height: 12, color: ACCENT2 }} />
-                    Education
+                    {cvLabels.education}
                   </span>
                 </SectionTitle>
                 <div className="h-[1.5px]" style={{ background: GRADIENT_BAR }} />

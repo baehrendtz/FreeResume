@@ -1,4 +1,4 @@
-import type { SectionsVisibility } from "@/lib/model/CvModel";
+import type { SectionsVisibility, LanguageEntry } from "@/lib/model/CvModel";
 
 // --- Template metadata ---
 
@@ -78,8 +78,9 @@ export interface RenderModel {
   experience: RenderExperience[];
   education: RenderEducation[];
   skills: string[];
-  languages: string[];
+  languages: LanguageEntry[];
   extras: RenderExtrasGroup[];
+  cvLanguage: "en" | "sv";
   sectionsVisibility: SectionsVisibility;
 }
 

@@ -77,8 +77,14 @@
     },
     "languages": {
       "label": "Languages",
-      "placeholder": "Type a language and press Enter",
-      "add": "Add"
+      "placeholder": "Select a language...",
+      "add": "Add",
+      "levelLabel": "Proficiency",
+      "native": "Native or Bilingual",
+      "full_professional": "Full Professional",
+      "professional_working": "Professional Working",
+      "limited_working": "Limited Working",
+      "elementary": "Elementary"
     },
     "extras": {
       "label": "Extras",
@@ -119,6 +125,10 @@
       "simplifyLocationsTitle": "Location Formatting",
       "simplifyLocationsDescription": "Clean up verbose LinkedIn location formats",
       "simplifyLocations": "Simplify locations (e.g. Stockholm, Stockholm County, Sweden → Stockholm, Sweden)",
+      "cvLanguageTitle": "CV Language",
+      "cvLanguageDescription": "Language for section headings and labels in the CV",
+      "cvLanguageEn": "English",
+      "cvLanguageSv": "Svenska",
       "template": "Template",
       "fitsOnePage": "Content fits on one page",
       "overflows": "Content overflows (~{pages} pages)",
