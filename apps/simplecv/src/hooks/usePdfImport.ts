@@ -17,8 +17,7 @@ export function usePdfImport(onImported: (cv: CvModel) => void) {
         const parsed = parseLinkedInPdf(pages);
         onImported(parsed);
         trackPdfUpload("success");
-      } catch (err) {
-        console.error("Failed to process PDF:", err);
+      } catch {
         trackPdfUpload("failure");
       } finally {
         setProcessing(false);

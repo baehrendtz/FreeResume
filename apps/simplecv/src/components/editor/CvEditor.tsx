@@ -117,7 +117,8 @@ export function CvEditor({
 
   const methods = useForm<CvModel>({
     defaultValues,
-    resolver: zodResolver(cvModelSchema),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- zod v4.3 internal version mismatch with @hookform/resolvers
+    resolver: zodResolver(cvModelSchema as any),
     mode: "onChange",
   });
 
