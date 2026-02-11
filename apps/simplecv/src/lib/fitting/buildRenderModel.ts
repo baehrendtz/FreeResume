@@ -18,7 +18,7 @@ function simplifyLocation(loc: string): string {
  *   1. Template capabilities (e.g. no photo in Basic)
  *   2. Sections visibility toggles
  *   3. DisplaySettings limits (user-configured)
- *   4. Template policy limits (take the stricter of user vs template)
+ *   4. Template policy limits (experience items, bullet chars)
  *   5. Bullet text truncation
  */
 export function buildRenderModel(
@@ -37,9 +37,7 @@ export function buildRenderModel(
   // Summary: respect capability, visibility, then truncate
   let summary = "";
   if (capabilities.supportsSummary && vis.summary && cv.summary) {
-    const maxChars = policy.maxSummaryChars != null
-      ? Math.min(settings.summaryMaxChars, policy.maxSummaryChars)
-      : settings.summaryMaxChars;
+    const maxChars = settings.summaryMaxChars;
     summary = cv.summary.length > maxChars
       ? cv.summary.slice(0, maxChars).trimEnd() + "..."
       : cv.summary;

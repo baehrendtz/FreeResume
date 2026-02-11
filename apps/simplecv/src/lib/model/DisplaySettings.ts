@@ -16,7 +16,7 @@ export const defaultDisplaySettings: DisplaySettings = {
   maxEducation: 3,
   maxSkills: 12,
   maxBulletsPerJob: 3,
-  summaryMaxChars: 400,
+  summaryMaxChars: 300,
   maxExtras: 10,
   simplifyLocations: true,
 };
