@@ -21,6 +21,21 @@ export const educationSchema = z.object({
   hidden: z.boolean().optional(),
 });
 
+export const languageProficiency = z.enum([
+  "native",
+  "full_professional",
+  "professional_working",
+  "limited_working",
+  "elementary",
+]);
+export type LanguageProficiency = z.infer<typeof languageProficiency>;
+
+export const languageEntrySchema = z.object({
+  name: z.string(),
+  level: languageProficiency,
+});
+export type LanguageEntry = z.infer<typeof languageEntrySchema>;
+
 export const extrasGroupSchema = z.object({
   category: z.string(),
   items: z.array(z.string()),
@@ -50,7 +65,7 @@ export const cvModelSchema = z.object({
   experience: z.array(experienceSchema),
   education: z.array(educationSchema),
   skills: z.array(z.string()),
-  languages: z.array(z.string()),
+  languages: z.array(languageEntrySchema),
   extras: z.array(extrasGroupSchema),
   sectionsVisibility: sectionsVisibilitySchema,
 });

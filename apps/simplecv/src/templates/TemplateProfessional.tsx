@@ -1,6 +1,7 @@
 "use client";
 
-import type { CvModel } from "@/lib/model/CvModel";
+import type { RenderModel } from "@/lib/fitting/types";
+import { getCvStrings } from "@/lib/cvLocale";
 import {
   getContactItems,
   SectionTitle,
@@ -13,17 +14,18 @@ import {
 } from "./templateHelpers";
 
 interface TemplateProps {
-  cv: CvModel;
+  cv: RenderModel;
 }
 
 export default function TemplateProfessional({ cv }: TemplateProps) {
+  const labels = getCvStrings(cv.cvLanguage ?? "en");
   const contactItems = getContactItems(cv);
 
   const sidebarTitleClass = "tracking-[0.15em] text-gray-700 border-gray-300";
   const mainTitleClass = "tracking-[0.12em] text-gray-700 border-gray-200 mb-1.5";
 
   return (
-    <div className="cv-template cv-template-professional font-sans text-[8pt] leading-[1.25] text-gray-900 max-w-[210mm] mx-auto bg-white min-h-[297mm] flex flex-col">
+    <div lang={cv.cvLanguage} className="cv-template cv-template-professional font-sans text-[8pt] leading-[1.25] text-gray-900 max-w-[210mm] mx-auto bg-white min-h-[297mm] flex flex-col">
       {/* Dark header with subtle gradient */}
       <header className="text-white px-6 py-3.5" style={{ background: "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)" }}>
         <div className="flex items-start gap-4">
@@ -36,7 +38,7 @@ export default function TemplateProfessional({ cv }: TemplateProps) {
           )}
           <div className="min-w-0">
             <h1 className="text-[18pt] font-bold tracking-tight leading-tight">
-              {cv.name ? cv.name.toUpperCase() : "YOUR NAME"}
+              {(cv.name || labels.yourName).toUpperCase()}
             </h1>
             {cv.headline && (
               <p className="text-[9pt] font-light tracking-wide text-gray-300 mt-0.5">{cv.headline}</p>
@@ -60,7 +62,7 @@ export default function TemplateProfessional({ cv }: TemplateProps) {
           {/* Contact */}
           {contactItems.length > 0 && (
             <div>
-              <SectionTitle className={sidebarTitleClass}>Contact</SectionTitle>
+              <SectionTitle className={sidebarTitleClass}>{labels.contact}</SectionTitle>
               <ul className="space-y-1 text-[7pt] text-gray-700">
                 {contactItems.map((item, i) => (
                   <li key={i} className="flex items-center gap-2">
@@ -75,7 +77,7 @@ export default function TemplateProfessional({ cv }: TemplateProps) {
           {/* Skills */}
           {cv.skills.length > 0 && (
             <div>
-              <SectionTitle className={sidebarTitleClass}>Skills</SectionTitle>
+              <SectionTitle className={sidebarTitleClass}>{labels.skills}</SectionTitle>
               <SkillsList
                 skills={cv.skills}
                 variant="pills"
@@ -88,19 +90,20 @@ export default function TemplateProfessional({ cv }: TemplateProps) {
           {/* Languages */}
           {cv.languages.length > 0 && (
             <div>
-              <SectionTitle className={sidebarTitleClass}>Languages</SectionTitle>
-              <LanguagesList languages={cv.languages} variant="bullets" />
+              <SectionTitle className={sidebarTitleClass}>{labels.languages}</SectionTitle>
+              <LanguagesList languages={cv.languages} variant="bullets" cvLanguage={cv.cvLanguage} />
             </div>
           )}
 
           {/* Extras */}
           {cv.extras?.length > 0 && (
             <div>
-              <SectionTitle className={sidebarTitleClass}>Extras</SectionTitle>
+              <SectionTitle className={sidebarTitleClass}>{labels.extras}</SectionTitle>
               <ExtrasList
                 extras={cv.extras}
-                categoryClassName="text-[7pt] font-semibold text-gray-600 mb-0.5 capitalize"
+                categoryClassName="text-[7pt] font-semibold text-gray-600 mb-0.5"
                 itemClassName="text-[7.5pt] text-gray-700"
+                cvLanguage={cv.cvLanguage}
               />
             </div>
           )}
@@ -111,7 +114,7 @@ export default function TemplateProfessional({ cv }: TemplateProps) {
           {/* Experience */}
           {cv.experience.length > 0 && (
             <section>
-              <SectionTitle className={mainTitleClass}>Professional Experience</SectionTitle>
+              <SectionTitle className={mainTitleClass}>{labels.professionalExperience}</SectionTitle>
               {cv.experience.map((exp, i) => (
                 <ExperienceItem
                   key={i}
@@ -120,6 +123,7 @@ export default function TemplateProfessional({ cv }: TemplateProps) {
                   titleClassName="font-bold text-[8.5pt] text-gray-900"
                   dateClassName="text-[7pt] text-gray-500 whitespace-nowrap ml-4 tabular-nums"
                   bulletClassName="text-[7.5pt] text-gray-700"
+                  cvLanguage={cv.cvLanguage}
                 />
               ))}
             </section>
@@ -128,7 +132,7 @@ export default function TemplateProfessional({ cv }: TemplateProps) {
           {/* Education */}
           {cv.education.length > 0 && (
             <section>
-              <SectionTitle className={mainTitleClass}>Education</SectionTitle>
+              <SectionTitle className={mainTitleClass}>{labels.education}</SectionTitle>
               {cv.education.map((edu, i) => (
                 <EducationItem
                   key={i}
@@ -136,6 +140,7 @@ export default function TemplateProfessional({ cv }: TemplateProps) {
                   institutionClassName="font-bold text-[8.5pt] text-gray-900"
                   dateClassName="text-[7pt] text-gray-500 whitespace-nowrap ml-4 tabular-nums"
                   degreeClassName="text-[7.5pt] text-gray-600"
+                  cvLanguage={cv.cvLanguage}
                 />
               ))}
             </section>
@@ -144,7 +149,7 @@ export default function TemplateProfessional({ cv }: TemplateProps) {
       </div>
 
       <CvFooter
-        name={cv.name ? cv.name.toUpperCase() : "YOUR NAME"}
+        name={(cv.name || labels.yourName).toUpperCase()}
         className="px-5"
         accentBar
         accentColor="bg-gray-900"

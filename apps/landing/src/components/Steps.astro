@@ -9,17 +9,19 @@ const { lang } = Astro.props;
 
 const t = {
   sv: {
+    heading: 'Skapa ditt CV i tre enkla steg',
     steps: [
-      { title: 'Ladda ner', desc: 'Exportera din LinkedIn-profil som PDF' },
-      { title: 'Ladda upp', desc: 'Dra in PDF:en i Free Resume' },
-      { title: 'Klar', desc: 'Välj mall, anpassa och ladda ner ditt CV' },
+      { title: 'Ladda ner', desc: 'Exportera din LinkedIn-profil som PDF.' },
+      { title: 'Ladda upp', desc: 'Dra in PDF:en — all info fylls i automatiskt.' },
+      { title: 'Klar', desc: 'Välj mall, anpassa och ladda ner ditt CV.' },
     ],
   },
   en: {
+    heading: 'Create your CV in three simple steps',
     steps: [
-      { title: 'Download', desc: 'Export your LinkedIn profile as a PDF' },
-      { title: 'Upload', desc: 'Drop the PDF into Free Resume' },
-      { title: 'Done', desc: 'Pick a template, customize, and download your CV' },
+      { title: 'Download', desc: 'Export your LinkedIn profile as a PDF.' },
+      { title: 'Upload', desc: 'Drop the PDF — all info is filled in automatically.' },
+      { title: 'Done', desc: 'Pick a template, customize and download your CV.' },
     ],
   },
 }[lang];
@@ -38,10 +40,26 @@ const icons = [
     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
   </svg>`,
 ];
+
+const howToJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": t.heading,
+  "step": t.steps.map((step, i) => ({
+    "@type": "HowToStep",
+    "position": i + 1,
+    "name": step.title,
+    "text": step.desc,
+  })),
+};
 ---
 
 <section class="py-10 sm:py-14">
   <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white text-center mb-10">
+      {t.heading}
+    </h2>
+
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-4 relative">
       {/* Connecting line — desktop only */}
       <div class="hidden sm:block absolute top-6 left-[calc(16.67%+12px)] right-[calc(16.67%+12px)] h-px bg-gray-200 dark:bg-gray-700" aria-hidden="true"></div>
@@ -59,4 +77,6 @@ const icons = [
       ))}
     </div>
   </div>
+
+  <script type="application/ld+json" set:html={JSON.stringify(howToJsonLd)} />
 </section>

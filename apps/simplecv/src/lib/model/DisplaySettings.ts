@@ -9,6 +9,7 @@ export interface DisplaySettings {
   summaryMaxChars: number;
   maxExtras: number;
   simplifyLocations: boolean;
+  cvLanguage: "en" | "sv";
 }
 
 export const defaultDisplaySettings: DisplaySettings = {
@@ -19,6 +20,7 @@ export const defaultDisplaySettings: DisplaySettings = {
   summaryMaxChars: 300,
   maxExtras: 10,
   simplifyLocations: true,
+  cvLanguage: "en",
 };
 
 export interface TrimInfo {

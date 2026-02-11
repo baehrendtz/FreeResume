@@ -1,10 +1,9 @@
 import { lazy, type ComponentType } from "react";
-import type { CvModel } from "@/lib/model/CvModel";
-import type { TemplateMeta } from "@/lib/fitting/types";
+import type { RenderModel, TemplateMeta } from "@/lib/fitting/types";
 
 export interface TemplateEntry {
   name: string;
-  component: React.LazyExoticComponent<ComponentType<{ cv: CvModel }>>;
+  component: React.LazyExoticComponent<ComponentType<{ cv: RenderModel }>>;
   meta: TemplateMeta;
 }
 

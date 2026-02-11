@@ -77,8 +77,14 @@
     },
     "languages": {
       "label": "Språk",
-      "placeholder": "Skriv ett språk och tryck Enter",
-      "add": "Lägg till"
+      "placeholder": "Välj ett språk...",
+      "add": "Lägg till",
+      "levelLabel": "Nivå",
+      "native": "Modersmål",
+      "full_professional": "Flytande",
+      "professional_working": "Goda kunskaper",
+      "limited_working": "Grundläggande",
+      "elementary": "Nybörjare"
     },
     "extras": {
       "label": "Övrigt",
@@ -119,6 +125,10 @@
       "simplifyLocationsTitle": "Platsformatering",
       "simplifyLocationsDescription": "Rensa upp överdrivna LinkedIn-platsformat",
       "simplifyLocations": "Förenkla platser (t.ex. Stockholm, Stockholms län, Sverige → Stockholm, Sverige)",
+      "cvLanguageTitle": "CV-språk",
+      "cvLanguageDescription": "Språk för sektionsrubriker och etiketter i CV:t",
+      "cvLanguageEn": "English",
+      "cvLanguageSv": "Svenska",
       "template": "Mall",
       "fitsOnePage": "Innehållet passar på en sida",
       "overflows": "Innehållet svämmar över (~{pages} sidor)",

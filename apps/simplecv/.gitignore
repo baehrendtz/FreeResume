@@ -39,6 +39,11 @@ yarn-error.log*
 # playwright mcp artifacts
 .playwright-mcp/
 
+# Playwright
+/playwright-report/
+/test-results/
+/e2e/screenshots/
+
 # screenshots / dev images in project root
 /*.png
 /*.jpg

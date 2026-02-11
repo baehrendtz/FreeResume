@@ -1,7 +1,8 @@
 import type { PdfPage, PdfTextItem } from "@/lib/pdf/extractText";
-import { type CvModel, createEmptyCvModel } from "@/lib/model/CvModel";
+import { type CvModel, type LanguageEntry, type LanguageProficiency, createEmptyCvModel } from "@/lib/model/CvModel";
 import { detectSection, detectExtrasCategory, type SectionType } from "./sectionDetector";
 import { parseDateRange } from "./dateParser";
+import { findLanguageId } from "@/lib/cvLocale";
 
 interface Line {
   text: string;
@@ -101,6 +102,28 @@ function findColumnThreshold(items: PdfTextItem[]): number {
   return 200;
 }
 
+function mapProficiency(raw: string): LanguageProficiency {
+  const lower = raw.toLowerCase();
+  if (lower.includes("native") || lower.includes("bilingual") || lower.includes("modersmål")) return "native";
+  if (lower.includes("full professional") || lower.includes("flytande")) return "full_professional";
+  if (lower.includes("professional working") || lower.includes("goda")) return "professional_working";
+  if (lower.includes("limited") || lower.includes("grundläggande")) return "limited_working";
+  if (lower.includes("elementary") || lower.includes("nybörjare")) return "elementary";
+  return "professional_working";
+}
+
+function parseLanguageLine(text: string): LanguageEntry {
+  const match = text.match(/^(.+?)\s*\((.+)\)\s*$/);
+  if (match) {
+    const rawName = match[1].trim();
+    const name = findLanguageId(rawName) ?? rawName;
+    return { name, level: mapProficiency(match[2].trim()) };
+  }
+  const rawName = text.trim();
+  const name = findLanguageId(rawName) ?? rawName;
+  return { name, level: "professional_working" };
+}
+
 /**
  * Main entry point: parse a LinkedIn PDF export into a structured CvModel.
  * Handles the two-column layout (sidebar + main) on page 1,
@@ -187,7 +210,7 @@ function parseSidebar(cv: CvModel, lines: Line[]) {
       case "languages": {
         const lang = line.text.trim();
         if (lang) {
-          cv.languages.push(lang);
+          cv.languages.push(parseLanguageLine(lang));
         }
         break;
       }
@@ -300,7 +323,7 @@ function parseMainContent(cv: CvModel, lines: Line[]) {
         break;
       case "languages":
         cv.languages.push(
-          ...sectionLines.map((l) => l.text.trim()).filter(Boolean)
+          ...sectionLines.map((l) => l.text.trim()).filter(Boolean).map(parseLanguageLine)
         );
         break;
       case "extras": {

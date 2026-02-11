@@ -10,7 +10,7 @@ import { X } from "lucide-react";
 import type { CvModel } from "@/lib/model/CvModel";
 
 interface ListFormProps {
-  fieldName: "skills" | "languages";
+  fieldName: "skills";
   labels: { label: string; placeholder: string; add: string };
   onAdd?: () => void;
   onRemove?: () => void;

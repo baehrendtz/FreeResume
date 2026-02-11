@@ -1,0 +1,126 @@
+---
+import type { Lang } from '../types';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+
+const t = {
+  sv: {
+    heading: 'Vanliga frågor om Free Resume',
+    items: [
+      {
+        q: 'Är Free Resume verkligen gratis?',
+        a: 'Ja, helt gratis. Inga dolda avgifter, inga premium-planer, inga vattenstämplar.',
+      },
+      {
+        q: 'Behöver jag skapa ett konto?',
+        a: 'Nej, du kan börja direkt utan registrering eller e-post.',
+      },
+      {
+        q: 'Hur fungerar LinkedIn-importen?',
+        a: 'Exportera din LinkedIn-profil som PDF och ladda upp den i Free Resume. All information fylls i automatiskt.',
+      },
+      {
+        q: 'Är min data säker?',
+        a: 'Ja, ditt CV skapas helt i webbläsaren. Ingen personlig data skickas till våra servrar.',
+      },
+      {
+        q: 'Vilka CV-mallar finns?',
+        a: 'Basic, Professional och Creative. Alla är ATS-vänliga och enkla att anpassa.',
+      },
+    ],
+  },
+  en: {
+    heading: 'Frequently asked questions about Free Resume',
+    items: [
+      {
+        q: 'Is Free Resume really free?',
+        a: 'Yes, completely free. No hidden fees, no premium plans, no watermarks.',
+      },
+      {
+        q: 'Do I need to create an account?',
+        a: 'No, you can start right away without signing up or providing an email.',
+      },
+      {
+        q: 'How does the LinkedIn import work?',
+        a: 'Export your LinkedIn profile as a PDF and upload it to Free Resume. All information is filled in automatically.',
+      },
+      {
+        q: 'Is my data safe?',
+        a: 'Yes, your CV is built entirely in the browser. No personal data is sent to our servers.',
+      },
+      {
+        q: 'What CV templates are available?',
+        a: 'Basic, Professional, and Creative. All are ATS-friendly and easy to customize.',
+      },
+    ],
+  },
+}[lang];
+
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": t.items.map((item) => ({
+    "@type": "Question",
+    "name": item.q,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": item.a,
+    },
+  })),
+};
+---
+
+<section class="py-14 sm:py-20">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white text-center">
+      {t.heading}
+    </h2>
+
+    <div class="mt-10 divide-y divide-gray-200 dark:divide-gray-800" id="faq-accordion">
+      {t.items.map((item, i) => (
+        <div class="faq-item">
+          <button
+            type="button"
+            class="faq-trigger flex w-full items-center justify-between py-5 text-left text-base font-medium text-gray-900 dark:text-white hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+            aria-expanded="false"
+            aria-controls={`faq-panel-${i}`}
+          >
+            <span>{item.q}</span>
+            <svg class="faq-chevron w-5 h-5 flex-shrink-0 text-gray-400 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+            </svg>
+          </button>
+          <div
+            id={`faq-panel-${i}`}
+            class="faq-panel hidden pb-5"
+            role="region"
+          >
+            <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{item.a}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} />
+</section>
+
+<script>
+  document.getElementById('faq-accordion')?.addEventListener('click', (e) => {
+    const trigger = (e.target as HTMLElement).closest('.faq-trigger') as HTMLButtonElement | null;
+    if (!trigger) return;
+
+    const item = trigger.closest('.faq-item')!;
+    const panel = item.querySelector('.faq-panel')!;
+    const chevron = item.querySelector('.faq-chevron')!;
+    const isOpen = trigger.getAttribute('aria-expanded') === 'true';
+
+    trigger.setAttribute('aria-expanded', String(!isOpen));
+    panel.classList.toggle('hidden', isOpen);
+    chevron.classList.toggle('rotate-180', !isOpen);
+  });
+</script>

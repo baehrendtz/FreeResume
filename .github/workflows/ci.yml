@@ -34,6 +34,29 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm build:app
 
+  e2e-tests:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - name: Install Playwright browsers
+        run: pnpm --filter @freeresume/app exec playwright install --with-deps chromium
+      - name: Run e2e tests
+        run: pnpm --filter @freeresume/app test:e2e
+      - name: Upload test report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: apps/simplecv/playwright-report/
+          retention-days: 14
+
   build-landing:
     name: Build Landing
     runs-on: ubuntu-latest

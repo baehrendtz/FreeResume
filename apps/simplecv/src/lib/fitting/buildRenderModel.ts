@@ -92,7 +92,7 @@ export function buildRenderModel(
   // Languages: respect capability + visibility
   const languages =
     capabilities.supportsLanguages && vis.languages
-      ? [...cv.languages]
+      ? cv.languages.map((l) => ({ name: l.name, level: l.level }))
       : [];
 
   // Extras: respect capability + visibility, then slice across groups
@@ -124,6 +124,7 @@ export function buildRenderModel(
     skills,
     languages,
     extras,
+    cvLanguage: settings.cvLanguage ?? "en",
     sectionsVisibility: {
       photo: vis.photo && capabilities.supportsPhoto,
       summary: vis.summary && capabilities.supportsSummary,
