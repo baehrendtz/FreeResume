@@ -1,7 +1,7 @@
 "use client";
 
-import { User, MoreHorizontal, Upload } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import { useState } from "react";
+import { User, MoreHorizontal, Upload, ChevronDown } from "lucide-react";
 
 interface LinkedInGuideProps {
   labels: {
@@ -9,6 +9,7 @@ interface LinkedInGuideProps {
     guideStep1: string;
     guideStep2: string;
     guideStep3: string;
+    howToGetPdf: string;
   };
 }
 
@@ -19,31 +20,38 @@ const STEPS = [
 ] as const;
 
 export function LinkedInGuide({ labels }: LinkedInGuideProps) {
+  const [open, setOpen] = useState(false);
   const stepTexts = [labels.guideStep1, labels.guideStep2, labels.guideStep3];
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-xl font-semibold text-center">{labels.guideTitle}</h2>
-      <div className="grid gap-4 max-w-md mx-auto">
-        {STEPS.map((step, i) => {
-          const Icon = step.icon;
-          return (
-            <Card key={i} className="border-muted">
-              <CardContent className="flex items-start gap-4 p-4">
-                <div className={`flex items-center justify-center h-10 w-10 rounded-full shrink-0 ${step.bg}`}>
-                  <span className={`text-sm font-bold ${step.color}`}>{i + 1}</span>
+    <div className="w-full">
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors mx-auto"
+      >
+        <span>{labels.howToGetPdf}</span>
+        <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
+      </button>
+
+      {open && (
+        <div className="mt-3 space-y-2">
+          {STEPS.map((step, i) => {
+            const Icon = step.icon;
+            return (
+              <div key={i} className="flex items-center gap-3 rounded-lg border border-border/50 px-3 py-2">
+                <div className={`flex items-center justify-center h-6 w-6 rounded-full shrink-0 ${step.bg}`}>
+                  <span className={`text-xs font-bold ${step.color}`}>{i + 1}</span>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm leading-relaxed">{stepTexts[i]}</p>
+                <p className="text-xs leading-relaxed flex-1">{stepTexts[i]}</p>
+                <div className={`shrink-0 ${step.bg} rounded-md p-1`}>
+                  <Icon className={`h-3.5 w-3.5 ${step.color}`} />
                 </div>
-                <div className={`shrink-0 ${step.bg} rounded-lg p-2`}>
-                  <Icon className={`h-5 w-5 ${step.color}`} />
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

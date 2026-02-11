@@ -41,6 +41,7 @@ interface AppHeaderProps {
   onImportPdf: () => void;
   onDownloadPdf: () => void;
   downloading: boolean;
+  showActions?: boolean;
   labels: {
     importPdf: string;
     downloadPdf: string;
@@ -67,6 +68,7 @@ export function AppHeader({
   onImportPdf,
   onDownloadPdf,
   downloading,
+  showActions = true,
   labels,
   helpLabels,
 }: AppHeaderProps) {
@@ -106,8 +108,8 @@ export function AppHeader({
         <img src="/logo.png" alt={title} className="h-9 w-auto" />
 
         <div className="flex items-center gap-2">
-          {/* Desktop action buttons */}
-          {actions.map((action) => (
+          {/* Desktop action buttons — hidden during onboarding */}
+          {showActions && actions.map((action) => (
             <Button
               key={action.id}
               variant={action.id === "download" ? "default" : "ghost"}
@@ -143,7 +145,7 @@ export function AppHeader({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              {actions.map((action, i) => (
+              {showActions && actions.map((action, i) => (
                 <span key={action.id}>
                   {i > 0 && <DropdownMenuSeparator />}
                   <DropdownMenuItem onClick={action.onClick} disabled={action.disabled}>
@@ -152,7 +154,7 @@ export function AppHeader({
                   </DropdownMenuItem>
                 </span>
               ))}
-              <DropdownMenuSeparator />
+              {showActions && <DropdownMenuSeparator />}
               {mounted && (
                 <>
                   <DropdownMenuItem onClick={toggleTheme}>

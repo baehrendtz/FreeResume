@@ -142,6 +142,15 @@
       "getStarted": "Kom igång",
       "skipLink": "Hoppa över — börja med tomt CV"
     },
+    "choose": {
+      "title": "Skapa ditt professionella CV",
+      "subtitle": "Importera din LinkedIn-profil eller börja från grunden",
+      "importTitle": "Importera från LinkedIn",
+      "importDescription": "Ladda upp din LinkedIn-PDF för att fylla i ditt CV automatiskt",
+      "scratchTitle": "Börja från grunden",
+      "scratchDescription": "Börja med ett tomt CV och fyll i dina uppgifter",
+      "howToGetPdf": "Hur får jag min LinkedIn-PDF?"
+    },
     "guide": {
       "title": "Så här får du din LinkedIn-PDF",
       "step1": "Gå till din LinkedIn-profil",
@@ -194,7 +203,17 @@
     "downloadTitle": "Ladda ner ditt CV",
     "downloadText": "Klicka på \"Ladda ner PDF\"-knappen i övre menyn. CV:t genereras direkt i webbläsaren.",
     "dataTitle": "Din data",
-    "dataText": "All data sparas lokalt i din webbläsare (sessionStorage). Inget skickas till någon server. Stänger du fliken försvinner datan.",
+    "dataText": "All CV-data sparas lokalt i din webbläsare (sessionStorage). Om du accepterar analyticscookies skickas anonym användningsdata till Google Analytics för att hjälpa oss förbättra tjänsten. Ingen personlig information delas.",
     "footer": "Free Resume är gratis och open source."
+  },
+  "consent": {
+    "message": "Vi använder cookies för anonym analys för att förbättra tjänsten. Ingen personlig data samlas in.",
+    "accept": "Acceptera",
+    "decline": "Avböj",
+    "settings": "Cookieinställningar"
+  },
+  "footer": {
+    "copyright": "© {year} Free Resume",
+    "openSource": "Gratis och öppen källkod"
   }
 }

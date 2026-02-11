@@ -131,25 +131,20 @@ export function useEditorLabels() {
   };
 
   const onboarding = {
-    welcomeTitle: t("onboarding.welcome.title"),
-    welcomeSubtitle: t("onboarding.welcome.subtitle"),
-    valuePropImport: t("onboarding.welcome.valuePropImport"),
-    valuePropTemplates: t("onboarding.welcome.valuePropTemplates"),
-    valuePropPdf: t("onboarding.welcome.valuePropPdf"),
-    getStarted: t("onboarding.welcome.getStarted"),
-    skipLink: t("onboarding.welcome.skipLink"),
+    chooseTitle: t("onboarding.choose.title"),
+    chooseSubtitle: t("onboarding.choose.subtitle"),
+    importTitle: t("onboarding.choose.importTitle"),
+    importDescription: t("onboarding.choose.importDescription"),
+    scratchTitle: t("onboarding.choose.scratchTitle"),
+    scratchDescription: t("onboarding.choose.scratchDescription"),
+    howToGetPdf: t("onboarding.choose.howToGetPdf"),
     guideTitle: t("onboarding.guide.title"),
     guideStep1: t("onboarding.guide.step1"),
     guideStep2: t("onboarding.guide.step2"),
     guideStep3: t("onboarding.guide.step3"),
-    guideNext: t("onboarding.guide.next"),
-    guideBack: t("onboarding.guide.back"),
-    guideSkip: t("onboarding.guide.skip"),
     uploadDropzone: t("upload.dropzone"),
     uploadProcessing: t("upload.processing"),
     uploadTitle: t("upload.title"),
-    uploadBack: t("onboarding.guide.back"),
-    uploadScratch: t("onboarding.upload.scratchLink"),
     successTitle: t("onboarding.success.title"),
     successScratchTitle: t("onboarding.success.scratchTitle"),
     successScratchDescription: t("onboarding.success.scratchDescription"),
@@ -167,5 +162,11 @@ export function useEditorLabels() {
     cancel: t("actions.cancel"),
   };
 
-  return { editor, header, helpLabels, onboarding, importDialog };
+  const footer = {
+    copyright: t("footer.copyright", { year: new Date().getFullYear() }),
+    openSource: t("footer.openSource"),
+    cookieSettings: t("consent.settings"),
+  };
+
+  return { editor, header, helpLabels, onboarding, importDialog, footer };
 }

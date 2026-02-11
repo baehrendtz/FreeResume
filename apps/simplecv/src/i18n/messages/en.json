@@ -142,6 +142,15 @@
       "getStarted": "Get started",
       "skipLink": "Skip — start with a blank CV"
     },
+    "choose": {
+      "title": "Create your professional CV",
+      "subtitle": "Import your LinkedIn profile or start from scratch",
+      "importTitle": "Import from LinkedIn",
+      "importDescription": "Upload your LinkedIn PDF to auto-fill your CV",
+      "scratchTitle": "Start from scratch",
+      "scratchDescription": "Begin with a blank CV and fill in your details",
+      "howToGetPdf": "How do I get my LinkedIn PDF?"
+    },
     "guide": {
       "title": "How to get your LinkedIn PDF",
       "step1": "Go to your LinkedIn profile",
@@ -194,7 +203,17 @@
     "downloadTitle": "Download your CV",
     "downloadText": "Click the \"Download PDF\" button in the top menu. Your CV is generated directly in the browser.",
     "dataTitle": "Your data",
-    "dataText": "All data is stored locally in your browser (sessionStorage). Nothing is sent to any server. If you close the tab, the data is lost.",
+    "dataText": "All CV data is stored locally in your browser (sessionStorage). If you accept analytics cookies, anonymous usage data is sent to Google Analytics to help us improve the service. No personal information is shared.",
     "footer": "Free Resume is free and open source."
+  },
+  "consent": {
+    "message": "We use cookies for anonymous analytics to improve this service. No personal data is collected.",
+    "accept": "Accept",
+    "decline": "Decline",
+    "settings": "Cookie settings"
+  },
+  "footer": {
+    "copyright": "© {year} Free Resume",
+    "openSource": "Free & open source"
   }
 }
