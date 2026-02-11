@@ -287,7 +287,7 @@ function parseMainContent(cv: CvModel, lines: Line[]) {
 
     switch (section.type) {
       case "summary":
-        cv.summary = joinTextLines(sectionLines.map((l) => l.text)).trim();
+        cv.summary = joinSummaryLines(sectionLines).trim();
         break;
       case "experience":
         cv.experience = parseExperience(sectionLines);
@@ -587,6 +587,42 @@ function joinTextLines(texts: string[]): string {
   let result = "";
   for (const text of texts) {
     result = appendText(result, text);
+  }
+  return result;
+}
+
+/**
+ * Join summary lines preserving paragraph breaks.
+ * Detects paragraph breaks by comparing Y-gaps between consecutive lines:
+ * gaps > 1.8× the typical (median) line spacing are treated as paragraph breaks.
+ */
+function joinSummaryLines(lines: Line[]): string {
+  if (lines.length === 0) return "";
+
+  // Compute typical line spacing (median of Y-gaps between consecutive same-page lines)
+  const gaps: number[] = [];
+  for (let i = 1; i < lines.length; i++) {
+    if (lines[i].page === lines[i - 1].page) {
+      gaps.push(Math.abs(lines[i - 1].y - lines[i].y));
+    }
+  }
+  const typicalGap =
+    gaps.length > 0
+      ? gaps.slice().sort((a, b) => a - b)[Math.floor(gaps.length / 2)]
+      : 0;
+
+  let result = lines[0].text;
+  for (let i = 1; i < lines.length; i++) {
+    const samePage = lines[i].page === lines[i - 1].page;
+    const gap = samePage ? Math.abs(lines[i - 1].y - lines[i].y) : Infinity;
+    const isParagraphBreak =
+      !samePage || (typicalGap > 0 && gap > typicalGap * 1.8);
+
+    if (isParagraphBreak) {
+      result = result.trimEnd() + "\n\n" + lines[i].text;
+    } else {
+      result = appendText(result, lines[i].text);
+    }
   }
   return result;
 }
