@@ -4,6 +4,7 @@ import type { RenderModel } from "@/lib/fitting/types";
 import type { TemplateStyleValues } from "@/lib/model/TemplateStyleSettings";
 import { getCvStrings } from "@/lib/cvLocale";
 import {
+  scaledContainerStyle,
   SectionTitle,
   CvFooter,
   ExperienceItem,
@@ -25,12 +26,19 @@ export default function TemplateBasic({ cv, styleSettings }: TemplateProps) {
   const accent = styleSettings?.accentColor ?? "#0d9488";
   const photoSize = styleSettings?.photoSizePx ?? 64;
   const fontZoom = (styleSettings?.fontSizePercent ?? 100) / 100;
+  const photoShape = styleSettings?.photoShape ?? "circle";
+  const photoShapeClass =
+    photoShape === "circle" ? "rounded-full" :
+    photoShape === "rounded" ? "rounded-lg" : "rounded-none";
+  const BASE_LINE_HEIGHT = 1.35;
+  const lineHeight = BASE_LINE_HEIGHT * (styleSettings?.lineHeightPercent ?? 100) / 100;
+  const lineScale = (styleSettings?.lineHeightPercent ?? 100) / 100;
 
   return (
     <div
       lang={cv.cvLanguage}
-      className="cv-template font-sans text-[8.5pt] leading-[1.35] text-gray-800 p-6 max-w-[210mm] mx-auto bg-white min-h-[297mm] flex flex-col"
-      style={{ zoom: fontZoom }}
+      className="cv-template font-sans text-[8.5pt] text-gray-800 p-6 mx-auto bg-white flex flex-col"
+      style={scaledContainerStyle(fontZoom, lineHeight)}
     >
       {/* Header */}
       <header className="mb-3 pl-4" style={{ borderLeft: `4px solid ${accent}` }}>
@@ -39,7 +47,7 @@ export default function TemplateBasic({ cv, styleSettings }: TemplateProps) {
             <img
               src={cv.photo}
               alt=""
-              className="rounded-full object-cover shrink-0"
+              className={`${photoShapeClass} object-cover shrink-0`}
               style={{ width: photoSize, height: photoSize, borderColor: accent, borderWidth: 1, borderStyle: "solid" }}
             />
           )}
@@ -70,7 +78,7 @@ export default function TemplateBasic({ cv, styleSettings }: TemplateProps) {
         <section className="mb-2.5">
           <SectionTitle className="tracking-[0.12em] mb-1.5" style={{ color: accent, borderColor: accent }}>{labels.experience}</SectionTitle>
           {cv.experience.map((exp, i) => (
-            <ExperienceItem key={i} exp={exp} layout="title-first" cvLanguage={cv.cvLanguage} />
+            <ExperienceItem key={i} exp={exp} layout="title-first" cvLanguage={cv.cvLanguage} lineHeightScale={lineScale} />
           ))}
         </section>
       )}
@@ -80,7 +88,7 @@ export default function TemplateBasic({ cv, styleSettings }: TemplateProps) {
         <section className="mb-2.5">
           <SectionTitle className="tracking-[0.12em] mb-1.5" style={{ color: accent, borderColor: accent }}>{labels.education}</SectionTitle>
           {cv.education.map((edu, i) => (
-            <EducationItem key={i} edu={edu} cvLanguage={cv.cvLanguage} />
+            <EducationItem key={i} edu={edu} cvLanguage={cv.cvLanguage} lineHeightScale={lineScale} />
           ))}
         </section>
       )}

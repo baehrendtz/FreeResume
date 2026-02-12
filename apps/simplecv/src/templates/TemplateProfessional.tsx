@@ -4,6 +4,7 @@ import type { RenderModel } from "@/lib/fitting/types";
 import type { TemplateStyleValues } from "@/lib/model/TemplateStyleSettings";
 import { getCvStrings } from "@/lib/cvLocale";
 import {
+  scaledContainerStyle,
   getContactItems,
   SectionTitle,
   CvFooter,
@@ -26,6 +27,14 @@ export default function TemplateProfessional({ cv, styleSettings }: TemplateProp
   const accent = styleSettings?.accentColor ?? "#1a1a2e";
   const photoSize = styleSettings?.photoSizePx ?? 80;
   const fontZoom = (styleSettings?.fontSizePercent ?? 100) / 100;
+  const photoShape = styleSettings?.photoShape ?? "circle";
+  const photoShapeClass =
+    photoShape === "circle" ? "rounded-full" :
+    photoShape === "rounded" ? "rounded-lg" : "rounded-none";
+  const sidebarBg = styleSettings?.sidebarBgColor ?? "#f1f5f9";
+  const BASE_LINE_HEIGHT = 1.25;
+  const lineHeight = BASE_LINE_HEIGHT * (styleSettings?.lineHeightPercent ?? 100) / 100;
+  const lineScale = (styleSettings?.lineHeightPercent ?? 100) / 100;
 
   const sidebarTitleClass = "tracking-[0.15em] text-gray-700 border-gray-300";
   const mainTitleClass = "tracking-[0.12em] text-gray-700 border-gray-200 mb-1.5";
@@ -36,8 +45,8 @@ export default function TemplateProfessional({ cv, styleSettings }: TemplateProp
   return (
     <div
       lang={cv.cvLanguage}
-      className="cv-template cv-template-professional font-sans text-[8pt] leading-[1.25] text-gray-900 max-w-[210mm] mx-auto bg-white min-h-[297mm] flex flex-col"
-      style={{ zoom: fontZoom }}
+      className="cv-template cv-template-professional font-sans text-[8pt] text-gray-900 mx-auto bg-white flex flex-col"
+      style={scaledContainerStyle(fontZoom, lineHeight)}
     >
       {/* Dark header with subtle gradient */}
       <header className="text-white px-6 py-3.5" style={{ background: headerBg }}>
@@ -46,7 +55,7 @@ export default function TemplateProfessional({ cv, styleSettings }: TemplateProp
             <img
               src={cv.photo}
               alt=""
-              className="rounded-full object-cover border-2 border-white/20 shrink-0"
+              className={`${photoShapeClass} object-cover border-2 border-white/20 shrink-0`}
               style={{ width: photoSize, height: photoSize }}
             />
           )}
@@ -69,7 +78,7 @@ export default function TemplateProfessional({ cv, styleSettings }: TemplateProp
       {/* Two-column body with full-height sidebar background */}
       <div className="flex flex-1 relative">
         {/* Sidebar background — absolute div for html2canvas compatibility */}
-        <div className="absolute left-0 top-0 bottom-0 w-[27%] bg-gray-100" />
+        <div className="absolute left-0 top-0 bottom-0 w-[27%]" style={{ backgroundColor: sidebarBg }} />
 
         {/* Sidebar */}
         <aside className="w-[27%] shrink-0 relative px-3.5 py-3 space-y-3">
@@ -138,6 +147,7 @@ export default function TemplateProfessional({ cv, styleSettings }: TemplateProp
                   dateClassName="text-[7pt] text-gray-500 whitespace-nowrap ml-4 tabular-nums"
                   bulletClassName="text-[7.5pt] text-gray-700"
                   cvLanguage={cv.cvLanguage}
+                  lineHeightScale={lineScale}
                 />
               ))}
             </section>
@@ -155,6 +165,7 @@ export default function TemplateProfessional({ cv, styleSettings }: TemplateProp
                   dateClassName="text-[7pt] text-gray-500 whitespace-nowrap ml-4 tabular-nums"
                   degreeClassName="text-[7.5pt] text-gray-600"
                   cvLanguage={cv.cvLanguage}
+                  lineHeightScale={lineScale}
                 />
               ))}
             </section>

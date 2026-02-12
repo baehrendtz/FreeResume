@@ -19,6 +19,7 @@ const professionalMeta: TemplateMeta = {
     supportsLanguages: true,
     supportsExtras: true,
     supportsSidebar: true,
+    supportsSecondaryColor: false,
   },
   policy: {
     pageTarget: 1,
@@ -57,6 +58,7 @@ const basicMeta: TemplateMeta = {
     supportsLanguages: true,
     supportsExtras: true,
     supportsSidebar: false,
+    supportsSecondaryColor: false,
   },
   policy: {
     pageTarget: 1,
@@ -95,6 +97,7 @@ const basic2Meta: TemplateMeta = {
     supportsLanguages: true,
     supportsExtras: true,
     supportsSidebar: true,
+    supportsSecondaryColor: false,
   },
   policy: {
     pageTarget: 1,
@@ -133,6 +136,7 @@ const creativeMeta: TemplateMeta = {
     supportsLanguages: true,
     supportsExtras: true,
     supportsSidebar: true,
+    supportsSecondaryColor: true,
   },
   policy: {
     pageTarget: 1,
@@ -163,26 +167,42 @@ const creativeMeta: TemplateMeta = {
 
 const basicDefaultStyle: TemplateStyleValues = {
   accentColor: "#0d9488",
+  secondaryColor: "#0d9488",
   photoSizePx: 64,
   fontSizePercent: 100,
+  photoShape: "circle",
+  sidebarBgColor: "#f1f5f9",
+  lineHeightPercent: 100,
 };
 
 const professionalDefaultStyle: TemplateStyleValues = {
   accentColor: "#1a1a2e",
+  secondaryColor: "#1a1a2e",
   photoSizePx: 80,
   fontSizePercent: 100,
+  photoShape: "circle",
+  sidebarBgColor: "#f1f5f9",
+  lineHeightPercent: 100,
 };
 
 const basic2DefaultStyle: TemplateStyleValues = {
   accentColor: "#4a6fa5",
+  secondaryColor: "#4a6fa5",
   photoSizePx: 128,
   fontSizePercent: 100,
+  photoShape: "circle",
+  sidebarBgColor: "#dce4ed",
+  lineHeightPercent: 100,
 };
 
 const creativeDefaultStyle: TemplateStyleValues = {
   accentColor: "#06b6d4",
+  secondaryColor: "#8b5cf6",
   photoSizePx: 64,
   fontSizePercent: 100,
+  photoShape: "circle",
+  sidebarBgColor: "#f8fafc",
+  lineHeightPercent: 100,
 };
 
 export const templates: Record<string, TemplateEntry> = {

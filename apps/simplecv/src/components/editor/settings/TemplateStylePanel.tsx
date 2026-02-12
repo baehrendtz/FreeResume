@@ -15,12 +15,23 @@ const PHOTO_MIN = 48;
 const PHOTO_MAX = 144;
 const PHOTO_STEP = 16;
 
-interface StyleLabels {
+const LINE_HEIGHT_MIN = 80;
+const LINE_HEIGHT_MAX = 120;
+const LINE_HEIGHT_STEP = 5;
+
+export interface StyleLabels {
   styleTitle: string;
   styleDescription: string;
   accentColor: string;
+  secondaryColor: string;
   photoSize: string;
   fontScale: string;
+  photoShape: string;
+  photoShapeCircle: string;
+  photoShapeRounded: string;
+  photoShapeSquare: string;
+  sidebarBgColor: string;
+  lineHeight: string;
   resetDefaults: string;
 }
 
@@ -30,6 +41,8 @@ interface TemplateStylePanelProps {
   styleOverrides: PerTemplateStyleOverrides;
   onStyleOverridesChange: (overrides: PerTemplateStyleOverrides) => void;
   supportsPhoto: boolean;
+  supportsSidebar: boolean;
+  supportsSecondaryColor: boolean;
   labels: StyleLabels;
 }
 
@@ -39,6 +52,8 @@ export function TemplateStylePanel({
   styleOverrides,
   onStyleOverridesChange,
   supportsPhoto,
+  supportsSidebar,
+  supportsSecondaryColor,
   labels,
 }: TemplateStylePanelProps) {
   const hasOverrides = !!styleOverrides[templateId] && Object.keys(styleOverrides[templateId]).length > 0;
@@ -61,6 +76,7 @@ export function TemplateStylePanel({
 
   const pct = styleSettings.fontSizePercent;
   const photoPx = styleSettings.photoSizePx;
+  const lhPct = styleSettings.lineHeightPercent;
 
   return (
     <div className="rounded-lg border bg-card p-4 space-y-3">
@@ -87,6 +103,48 @@ export function TemplateStylePanel({
           </span>
         </div>
       </div>
+
+      {/* Secondary color */}
+      {supportsSecondaryColor && (
+        <div className="flex items-center justify-between py-0.5">
+          <Label htmlFor="secondary-color" className="text-sm">
+            {labels.secondaryColor}
+          </Label>
+          <div className="flex items-center gap-2">
+            <Input
+              id="secondary-color"
+              type="color"
+              value={styleSettings.secondaryColor}
+              onChange={(e) => updateField("secondaryColor", e.target.value)}
+              className="w-10 h-8 p-0.5 cursor-pointer"
+            />
+            <span className="text-xs text-muted-foreground font-mono w-16">
+              {styleSettings.secondaryColor}
+            </span>
+          </div>
+        </div>
+      )}
+
+      {/* Sidebar background color */}
+      {supportsSidebar && (
+        <div className="flex items-center justify-between py-0.5">
+          <Label htmlFor="sidebar-bg-color" className="text-sm">
+            {labels.sidebarBgColor}
+          </Label>
+          <div className="flex items-center gap-2">
+            <Input
+              id="sidebar-bg-color"
+              type="color"
+              value={styleSettings.sidebarBgColor}
+              onChange={(e) => updateField("sidebarBgColor", e.target.value)}
+              className="w-10 h-8 p-0.5 cursor-pointer"
+            />
+            <span className="text-xs text-muted-foreground font-mono w-16">
+              {styleSettings.sidebarBgColor}
+            </span>
+          </div>
+        </div>
+      )}
 
       {/* Photo size — +/- stepper with px */}
       {supportsPhoto && (
@@ -122,6 +180,29 @@ export function TemplateStylePanel({
         </div>
       )}
 
+      {/* Photo shape — 3 toggle buttons */}
+      {supportsPhoto && (
+        <div className="flex items-center justify-between py-0.5">
+          <Label className="text-sm">
+            {labels.photoShape}
+          </Label>
+          <div className="flex items-center gap-1">
+            {(["circle", "rounded", "square"] as const).map((shape) => (
+              <Button
+                key={shape}
+                type="button"
+                variant={styleSettings.photoShape === shape ? "default" : "outline"}
+                size="sm"
+                className="h-8 px-2.5 text-xs"
+                onClick={() => updateField("photoShape", shape)}
+              >
+                {shape === "circle" ? labels.photoShapeCircle : shape === "rounded" ? labels.photoShapeRounded : labels.photoShapeSquare}
+              </Button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Font size — +/- stepper with percentage */}
       <div className="flex items-center justify-between py-0.5">
         <Label className="text-sm">
@@ -148,6 +229,38 @@ export function TemplateStylePanel({
             className="h-8 w-8"
             disabled={pct >= FONT_MAX}
             onClick={() => updateField("fontSizePercent", Math.min(FONT_MAX, pct + FONT_STEP))}
+          >
+            <Plus className="h-3.5 w-3.5" />
+          </Button>
+        </div>
+      </div>
+
+      {/* Line height — +/- stepper with percentage */}
+      <div className="flex items-center justify-between py-0.5">
+        <Label className="text-sm">
+          {labels.lineHeight}
+        </Label>
+        <div className="flex items-center gap-1">
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            className="h-8 w-8"
+            disabled={lhPct <= LINE_HEIGHT_MIN}
+            onClick={() => updateField("lineHeightPercent", Math.max(LINE_HEIGHT_MIN, lhPct - LINE_HEIGHT_STEP))}
+          >
+            <Minus className="h-3.5 w-3.5" />
+          </Button>
+          <span className="text-sm tabular-nums w-12 text-center font-medium">
+            {lhPct}%
+          </span>
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            className="h-8 w-8"
+            disabled={lhPct >= LINE_HEIGHT_MAX}
+            onClick={() => updateField("lineHeightPercent", Math.min(LINE_HEIGHT_MAX, lhPct + LINE_HEIGHT_STEP))}
           >
             <Plus className="h-3.5 w-3.5" />
           </Button>

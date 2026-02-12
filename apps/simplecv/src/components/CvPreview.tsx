@@ -48,7 +48,7 @@ export function CvPreview({ renderModel, templateId, zoomLevel, styleSettings }:
   return (
     <div
       ref={containerRef}
-      className={isZoomMode ? undefined : "overflow-hidden"}
+      className={isZoomMode ? undefined : "overflow-hidden w-full"}
       style={isZoomMode
         ? { width: A4_WIDTH * scale, height: A4_HEIGHT * scale }
         : { height: A4_HEIGHT * scale + 4 }

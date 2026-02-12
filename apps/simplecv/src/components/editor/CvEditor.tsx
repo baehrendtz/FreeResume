@@ -125,8 +125,15 @@ interface CvEditorProps {
       styleTitle: string;
       styleDescription: string;
       accentColor: string;
+      secondaryColor: string;
       photoSize: string;
       fontScale: string;
+      photoShape: string;
+      photoShapeCircle: string;
+      photoShapeRounded: string;
+      photoShapeSquare: string;
+      sidebarBgColor: string;
+      lineHeight: string;
       resetDefaults: string;
     };
     visibility: {
@@ -257,6 +264,8 @@ export function CvEditor({
                     styleOverrides={styleOverrides}
                     onStyleOverridesChange={onStyleOverridesChange}
                     supportsPhoto={getTemplateMeta(templateId).capabilities.supportsPhoto}
+                    supportsSidebar={getTemplateMeta(templateId).capabilities.supportsSidebar}
+                    supportsSecondaryColor={getTemplateMeta(templateId).capabilities.supportsSecondaryColor}
                     labels={labels.style}
                   />
                 )}

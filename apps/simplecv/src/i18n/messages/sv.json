@@ -113,8 +113,15 @@
       "styleTitle": "Stil",
       "styleDescription": "Anpassa mallens visuella stil",
       "accentColor": "Accentfärg",
+      "secondaryColor": "Sekundärfärg",
       "photoSize": "Fotostorlek",
       "fontScale": "Textstorlek",
+      "photoShape": "Fotoform",
+      "photoShapeCircle": "Cirkel",
+      "photoShapeRounded": "Rundad",
+      "photoShapeSquare": "Kvadrat",
+      "sidebarBgColor": "Sidofältsbakgrund",
+      "lineHeight": "Radavstånd",
       "resetDefaults": "Återställ standardvärden"
     },
     "visibility": {

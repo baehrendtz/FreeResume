@@ -4,6 +4,7 @@ import type { RenderModel } from "@/lib/fitting/types";
 import type { TemplateStyleValues } from "@/lib/model/TemplateStyleSettings";
 import { getCvStrings, resolveLanguageName, translateExtrasCategory } from "@/lib/cvLocale";
 import {
+  scaledContainerStyle,
   getContactItems,
   formatDateRange,
   CvFooter,
@@ -78,14 +79,20 @@ export default function TemplateBasic2({ cv, styleSettings }: TemplateProps) {
   const accent = styleSettings?.accentColor ?? "#4a6fa5";
   const photoSize = styleSettings?.photoSizePx ?? 128;
   const fontZoom = (styleSettings?.fontSizePercent ?? 100) / 100;
-  const sidebarBg = "#dce4ed";
+  const photoShape = styleSettings?.photoShape ?? "circle";
+  const photoShapeClass =
+    photoShape === "circle" ? "rounded-full" :
+    photoShape === "rounded" ? "rounded-lg" : "rounded-none";
+  const sidebarBg = styleSettings?.sidebarBgColor ?? "#dce4ed";
   const timelineColor = "#c0c8d4";
+  const BASE_LINE_HEIGHT = 1.35;
+  const lineHeight = BASE_LINE_HEIGHT * (styleSettings?.lineHeightPercent ?? 100) / 100;
 
   return (
     <div
       lang={cv.cvLanguage}
-      className="cv-template font-sans text-[8pt] leading-[1.35] text-gray-800 max-w-[210mm] mx-auto bg-white min-h-[297mm] flex flex-col overflow-hidden"
-      style={{ borderRadius: "16px", zoom: fontZoom }}
+      className="cv-template font-sans text-[8pt] text-gray-800 mx-auto bg-white flex flex-col overflow-hidden"
+      style={scaledContainerStyle(fontZoom, lineHeight, { borderRadius: "16px" })}
     >
       <div className="flex flex-1 relative">
         {/* Sidebar background — absolute div for html2canvas compatibility */}
@@ -102,7 +109,7 @@ export default function TemplateBasic2({ cv, styleSettings }: TemplateProps) {
               <img
                 src={cv.photo}
                 alt=""
-                className="rounded-full object-cover border-[3px] border-white"
+                className={`${photoShapeClass} object-cover border-[3px] border-white`}
                 style={{ width: photoSize, height: photoSize, boxShadow: "0 2px 8px rgba(0,0,0,0.12)" }}
               />
             </div>
