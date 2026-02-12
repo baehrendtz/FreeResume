@@ -39,7 +39,7 @@ export function buildRenderModel(
   if (capabilities.supportsSummary && vis.summary && cv.summary) {
     const maxChars = settings.summaryMaxChars;
     summary = cv.summary.length > maxChars
-      ? cv.summary.slice(0, maxChars).trimEnd() + "..."
+      ? cv.summary.slice(0, maxChars).trimEnd() + "…"
       : cv.summary;
   }
 

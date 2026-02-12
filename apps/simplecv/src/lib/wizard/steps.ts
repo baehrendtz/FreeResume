@@ -22,6 +22,7 @@ export interface StepGroup {
 }
 
 export const WIZARD_STEPS: WizardStep[] = [
+  { id: "visibility", icon: Settings, group: "settings" },
   { id: "template", icon: Palette, group: "theme" },
   { id: "basics", icon: User, group: "content" },
   { id: "summary", icon: FileText, group: "content" },
@@ -30,11 +31,10 @@ export const WIZARD_STEPS: WizardStep[] = [
   { id: "skills", icon: Wrench, group: "content" },
   { id: "languages", icon: Globe, group: "content" },
   { id: "extras", icon: Award, group: "content" },
-  { id: "visibility", icon: Settings, group: "settings" },
 ];
 
 export const STEP_GROUPS: StepGroup[] = [
+  { id: "settings", steps: ["visibility"] },
   { id: "theme", steps: ["template"] },
   { id: "content", steps: ["basics", "summary", "experience", "education", "skills", "languages", "extras"] },
-  { id: "settings", steps: ["visibility"] },
 ];

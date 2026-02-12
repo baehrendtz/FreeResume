@@ -98,11 +98,6 @@
       "placeholder": "Välj ett språk...",
       "add": "Lägg till",
       "levelLabel": "Nivå",
-      "native": "Modersmål",
-      "full_professional": "Flytande",
-      "professional_working": "Goda kunskaper",
-      "limited_working": "Grundläggande",
-      "elementary": "Nybörjare",
       "noResults": "Inget språk hittades.",
       "emptyState": "Inga språk ännu. Välj ett språk ovan."
     },
@@ -113,17 +108,6 @@
       "addCategory": "Lägg till kategori",
       "removeCategory": "Ta bort kategori",
       "emptyState": "Inget övrigt tillagt ännu. Lägg till en kategori."
-    },
-    "extrasCategories": {
-      "certifications": "Certifieringar",
-      "honors": "Utmärkelser",
-      "publications": "Publikationer",
-      "volunteering": "Ideellt arbete",
-      "organizations": "Organisationer",
-      "courses": "Kurser",
-      "projects": "Projekt",
-      "patents": "Patent",
-      "other": "Övrigt"
     },
     "visibility": {
       "title": "Sektioner",

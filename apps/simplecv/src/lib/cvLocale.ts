@@ -1,44 +1,87 @@
-const cvStrings = {
+const CV_LABELS = {
   en: {
-    summary: "Summary",
-    experience: "Experience",
-    professionalExperience: "Professional Experience",
-    education: "Education",
-    skills: "Skills",
-    languages: "Languages",
-    extras: "Extras",
-    contact: "Contact",
-    native: "Native or Bilingual",
-    full_professional: "Full Professional",
-    professional_working: "Professional Working",
-    limited_working: "Limited Working",
-    elementary: "Elementary",
-    yourName: "Your Name",
+    sections: {
+      summary: "Summary",
+      experience: "Experience",
+      professionalExperience: "Professional Experience",
+      education: "Education",
+      skills: "Skills",
+      languages: "Languages",
+      extras: "Extras",
+      contact: "Contact",
+    },
+    proficiency: {
+      native: "Native or Bilingual",
+      full_professional: "Full Professional",
+      professional_working: "Professional Working",
+      limited_working: "Limited Working",
+      elementary: "Elementary",
+    },
+    extrasCategories: {
+      certifications: "Certifications",
+      honors: "Honors & Awards",
+      publications: "Publications",
+      volunteering: "Volunteering",
+      organizations: "Organizations",
+      courses: "Courses",
+      projects: "Projects",
+      patents: "Patents",
+      other: "Other",
+    },
+    dates: { present: "Present" },
+    defaults: { yourName: "Your Name" },
   },
   sv: {
-    summary: "Sammanfattning",
-    experience: "Erfarenhet",
-    professionalExperience: "Yrkeserfarenhet",
-    education: "Utbildning",
-    skills: "Kompetenser",
-    languages: "Språk",
-    extras: "Övrigt",
-    contact: "Kontakt",
-    native: "Modersmål",
-    full_professional: "Flytande",
-    professional_working: "Goda kunskaper",
-    limited_working: "Grundläggande",
-    elementary: "Nybörjare",
-    yourName: "Ditt namn",
+    sections: {
+      summary: "Sammanfattning",
+      experience: "Erfarenhet",
+      professionalExperience: "Yrkeserfarenhet",
+      education: "Utbildning",
+      skills: "Kompetenser",
+      languages: "Språk",
+      extras: "Övrigt",
+      contact: "Kontakt",
+    },
+    proficiency: {
+      native: "Modersmål",
+      full_professional: "Flytande",
+      professional_working: "Goda kunskaper",
+      limited_working: "Grundläggande",
+      elementary: "Nybörjare",
+    },
+    extrasCategories: {
+      certifications: "Certifieringar",
+      honors: "Utmärkelser",
+      publications: "Publikationer",
+      volunteering: "Ideellt arbete",
+      organizations: "Organisationer",
+      courses: "Kurser",
+      projects: "Projekt",
+      patents: "Patent",
+      other: "Övrigt",
+    },
+    dates: { present: "Pågående" },
+    defaults: { yourName: "Ditt namn" },
   },
 } as const;
 
-export type CvLanguage = keyof typeof cvStrings;
-export type CvStrings = (typeof cvStrings)[CvLanguage];
+export type CvLanguage = keyof typeof CV_LABELS;
+export type CvStrings = (typeof CV_LABELS)[CvLanguage]["sections"]
+  & (typeof CV_LABELS)[CvLanguage]["proficiency"]
+  & (typeof CV_LABELS)[CvLanguage]["defaults"];
 export type LocaleMap = Record<CvLanguage, string>;
 
 export function getCvStrings(lang: CvLanguage): CvStrings {
-  return cvStrings[lang];
+  const l = CV_LABELS[lang];
+  return { ...l.sections, ...l.proficiency, ...l.defaults } as CvStrings;
+}
+
+export function getCvProficiencyLabels(lang: CvLanguage) {
+  return CV_LABELS[lang].proficiency;
+}
+
+export function getCvExtrasCategoryLabels(lang: CvLanguage): Record<string, string> {
+  return { ...CV_LABELS[lang].extrasCategories };
 }
 
 // ---------------------------------------------------------------------------
@@ -152,7 +195,7 @@ export function formatCvDate(raw: string, cvLanguage: CvLanguage): string {
   if (!trimmed) return trimmed;
 
   if (PRESENT_TOKENS.has(trimmed.toLowerCase())) {
-    return cvLanguage === "sv" ? "Pågående" : "Present";
+    return CV_LABELS[cvLanguage].dates.present;
   }
 
   // Year only
@@ -174,23 +217,11 @@ export function formatCvDate(raw: string, cvLanguage: CvLanguage): string {
 // Extras category translation
 // ---------------------------------------------------------------------------
 
-const EXTRAS_CATEGORY_LABELS: Record<string, LocaleMap> = {
-  certifications: { en: "Certifications", sv: "Certifieringar" },
-  honors:         { en: "Honors & Awards", sv: "Utmärkelser" },
-  publications:   { en: "Publications", sv: "Publikationer" },
-  volunteering:   { en: "Volunteering", sv: "Ideellt arbete" },
-  organizations:  { en: "Organizations", sv: "Organisationer" },
-  courses:        { en: "Courses", sv: "Kurser" },
-  projects:       { en: "Projects", sv: "Projekt" },
-  patents:        { en: "Patents", sv: "Patent" },
-  other:          { en: "Other", sv: "Övrigt" },
-};
-
 /** Translate an extras category key to a display label for the given cvLanguage. */
 export function translateExtrasCategory(category: string, cvLanguage: CvLanguage): string {
   const normalized = category.toLowerCase().replace(/-/g, " ").trim();
-  const entry = EXTRAS_CATEGORY_LABELS[normalized];
-  if (entry) return entry[cvLanguage];
+  const labels = CV_LABELS[cvLanguage].extrasCategories as Record<string, string>;
+  if (normalized in labels) return labels[normalized];
   // Fallback: capitalize first letter
   return category.charAt(0).toUpperCase() + category.slice(1).replace(/-/g, " ");
 }

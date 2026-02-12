@@ -11,7 +11,6 @@ interface WizardSidebarProps {
   groupLabels: Record<string, string>;
   collapsed: boolean;
   onToggleCollapse: () => void;
-  completedSteps?: Set<string>;
 }
 
 export function WizardSidebar({
@@ -21,7 +20,6 @@ export function WizardSidebar({
   groupLabels,
   collapsed,
   onToggleCollapse,
-  completedSteps,
 }: WizardSidebarProps) {
   return (
     <>
@@ -67,7 +65,6 @@ export function WizardSidebar({
               {groupSteps.map((step) => {
                 const Icon = step.icon;
                 const isActive = step.id === activeStep;
-                const hasContent = completedSteps?.has(step.id);
                 return (
                   <button
                     key={step.id}
@@ -75,7 +72,7 @@ export function WizardSidebar({
                     onClick={() => onStepSelect(step.id)}
                     title={collapsed ? tabLabels[step.id] : undefined}
                     className={cn(
-                      "flex items-center gap-2 rounded-md text-sm transition-colors text-left w-full relative",
+                      "flex items-center gap-2 rounded-md text-sm transition-colors text-left w-full",
                       collapsed ? "px-2 py-2 justify-center" : "px-3 py-2",
                       isActive
                         ? "bg-accent text-accent-foreground font-medium"
@@ -84,9 +81,6 @@ export function WizardSidebar({
                   >
                     <Icon className="h-4 w-4 shrink-0" />
                     {!collapsed && <span className="truncate">{tabLabels[step.id]}</span>}
-                    {hasContent && !isActive && (
-                      <span className="absolute right-2 top-1/2 -translate-y-1/2 h-1.5 w-1.5 rounded-full bg-primary" />
-                    )}
                   </button>
                 );
               })}
@@ -105,14 +99,13 @@ export function WizardSidebar({
           return groupSteps.map((step) => {
             const Icon = step.icon;
             const isActive = step.id === activeStep;
-            const hasContent = completedSteps?.has(step.id);
             return (
               <button
                 key={step.id}
                 type="button"
                 onClick={() => onStepSelect(step.id)}
                 className={cn(
-                  "flex items-center justify-center shrink-0 w-8 h-8 rounded-full text-xs font-medium transition-colors relative",
+                  "flex items-center justify-center shrink-0 w-8 h-8 rounded-full text-xs font-medium transition-colors",
                   isActive
                     ? "bg-primary text-primary-foreground"
                     : "bg-muted text-muted-foreground",
@@ -121,9 +114,6 @@ export function WizardSidebar({
                 title={tabLabels[step.id]}
               >
                 <Icon className="h-4 w-4" />
-                {hasContent && !isActive && (
-                  <span className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-primary border-2 border-background" />
-                )}
               </button>
             );
           });

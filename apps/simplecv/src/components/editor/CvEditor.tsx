@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useCallback, useRef, useState, useMemo } from "react";
+import { useEffect, useCallback, useRef, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type CvModel, cvModelSchema } from "@/lib/model/CvModel";
@@ -195,20 +195,6 @@ export function CvEditor({
     methods.reset(defaultValues);
   }, [defaultValues, methods]);
 
-  const watchedValues = methods.watch();
-  const completedSteps = useMemo(() => {
-    const steps = new Set<string>();
-    const cv = watchedValues as CvModel;
-    if (cv.name || cv.email || cv.phone) steps.add("basics");
-    if (cv.summary) steps.add("summary");
-    if (cv.experience?.length) steps.add("experience");
-    if (cv.education?.length) steps.add("education");
-    if (cv.skills?.length) steps.add("skills");
-    if (cv.languages?.length) steps.add("languages");
-    if (cv.extras?.length) steps.add("extras");
-    return steps;
-  }, [watchedValues]);
-
   const formRef = useRef<HTMLFormElement>(null);
 
   const handleStepSelect = useCallback((id: string) => {
@@ -229,7 +215,6 @@ export function CvEditor({
             groupLabels={labels.groups}
             collapsed={collapsed}
             onToggleCollapse={() => setCollapsed((c) => !c)}
-            completedSteps={completedSteps}
           />
 
           {/* Form content */}
@@ -252,12 +237,14 @@ export function CvEditor({
             )}
             {activeStep === "visibility" && (
               <div className="space-y-4">
+                {displaySettings && onDisplaySettingsChange && (
+                  <CvLanguageSetting labels={labels.visibility} displaySettings={displaySettings} onDisplaySettingsChange={onDisplaySettingsChange} />
+                )}
                 <SectionToggles labels={labels.visibility} />
                 {displaySettings && onDisplaySettingsChange && (
                   <>
                     <ContentLimits labels={labels.visibility} displaySettings={displaySettings} onDisplaySettingsChange={onDisplaySettingsChange} />
                     <LocationFormatting labels={labels.visibility} displaySettings={displaySettings} onDisplaySettingsChange={onDisplaySettingsChange} />
-                    <CvLanguageSetting labels={labels.visibility} displaySettings={displaySettings} onDisplaySettingsChange={onDisplaySettingsChange} />
                   </>
                 )}
               </div>

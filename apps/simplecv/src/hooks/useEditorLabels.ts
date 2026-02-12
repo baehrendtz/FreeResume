@@ -1,7 +1,12 @@
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+import { getCvProficiencyLabels, getCvExtrasCategoryLabels, type CvLanguage } from "@/lib/cvLocale";
 
 export function useEditorLabels() {
   const t = useTranslations();
+  const locale = useLocale();
+  const cvLang: CvLanguage = locale === "sv" ? "sv" : "en";
+  const proficiency = getCvProficiencyLabels(cvLang);
+  const extrasCats = getCvExtrasCategoryLabels(cvLang);
 
   const editor = {
     tabs: {
@@ -89,11 +94,11 @@ export function useEditorLabels() {
       placeholder: t("editor.languages.placeholder"),
       add: t("editor.languages.add"),
       levelLabel: t("editor.languages.levelLabel"),
-      native: t("editor.languages.native"),
-      full_professional: t("editor.languages.full_professional"),
-      professional_working: t("editor.languages.professional_working"),
-      limited_working: t("editor.languages.limited_working"),
-      elementary: t("editor.languages.elementary"),
+      native: proficiency.native,
+      full_professional: proficiency.full_professional,
+      professional_working: proficiency.professional_working,
+      limited_working: proficiency.limited_working,
+      elementary: proficiency.elementary,
       noResults: t("editor.languages.noResults"),
       emptyState: t("editor.languages.emptyState"),
     },
@@ -105,17 +110,7 @@ export function useEditorLabels() {
       removeCategory: t("editor.extras.removeCategory"),
       emptyState: t("editor.extras.emptyState"),
     },
-    extrasCategories: {
-      certifications: t("editor.extrasCategories.certifications"),
-      honors: t("editor.extrasCategories.honors"),
-      publications: t("editor.extrasCategories.publications"),
-      volunteering: t("editor.extrasCategories.volunteering"),
-      organizations: t("editor.extrasCategories.organizations"),
-      courses: t("editor.extrasCategories.courses"),
-      projects: t("editor.extrasCategories.projects"),
-      patents: t("editor.extrasCategories.patents"),
-      other: t("editor.extrasCategories.other"),
-    },
+    extrasCategories: extrasCats,
     visibility: {
       title: t("editor.visibility.title"),
       description: t("editor.visibility.description"),
