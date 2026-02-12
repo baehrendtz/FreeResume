@@ -14,6 +14,7 @@ export interface PdfPage {
 
 export async function extractText(file: File): Promise<PdfPage[]> {
   const pdfjsLib = await import("pdfjs-dist");
+  type TextItem = import("pdfjs-dist/types/src/display/api").TextItem;
   pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
 
   const arrayBuffer = await file.arrayBuffer();
@@ -28,7 +29,7 @@ export async function extractText(file: File): Promise<PdfPage[]> {
     const items: PdfTextItem[] = [];
     for (const item of textContent.items) {
       if (!("str" in item)) continue;
-      const textItem = item as { str: string; fontName: string; transform: number[] };
+      const textItem = item as TextItem;
       const fontName = textItem.fontName || "";
       const bold =
         fontName.toLowerCase().includes("bold") ||

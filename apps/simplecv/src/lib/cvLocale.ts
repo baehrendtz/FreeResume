@@ -116,6 +116,7 @@ export const MONTH_LOOKUP: Record<string, number> = {
   // English
   january: 1, february: 2, march: 3, april: 4, may: 5, june: 6,
   july: 7, august: 8, september: 9, october: 10, november: 11, december: 12,
+  // Note: "may" is already covered by the full-form entry above (3-letter name = abbreviation)
   jan: 1, feb: 2, mar: 3, apr: 4, jun: 6, jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12,
   // Swedish (those that differ)
   januari: 1, februari: 2, mars: 3, maj: 5, juni: 6,

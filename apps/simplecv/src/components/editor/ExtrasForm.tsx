@@ -22,6 +22,7 @@ interface ExtrasFormProps {
     add: string;
     addCategory: string;
     removeCategory: string;
+    emptyState: string;
   };
   categoryNames: Record<string, string>;
 }
@@ -76,6 +77,10 @@ export function ExtrasForm({ labels, categoryNames }: ExtrasFormProps) {
         return (
           <div className="space-y-4">
             <Label className="text-xs">{labels.label}</Label>
+
+            {groups.length === 0 && (
+              <p className="text-sm text-muted-foreground">{labels.emptyState}</p>
+            )}
 
             {groups.map((group, gi) => (
               <div

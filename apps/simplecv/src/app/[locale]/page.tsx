@@ -52,13 +52,14 @@ export default function MainPage() {
   );
 
   // --- PDF import ---
-  const handleImported = useCallback((parsed: Parameters<typeof setCv>[0]) => {
-    setCv(parsed);
+  const handleImported = useCallback((result: import("@/lib/parser/linkedinParser").ParseResult) => {
+    setCv(result.cv);
+    setDisplaySettings((prev) => ({ ...prev, cvLanguage: result.detectedLanguage }));
     setIsFromScratch(false);
     setShowImport(false);
-  }, [setCv]);
+  }, [setCv, setDisplaySettings]);
 
-  const { processing, handleFileSelected } = usePdfImport(handleImported);
+  const { processing, error: pdfError, clearError: clearPdfError, handleFileSelected } = usePdfImport(handleImported);
 
   // --- PDF export ---
   const { downloading, handleDownloadPdf } = usePdfExport(cv.name, templateId);
@@ -91,6 +92,8 @@ export default function MainPage() {
           <OnboardingWizard
             labels={onboarding}
             processing={processing}
+            pdfError={pdfError}
+            onClearError={clearPdfError}
             cv={cv}
             isFromScratch={isFromScratch}
             onFileSelected={handleFileSelected}
@@ -206,9 +209,10 @@ export default function MainPage() {
 
       <ImportPdfDialog
         open={showImport}
-        onOpenChange={setShowImport}
+        onOpenChange={(open) => { setShowImport(open); if (!open) clearPdfError(); }}
         onFileSelected={handleFileSelected}
         processing={processing}
+        error={pdfError}
         labels={importDialog}
       />
 

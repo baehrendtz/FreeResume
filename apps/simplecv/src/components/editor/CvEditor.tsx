@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useCallback, useRef, useState } from "react";
+import { useEffect, useCallback, useRef, useState, useMemo } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type CvModel, cvModelSchema } from "@/lib/model/CvModel";
@@ -47,6 +47,7 @@ interface CvEditorProps {
     };
     basics: {
       name: string;
+      nameRequired: string;
       headline: string;
       email: string;
       phone: string;
@@ -65,12 +66,20 @@ interface CvEditorProps {
       location: string;
       startDate: string;
       endDate: string;
+      datePlaceholder: string;
+      endDatePlaceholder: string;
       description: string;
       bullets: string;
+      bulletsHint: string;
       add: string;
       remove: string;
       hide: string;
       show: string;
+      at: string;
+      emptyState: string;
+      confirm: string;
+      moveUp: string;
+      moveDown: string;
     };
     education: {
       institution: string;
@@ -78,13 +87,19 @@ interface CvEditorProps {
       field: string;
       startDate: string;
       endDate: string;
+      datePlaceholder: string;
+      endDatePlaceholder: string;
       description: string;
       add: string;
       remove: string;
       hide: string;
       show: string;
+      emptyState: string;
+      confirm: string;
+      moveUp: string;
+      moveDown: string;
     };
-    skills: { label: string; placeholder: string; add: string };
+    skills: { label: string; placeholder: string; add: string; emptyState: string; duplicateWarning: string };
     languages: {
       label: string;
       placeholder: string;
@@ -95,8 +110,10 @@ interface CvEditorProps {
       professional_working: string;
       limited_working: string;
       elementary: string;
+      noResults: string;
+      emptyState: string;
     };
-    extras: { label: string; placeholder: string; add: string; addCategory: string; removeCategory: string };
+    extras: { label: string; placeholder: string; add: string; addCategory: string; removeCategory: string; emptyState: string };
     extrasCategories: Record<string, string>;
     visibility: {
       title: string;
@@ -178,6 +195,20 @@ export function CvEditor({
     methods.reset(defaultValues);
   }, [defaultValues, methods]);
 
+  const watchedValues = methods.watch();
+  const completedSteps = useMemo(() => {
+    const steps = new Set<string>();
+    const cv = watchedValues as CvModel;
+    if (cv.name || cv.email || cv.phone) steps.add("basics");
+    if (cv.summary) steps.add("summary");
+    if (cv.experience?.length) steps.add("experience");
+    if (cv.education?.length) steps.add("education");
+    if (cv.skills?.length) steps.add("skills");
+    if (cv.languages?.length) steps.add("languages");
+    if (cv.extras?.length) steps.add("extras");
+    return steps;
+  }, [watchedValues]);
+
   const formRef = useRef<HTMLFormElement>(null);
 
   const handleStepSelect = useCallback((id: string) => {
@@ -198,6 +229,7 @@ export function CvEditor({
             groupLabels={labels.groups}
             collapsed={collapsed}
             onToggleCollapse={() => setCollapsed((c) => !c)}
+            completedSteps={completedSteps}
           />
 
           {/* Form content */}
@@ -235,6 +267,7 @@ export function CvEditor({
               <SummaryForm
                 label={labels.summary.label}
                 placeholder={labels.summary.placeholder}
+                maxChars={displaySettings?.summaryMaxChars}
               />
             )}
             {activeStep === "experience" && <ExperienceForm labels={labels.experience} />}

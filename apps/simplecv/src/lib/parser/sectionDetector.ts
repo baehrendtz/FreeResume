@@ -104,6 +104,30 @@ export function detectExtrasCategory(text: string): string {
   return "other";
 }
 
+/** Swedish-only section headers (keys that only appear in Swedish PDFs). */
+const SWEDISH_SECTIONS = new Set([
+  "sammanfattning", "om", "om mig", "profil",
+  "erfarenhet", "arbetslivserfarenhet", "anställning",
+  "utbildning",
+  "kunskaper", "kompetenser", "främsta kompetenser", "färdigheter",
+  "språk",
+  "kontakta", "kontakt",
+  "certifieringar", "licenser och certifieringar", "licenser & certifieringar",
+  "utmärkelser", "publikationer", "ideellt arbete",
+]);
+
+/**
+ * Detect whether a section header is Swedish, English, or ambiguous.
+ * Returns "sv", "en", or null (for headers that exist in both languages or are unknown).
+ */
+export function detectSectionLanguage(text: string): "sv" | "en" | null {
+  const normalized = text.trim().toLowerCase();
+  if (!(normalized in SECTION_MAP) && SECTION_MAP[normalized] === undefined) return null;
+  if (SWEDISH_SECTIONS.has(normalized)) return "sv";
+  if (normalized in SECTION_MAP) return "en";
+  return null;
+}
+
 export function detectSection(text: string): SectionType {
   const normalized = text.trim().toLowerCase();
 

@@ -17,23 +17,33 @@ interface EducationFormProps {
     field: string;
     startDate: string;
     endDate: string;
+    datePlaceholder: string;
+    endDatePlaceholder: string;
     description: string;
     add: string;
     remove: string;
     hide: string;
     show: string;
+    emptyState: string;
+    confirm: string;
+    moveUp: string;
+    moveDown: string;
   };
 }
 
 export function EducationForm({ labels }: EducationFormProps) {
   const { register, control, watch, setValue } = useFormContext<CvModel>();
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, move } = useFieldArray({
     control,
     name: "education",
   });
 
   return (
     <div className="space-y-4">
+      {fields.length === 0 && (
+        <p className="text-sm text-muted-foreground">{labels.emptyState}</p>
+      )}
+
       {fields.map((field, index) => {
         const institution = watch(`education.${index}.institution`);
         const degree = watch(`education.${index}.degree`);
@@ -47,8 +57,17 @@ export function EducationForm({ labels }: EducationFormProps) {
             hidden={isHidden}
             onToggleHidden={() => setValue(`education.${index}.hidden`, !isHidden)}
             onRemove={() => { remove(index); trackEducationRemove(); }}
+            onMoveUp={index > 0 ? () => move(index, index - 1) : undefined}
+            onMoveDown={index < fields.length - 1 ? () => move(index, index + 1) : undefined}
             showSeparator={index > 0}
-            labels={{ hide: labels.hide, show: labels.show, remove: labels.remove }}
+            labels={{
+              hide: labels.hide,
+              show: labels.show,
+              remove: labels.remove,
+              confirm: labels.confirm,
+              moveUp: labels.moveUp,
+              moveDown: labels.moveDown,
+            }}
           >
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1 col-span-2">
@@ -65,11 +84,17 @@ export function EducationForm({ labels }: EducationFormProps) {
               </div>
               <div className="space-y-1">
                 <Label className="text-xs">{labels.startDate}</Label>
-                <Input {...register(`education.${index}.startDate`)} />
+                <Input
+                  {...register(`education.${index}.startDate`)}
+                  placeholder={labels.datePlaceholder}
+                />
               </div>
               <div className="space-y-1">
                 <Label className="text-xs">{labels.endDate}</Label>
-                <Input {...register(`education.${index}.endDate`)} />
+                <Input
+                  {...register(`education.${index}.endDate`)}
+                  placeholder={labels.endDatePlaceholder}
+                />
               </div>
             </div>
 

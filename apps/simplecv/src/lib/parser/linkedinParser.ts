@@ -1,6 +1,6 @@
 import type { PdfPage, PdfTextItem } from "@/lib/pdf/extractText";
 import { type CvModel, type LanguageEntry, type LanguageProficiency, createEmptyCvModel } from "@/lib/model/CvModel";
-import { detectSection, detectExtrasCategory, type SectionType } from "./sectionDetector";
+import { detectSection, detectSectionLanguage, detectExtrasCategory, type SectionType } from "./sectionDetector";
 import { parseDateRange } from "./dateParser";
 import { findLanguageId } from "@/lib/cvLocale";
 
@@ -124,12 +124,17 @@ function parseLanguageLine(text: string): LanguageEntry {
   return { name, level: "professional_working" };
 }
 
+export interface ParseResult {
+  cv: CvModel;
+  detectedLanguage: "en" | "sv";
+}
+
 /**
  * Main entry point: parse a LinkedIn PDF export into a structured CvModel.
  * Handles the two-column layout (sidebar + main) on page 1,
  * with pages 2+ being single-column main content.
  */
-export function parseLinkedInPdf(pages: PdfPage[]): CvModel {
+export function parseLinkedInPdf(pages: PdfPage[]): ParseResult {
   const cv = createEmptyCvModel();
 
   // Collect all items with page number
@@ -141,7 +146,7 @@ export function parseLinkedInPdf(pages: PdfPage[]): CvModel {
     }
   }
 
-  if (allItems.length === 0) return cv;
+  if (allItems.length === 0) return { cv, detectedLanguage: "en" };
 
   // Determine column threshold from page 1 items
   const page1Items = allItems.filter((i) => i.page === 1);
@@ -159,13 +164,32 @@ export function parseLinkedInPdf(pages: PdfPage[]): CvModel {
     ...buildLines(laterItems),
   ];
 
+  // Detect PDF language by counting sv vs en section headers
+  let svHits = 0;
+  let enHits = 0;
+  for (const line of [...sidebarLines, ...mainLines]) {
+    const lang = detectSectionLanguage(line.text);
+    if (lang === "sv") svHits++;
+    else if (lang === "en") enHits++;
+  }
+  const detectedLanguage: "en" | "sv" = svHits > enHits ? "sv" : "en";
+
   // Parse sidebar (contact, skills, languages)
   parseSidebar(cv, sidebarLines);
 
   // Parse main content (name, headline, summary, experience, education)
   parseMainContent(cv, mainLines);
 
-  return cv;
+  // Deduplicate skills and languages (sidebar + main content often overlap)
+  cv.skills = [...new Set(cv.skills)];
+  const seenLangs = new Set<string>();
+  cv.languages = cv.languages.filter((lang) => {
+    if (seenLangs.has(lang.name)) return false;
+    seenLangs.add(lang.name);
+    return true;
+  });
+
+  return { cv, detectedLanguage };
 }
 
 function parseSidebar(cv: CvModel, lines: Line[]) {
@@ -559,8 +583,8 @@ function extractContactInfo(cv: CvModel, text: string) {
 }
 
 function isAddressLine(text: string): boolean {
-  // Address lines: contain numbers + street name, or postal codes
-  return /\d{3}\s*\d{2}/.test(text) || /\d+\s+\w/.test(text.trim());
+  // Address lines: postal codes (e.g. "114 32") or start with street number (e.g. "12 Main St")
+  return /\d{3}\s*\d{2}/.test(text) || /^\d+\s+\w/.test(text.trim());
 }
 
 function isLocation(text: string): boolean {
@@ -599,7 +623,12 @@ function cleanBullet(text: string): string {
  */
 function appendText(existing: string, next: string): string {
   if (!existing) return next;
-  if (existing.endsWith("-")) return existing.slice(0, -1) + next;
+  // Only remove trailing hyphen if the next text starts with a lowercase letter
+  // (indicates a word broken across lines, e.g. "devel-" + "opment").
+  // Real hyphens (e.g. "self-" + "Employed") are preserved.
+  if (existing.endsWith("-") && /^[a-zà-öø-ÿ]/.test(next)) {
+    return existing.slice(0, -1) + next;
+  }
   return existing + " " + next;
 }
 

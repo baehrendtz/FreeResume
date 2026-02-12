@@ -9,6 +9,7 @@
     "dropzone": "Drag and drop your PDF here, or click to browse",
     "invalidFileType": "Please select a PDF file",
     "processing": "Processing PDF...",
+    "error": "Could not parse this PDF. Please make sure it is a LinkedIn profile export.",
     "startFromScratch": "Or start from scratch"
   },
   "editor": {
@@ -30,6 +31,7 @@
     },
     "basics": {
       "name": "Full Name",
+      "nameRequired": "Name is required",
       "headline": "Headline",
       "email": "Email",
       "phone": "Phone",
@@ -51,12 +53,20 @@
       "location": "Location",
       "startDate": "Start Date",
       "endDate": "End Date",
+      "datePlaceholder": "e.g. Jan 2020",
+      "endDatePlaceholder": "e.g. Present",
       "description": "Description",
       "bullets": "Bullet points (one per line)",
+      "bulletsHint": "One bullet point per line. Empty lines are ignored.",
       "add": "Add Experience",
       "remove": "Remove",
       "hide": "Hide",
-      "show": "Show"
+      "show": "Show",
+      "at": " at ",
+      "emptyState": "No experience entries yet. Click below to add one.",
+      "confirm": "Confirm?",
+      "moveUp": "Move up",
+      "moveDown": "Move down"
     },
     "education": {
       "institution": "Institution",
@@ -64,16 +74,24 @@
       "field": "Field of Study",
       "startDate": "Start Date",
       "endDate": "End Date",
+      "datePlaceholder": "e.g. Jan 2020",
+      "endDatePlaceholder": "e.g. Present",
       "description": "Description",
       "add": "Add Education",
       "remove": "Remove",
       "hide": "Hide",
-      "show": "Show"
+      "show": "Show",
+      "emptyState": "No education entries yet. Click below to add one.",
+      "confirm": "Confirm?",
+      "moveUp": "Move up",
+      "moveDown": "Move down"
     },
     "skills": {
       "label": "Skills",
       "placeholder": "Type a skill and press Enter",
-      "add": "Add"
+      "add": "Add",
+      "emptyState": "No skills added yet. Type a skill and press Enter.",
+      "duplicateWarning": "This skill is already added."
     },
     "languages": {
       "label": "Languages",
@@ -84,14 +102,17 @@
       "full_professional": "Full Professional",
       "professional_working": "Professional Working",
       "limited_working": "Limited Working",
-      "elementary": "Elementary"
+      "elementary": "Elementary",
+      "noResults": "No language found.",
+      "emptyState": "No languages added yet. Select a language above."
     },
     "extras": {
       "label": "Extras",
       "placeholder": "Type an item and press Enter",
       "add": "Add",
       "addCategory": "Add category",
-      "removeCategory": "Remove category"
+      "removeCategory": "Remove category",
+      "emptyState": "No extras added yet. Add a category to get started."
     },
     "extrasCategories": {
       "certifications": "Certifications",

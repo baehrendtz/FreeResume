@@ -53,6 +53,8 @@ interface LanguageFormProps {
     professional_working: string;
     limited_working: string;
     elementary: string;
+    noResults: string;
+    emptyState: string;
   };
 }
 
@@ -129,7 +131,7 @@ export function LanguageForm({ labels }: LanguageFormProps) {
                   <Command>
                     <CommandInput placeholder={labels.placeholder} />
                     <CommandList>
-                      <CommandEmpty>No language found.</CommandEmpty>
+                      <CommandEmpty>{labels.noResults}</CommandEmpty>
                       <CommandGroup>
                         {available.map((entry) => {
                           const displayName =
@@ -193,6 +195,9 @@ export function LanguageForm({ labels }: LanguageFormProps) {
               </Button>
             </div>
             <div className="divide-y">
+              {items.length === 0 && (
+                <p className="text-sm text-muted-foreground py-2">{labels.emptyState}</p>
+              )}
               {items.map((item, i) => (
                 <div key={i} className="flex items-center gap-2 py-1.5">
                   <span className="text-sm font-medium flex-1 min-w-0 truncate">

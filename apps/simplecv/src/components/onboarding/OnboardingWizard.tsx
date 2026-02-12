@@ -25,6 +25,7 @@ interface OnboardingWizardProps {
     guideStep3: string;
     uploadDropzone: string;
     uploadProcessing: string;
+    uploadError: string;
     uploadTitle: string;
     successTitle: string;
     successScratchTitle: string;
@@ -36,6 +37,8 @@ interface OnboardingWizardProps {
     successBack: string;
   };
   processing: boolean;
+  pdfError: string | null;
+  onClearError: () => void;
   cv: CvModel;
   isFromScratch: boolean;
   onFileSelected: (file: File) => void;
@@ -46,6 +49,8 @@ interface OnboardingWizardProps {
 export function OnboardingWizard({
   labels,
   processing,
+  pdfError,
+  onClearError,
   cv,
   isFromScratch,
   onFileSelected,
@@ -57,25 +62,26 @@ export function OnboardingWizard({
     onFileSelected,
   });
 
-  // Auto-advance to success when PDF processing finishes
+  // Auto-advance to success when PDF processing finishes (but not on error)
   const wasProcessing = useRef(false);
   useEffect(() => {
     const prev = wasProcessing.current;
     wasProcessing.current = processing;
-    if (!prev || processing || step !== "choose") return;
+    if (!prev || processing || step !== "choose" || pdfError) return;
     // Use microtask to avoid synchronous setState in effect body
     queueMicrotask(() => {
       setStep("success");
       trackOnboardingStep("success");
     });
-  }, [processing, step]);
+  }, [processing, step, pdfError]);
 
   const handleScratch = useCallback(() => {
     trackOnboardingSkip("choose");
+    onClearError();
     onStartFromScratch();
     setStep("success");
     trackOnboardingStep("success");
-  }, [onStartFromScratch]);
+  }, [onStartFromScratch, onClearError]);
 
   const handleComplete = useCallback(() => {
     trackOnboardingComplete(isFromScratch ? "scratch" : "upload");
@@ -177,8 +183,10 @@ export function OnboardingWizard({
             </button>
           </div>
 
-          {dropError && (
-            <p className="text-sm text-destructive text-center">{dropError}</p>
+          {(dropError || pdfError) && (
+            <p className="text-sm text-destructive text-center">
+              {pdfError ? labels.uploadError : dropError}
+            </p>
           )}
         </>
       )}

@@ -11,6 +11,7 @@ import { trackPhotoUpload } from "@/lib/analytics/gtag";
 interface BasicsFormProps {
   labels: {
     name: string;
+    nameRequired: string;
     headline: string;
     email: string;
     phone: string;
@@ -25,7 +26,7 @@ interface BasicsFormProps {
 }
 
 export function BasicsForm({ labels }: BasicsFormProps) {
-  const { register, watch, setValue } = useFormContext<CvModel>();
+  const { register, watch, setValue, formState: { errors } } = useFormContext<CvModel>();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [photoError, setPhotoError] = useState<string | null>(null);
 
@@ -81,6 +82,11 @@ export function BasicsForm({ labels }: BasicsFormProps) {
             {field.label}
           </Label>
           <Input id={field.name} {...register(field.name)} />
+          {errors[field.name] && (
+            <p className="text-xs text-destructive">
+              {field.name === "name" ? labels.nameRequired : String(errors[field.name]?.message ?? "")}
+            </p>
+          )}
         </div>
       ))}
     </div>

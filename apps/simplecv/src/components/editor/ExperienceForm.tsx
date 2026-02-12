@@ -17,29 +17,43 @@ interface ExperienceFormProps {
     location: string;
     startDate: string;
     endDate: string;
+    datePlaceholder: string;
+    endDatePlaceholder: string;
     description: string;
     bullets: string;
+    bulletsHint: string;
     add: string;
     remove: string;
     hide: string;
     show: string;
+    at: string;
+    emptyState: string;
+    confirm: string;
+    moveUp: string;
+    moveDown: string;
   };
 }
 
 export function ExperienceForm({ labels }: ExperienceFormProps) {
   const { register, control, watch, setValue } = useFormContext<CvModel>();
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, move } = useFieldArray({
     control,
     name: "experience",
   });
 
   return (
     <div className="space-y-4">
+      {fields.length === 0 && (
+        <p className="text-sm text-muted-foreground">{labels.emptyState}</p>
+      )}
+
       {fields.map((field, index) => {
         const title = watch(`experience.${index}.title`);
         const company = watch(`experience.${index}.company`);
         const isHidden = watch(`experience.${index}.hidden`) ?? false;
-        const summary = [title, company].filter(Boolean).join(" at ");
+        const summary = title && company
+          ? title + labels.at + company
+          : title || company || "";
 
         return (
           <EntryCard
@@ -48,8 +62,17 @@ export function ExperienceForm({ labels }: ExperienceFormProps) {
             hidden={isHidden}
             onToggleHidden={() => setValue(`experience.${index}.hidden`, !isHidden)}
             onRemove={() => { remove(index); trackExperienceRemove(); }}
+            onMoveUp={index > 0 ? () => move(index, index - 1) : undefined}
+            onMoveDown={index < fields.length - 1 ? () => move(index, index + 1) : undefined}
             showSeparator={index > 0}
-            labels={{ hide: labels.hide, show: labels.show, remove: labels.remove }}
+            labels={{
+              hide: labels.hide,
+              show: labels.show,
+              remove: labels.remove,
+              confirm: labels.confirm,
+              moveUp: labels.moveUp,
+              moveDown: labels.moveDown,
+            }}
           >
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1">
@@ -67,11 +90,17 @@ export function ExperienceForm({ labels }: ExperienceFormProps) {
               <div className="space-y-1 col-span-2 grid grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <Label className="text-xs">{labels.startDate}</Label>
-                  <Input {...register(`experience.${index}.startDate`)} />
+                  <Input
+                    {...register(`experience.${index}.startDate`)}
+                    placeholder={labels.datePlaceholder}
+                  />
                 </div>
                 <div className="space-y-1">
                   <Label className="text-xs">{labels.endDate}</Label>
-                  <Input {...register(`experience.${index}.endDate`)} />
+                  <Input
+                    {...register(`experience.${index}.endDate`)}
+                    placeholder={labels.endDatePlaceholder}
+                  />
                 </div>
               </div>
             </div>
@@ -97,6 +126,7 @@ export function ExperienceForm({ labels }: ExperienceFormProps) {
                   />
                 )}
               />
+              <p className="text-xs text-muted-foreground">{labels.bulletsHint}</p>
             </div>
           </EntryCard>
         );

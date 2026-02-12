@@ -1,24 +1,27 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import type { CvModel } from "@/lib/model/CvModel";
+import type { ParseResult } from "@/lib/parser/linkedinParser";
 import { trackPdfUpload } from "@/lib/analytics/gtag";
 
-export function usePdfImport(onImported: (cv: CvModel) => void) {
+export function usePdfImport(onImported: (result: ParseResult) => void) {
   const [processing, setProcessing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleFileSelected = useCallback(
     async (file: File) => {
       setProcessing(true);
+      setError(null);
       try {
         const { extractText } = await import("@/lib/pdf/extractText");
         const pages = await extractText(file);
         const { parseLinkedInPdf } = await import("@/lib/parser/linkedinParser");
-        const parsed = parseLinkedInPdf(pages);
-        onImported(parsed);
+        const result = parseLinkedInPdf(pages);
+        onImported(result);
         trackPdfUpload("success");
       } catch {
         trackPdfUpload("failure");
+        setError("pdf_parse_failed");
       } finally {
         setProcessing(false);
       }
@@ -26,5 +29,7 @@ export function usePdfImport(onImported: (cv: CvModel) => void) {
     [onImported],
   );
 
-  return { processing, handleFileSelected };
+  const clearError = useCallback(() => setError(null), []);
+
+  return { processing, error, clearError, handleFileSelected };
 }

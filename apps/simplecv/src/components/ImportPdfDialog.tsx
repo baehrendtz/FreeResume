@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, CircleAlert } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -17,11 +17,13 @@ interface ImportPdfDialogProps {
   onOpenChange: (open: boolean) => void;
   onFileSelected: (file: File) => void;
   processing: boolean;
+  error: string | null;
   labels: {
     title: string;
     warning: string;
     dropzone: string;
     processing: string;
+    error: string;
     cancel: string;
   };
 }
@@ -31,6 +33,7 @@ export function ImportPdfDialog({
   onOpenChange,
   onFileSelected,
   processing,
+  error,
   labels,
 }: ImportPdfDialogProps) {
   return (
@@ -47,6 +50,13 @@ export function ImportPdfDialog({
           <AlertTriangle className="h-4 w-4 shrink-0" />
           <span>{labels.warning}</span>
         </div>
+
+        {error && (
+          <div className="flex items-center gap-2 rounded-md bg-destructive/10 border border-destructive/20 px-3 py-2 text-sm text-destructive">
+            <CircleAlert className="h-4 w-4 shrink-0" />
+            <span>{labels.error}</span>
+          </div>
+        )}
 
         <PdfUploader
           onFileSelected={onFileSelected}

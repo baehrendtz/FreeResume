@@ -9,6 +9,7 @@
     "dropzone": "Dra och släpp din PDF här, eller klicka för att bläddra",
     "invalidFileType": "Välj en PDF-fil",
     "processing": "Bearbetar PDF...",
+    "error": "Kunde inte tolka denna PDF. Kontrollera att det är en LinkedIn-profilsexport.",
     "startFromScratch": "Eller börja från grunden"
   },
   "editor": {
@@ -30,6 +31,7 @@
     },
     "basics": {
       "name": "Fullständigt namn",
+      "nameRequired": "Namn krävs",
       "headline": "Rubrik",
       "email": "E-post",
       "phone": "Telefon",
@@ -51,12 +53,20 @@
       "location": "Plats",
       "startDate": "Startdatum",
       "endDate": "Slutdatum",
+      "datePlaceholder": "t.ex. Jan 2020",
+      "endDatePlaceholder": "t.ex. Pågående",
       "description": "Beskrivning",
       "bullets": "Punkter (en per rad)",
+      "bulletsHint": "En punkt per rad. Tomma rader ignoreras.",
       "add": "Lägg till erfarenhet",
       "remove": "Ta bort",
       "hide": "Dölj",
-      "show": "Visa"
+      "show": "Visa",
+      "at": " på ",
+      "emptyState": "Inga erfarenheter ännu. Klicka nedan för att lägga till.",
+      "confirm": "Bekräfta?",
+      "moveUp": "Flytta upp",
+      "moveDown": "Flytta ner"
     },
     "education": {
       "institution": "Lärosäte",
@@ -64,16 +74,24 @@
       "field": "Studieområde",
       "startDate": "Startdatum",
       "endDate": "Slutdatum",
+      "datePlaceholder": "t.ex. Jan 2020",
+      "endDatePlaceholder": "t.ex. Pågående",
       "description": "Beskrivning",
       "add": "Lägg till utbildning",
       "remove": "Ta bort",
       "hide": "Dölj",
-      "show": "Visa"
+      "show": "Visa",
+      "emptyState": "Inga utbildningar ännu. Klicka nedan för att lägga till.",
+      "confirm": "Bekräfta?",
+      "moveUp": "Flytta upp",
+      "moveDown": "Flytta ner"
     },
     "skills": {
       "label": "Kompetenser",
       "placeholder": "Skriv en kompetens och tryck Enter",
-      "add": "Lägg till"
+      "add": "Lägg till",
+      "emptyState": "Inga kompetenser ännu. Skriv en kompetens och tryck Enter.",
+      "duplicateWarning": "Denna kompetens finns redan."
     },
     "languages": {
       "label": "Språk",
@@ -84,14 +102,17 @@
       "full_professional": "Flytande",
       "professional_working": "Goda kunskaper",
       "limited_working": "Grundläggande",
-      "elementary": "Nybörjare"
+      "elementary": "Nybörjare",
+      "noResults": "Inget språk hittades.",
+      "emptyState": "Inga språk ännu. Välj ett språk ovan."
     },
     "extras": {
       "label": "Övrigt",
       "placeholder": "Skriv en rad och tryck Enter",
       "add": "Lägg till",
       "addCategory": "Lägg till kategori",
-      "removeCategory": "Ta bort kategori"
+      "removeCategory": "Ta bort kategori",
+      "emptyState": "Inget övrigt tillagt ännu. Lägg till en kategori."
     },
     "extrasCategories": {
       "certifications": "Certifieringar",
