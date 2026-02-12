@@ -109,6 +109,14 @@
       "removeCategory": "Ta bort kategori",
       "emptyState": "Inget övrigt tillagt ännu. Lägg till en kategori."
     },
+    "style": {
+      "styleTitle": "Stil",
+      "styleDescription": "Anpassa mallens visuella stil",
+      "accentColor": "Accentfärg",
+      "photoSize": "Fotostorlek",
+      "fontScale": "Textstorlek",
+      "resetDefaults": "Återställ standardvärden"
+    },
     "visibility": {
       "title": "Sektioner",
       "description": "Välj vilka sektioner som visas",

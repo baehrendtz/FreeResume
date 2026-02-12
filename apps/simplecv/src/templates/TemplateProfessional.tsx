@@ -1,6 +1,7 @@
 "use client";
 
 import type { RenderModel } from "@/lib/fitting/types";
+import type { TemplateStyleValues } from "@/lib/model/TemplateStyleSettings";
 import { getCvStrings } from "@/lib/cvLocale";
 import {
   getContactItems,
@@ -15,25 +16,38 @@ import {
 
 interface TemplateProps {
   cv: RenderModel;
+  styleSettings?: TemplateStyleValues;
 }
 
-export default function TemplateProfessional({ cv }: TemplateProps) {
+export default function TemplateProfessional({ cv, styleSettings }: TemplateProps) {
   const labels = getCvStrings(cv.cvLanguage ?? "en");
   const contactItems = getContactItems(cv);
+
+  const accent = styleSettings?.accentColor ?? "#1a1a2e";
+  const photoSize = styleSettings?.photoSizePx ?? 80;
+  const fontZoom = (styleSettings?.fontSizePercent ?? 100) / 100;
 
   const sidebarTitleClass = "tracking-[0.15em] text-gray-700 border-gray-300";
   const mainTitleClass = "tracking-[0.12em] text-gray-700 border-gray-200 mb-1.5";
 
+  // Build a gradient from the accent color for the header
+  const headerBg = `linear-gradient(135deg, ${accent} 0%, ${accent}dd 50%, ${accent}bb 100%)`;
+
   return (
-    <div lang={cv.cvLanguage} className="cv-template cv-template-professional font-sans text-[8pt] leading-[1.25] text-gray-900 max-w-[210mm] mx-auto bg-white min-h-[297mm] flex flex-col">
+    <div
+      lang={cv.cvLanguage}
+      className="cv-template cv-template-professional font-sans text-[8pt] leading-[1.25] text-gray-900 max-w-[210mm] mx-auto bg-white min-h-[297mm] flex flex-col"
+      style={{ zoom: fontZoom }}
+    >
       {/* Dark header with subtle gradient */}
-      <header className="text-white px-6 py-3.5" style={{ background: "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)" }}>
+      <header className="text-white px-6 py-3.5" style={{ background: headerBg }}>
         <div className="flex items-start gap-4">
           {cv.photo && (
             <img
               src={cv.photo}
               alt=""
-              className="h-[72px] w-[72px] rounded-full object-cover border-2 border-white/20 shrink-0"
+              className="rounded-full object-cover border-2 border-white/20 shrink-0"
+              style={{ width: photoSize, height: photoSize }}
             />
           )}
           <div className="min-w-0">
@@ -152,7 +166,7 @@ export default function TemplateProfessional({ cv }: TemplateProps) {
         name={(cv.name || labels.yourName).toUpperCase()}
         className="px-5"
         accentBar
-        accentColor="bg-gray-900"
+        accentColorHex={accent}
       />
     </div>
   );

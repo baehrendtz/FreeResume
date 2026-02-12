@@ -111,6 +111,14 @@ export function useEditorLabels() {
       emptyState: t("editor.extras.emptyState"),
     },
     extrasCategories: extrasCats,
+    style: {
+      styleTitle: t("editor.style.styleTitle"),
+      styleDescription: t("editor.style.styleDescription"),
+      accentColor: t("editor.style.accentColor"),
+      photoSize: t("editor.style.photoSize"),
+      fontScale: t("editor.style.fontScale"),
+      resetDefaults: t("editor.style.resetDefaults"),
+    },
     visibility: {
       title: t("editor.visibility.title"),
       description: t("editor.visibility.description"),

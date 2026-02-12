@@ -18,8 +18,11 @@ import { SectionToggles } from "./settings/SectionToggles";
 import { ContentLimits } from "./settings/ContentLimits";
 import { LocationFormatting } from "./settings/LocationFormatting";
 import { CvLanguageSetting } from "./settings/CvLanguageSetting";
+import { TemplateStylePanel } from "./settings/TemplateStylePanel";
 import { WIZARD_STEPS } from "@/lib/wizard/steps";
 import { trackWizardStep, trackSkillAdd, trackSkillRemove } from "@/lib/analytics/gtag";
+import type { PerTemplateStyleOverrides, TemplateStyleValues } from "@/lib/model/TemplateStyleSettings";
+import { getTemplateMeta } from "@/templates/templateRegistry";
 
 interface CvEditorProps {
   defaultValues: CvModel;
@@ -28,6 +31,9 @@ interface CvEditorProps {
   onDisplaySettingsChange?: (s: DisplaySettings) => void;
   templateId: string;
   onTemplateSelect: (id: string) => void;
+  styleOverrides?: PerTemplateStyleOverrides;
+  styleSettings?: TemplateStyleValues;
+  onStyleOverridesChange?: (overrides: PerTemplateStyleOverrides) => void;
   labels: {
     tabs: {
       template: string;
@@ -115,6 +121,14 @@ interface CvEditorProps {
     };
     extras: { label: string; placeholder: string; add: string; addCategory: string; removeCategory: string; emptyState: string };
     extrasCategories: Record<string, string>;
+    style: {
+      styleTitle: string;
+      styleDescription: string;
+      accentColor: string;
+      photoSize: string;
+      fontScale: string;
+      resetDefaults: string;
+    };
     visibility: {
       title: string;
       description: string;
@@ -152,6 +166,9 @@ export function CvEditor({
   onDisplaySettingsChange,
   templateId,
   onTemplateSelect,
+  styleOverrides,
+  styleSettings,
+  onStyleOverridesChange,
   labels,
 }: CvEditorProps) {
   const [activeStep, setActiveStep] = useState("basics");
@@ -233,6 +250,16 @@ export function CvEditor({
             {activeStep === "template" && (
               <div className="space-y-4">
                 <TemplateSwitcher activeId={templateId} onSelect={onTemplateSelect} />
+                {styleOverrides && styleSettings && onStyleOverridesChange && (
+                  <TemplateStylePanel
+                    templateId={templateId}
+                    styleSettings={styleSettings}
+                    styleOverrides={styleOverrides}
+                    onStyleOverridesChange={onStyleOverridesChange}
+                    supportsPhoto={getTemplateMeta(templateId).capabilities.supportsPhoto}
+                    labels={labels.style}
+                  />
+                )}
               </div>
             )}
             {activeStep === "visibility" && (

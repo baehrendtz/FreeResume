@@ -1,6 +1,7 @@
 "use client";
 
 import type { RenderModel } from "@/lib/fitting/types";
+import type { TemplateStyleValues } from "@/lib/model/TemplateStyleSettings";
 import { getCvStrings } from "@/lib/cvLocale";
 import { Briefcase, GraduationCap, Code, Globe, Star } from "lucide-react";
 import {
@@ -15,20 +16,24 @@ import {
 
 interface TemplateProps {
   cv: RenderModel;
+  styleSettings?: TemplateStyleValues;
 }
 
-const ACCENT = "#06b6d4"; // cyan-500
 const ACCENT2 = "#8b5cf6"; // violet-500
-const HEADER_BG = "linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)";
 const SIDEBAR_BG = "#f8fafc";
-const GRADIENT_BAR = "linear-gradient(to right, #22d3ee, #8b5cf6)"; // cyan-400 → violet-500
 
-export default function TemplateCreative({ cv }: TemplateProps) {
+export default function TemplateCreative({ cv, styleSettings }: TemplateProps) {
   const cvLabels = getCvStrings(cv.cvLanguage ?? "en");
   const contactItems = getContactItems(cv);
 
+  const ACCENT = styleSettings?.accentColor ?? "#06b6d4";
+  const photoSize = styleSettings?.photoSizePx ?? 64;
+  const fontZoom = (styleSettings?.fontSizePercent ?? 100) / 100;
+  const HEADER_BG = "linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)";
+  const GRADIENT_BAR = `linear-gradient(to right, ${ACCENT}, ${ACCENT2})`;
+
   return (
-    <div lang={cv.cvLanguage} className="cv-template font-sans text-[8pt] leading-[1.3] text-gray-800 max-w-[210mm] mx-auto bg-white min-h-[297mm] flex flex-col relative">
+    <div lang={cv.cvLanguage} className="cv-template font-sans text-[8pt] leading-[1.3] text-gray-800 max-w-[210mm] mx-auto bg-white min-h-[297mm] flex flex-col relative" style={{ zoom: fontZoom }}>
       {/* Top accent gradient bar */}
       <div style={{ height: 3, background: GRADIENT_BAR }} />
 
@@ -47,13 +52,14 @@ export default function TemplateCreative({ cv }: TemplateProps) {
           </div>
           {cv.photo && (
             <div
-              className="h-[68px] w-[68px] rounded-full shrink-0 flex items-center justify-center"
-              style={{ background: `linear-gradient(135deg, ${ACCENT}, ${ACCENT2})`, padding: 2 }}
+              className="rounded-full shrink-0 flex items-center justify-center"
+              style={{ width: photoSize + 4, height: photoSize + 4, background: `linear-gradient(135deg, ${ACCENT}, ${ACCENT2})`, padding: 2 }}
             >
               <img
                 src={cv.photo}
                 alt=""
-                className="h-[64px] w-[64px] rounded-full object-cover"
+                className="rounded-full object-cover"
+                style={{ width: photoSize, height: photoSize }}
               />
             </div>
           )}

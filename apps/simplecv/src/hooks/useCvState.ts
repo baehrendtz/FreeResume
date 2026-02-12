@@ -3,8 +3,9 @@
 import { useState, useEffect, useMemo } from "react";
 import { type CvModel, createEmptyCvModel } from "@/lib/model/CvModel";
 import { type DisplaySettings, defaultDisplaySettings } from "@/lib/model/DisplaySettings";
+import { type PerTemplateStyleOverrides, resolveStyleSettings } from "@/lib/model/TemplateStyleSettings";
 import { buildRenderModel } from "@/lib/fitting";
-import { getTemplateMeta } from "@/templates/templateRegistry";
+import { getTemplateMeta, getTemplateDefaultStyle } from "@/templates/templateRegistry";
 import { saveSession, loadSession } from "@/lib/export/printHelpers";
 import { findLanguageId } from "@/lib/cvLocale";
 
@@ -45,6 +46,7 @@ function loadInitialState() {
       cv: migrateLanguageNames(migrateLanguages(migrateExtras(session.cv))),
       templateId: session.templateId,
       displaySettings: { ...defaultDisplaySettings, ...session.displaySettings },
+      styleOverrides: session.styleOverrides ?? {},
       hadSavedSession: true,
     };
   }
@@ -52,6 +54,7 @@ function loadInitialState() {
     cv: createEmptyCvModel(),
     templateId: "basic",
     displaySettings: defaultDisplaySettings,
+    styleOverrides: {},
     hadSavedSession: false,
   };
 }
@@ -61,6 +64,7 @@ export function useCvState(persistenceEnabled: boolean) {
   const [cv, setCv] = useState<CvModel>(initial.cv);
   const [templateId, setTemplateId] = useState(initial.templateId);
   const [displaySettings, setDisplaySettings] = useState<DisplaySettings>(initial.displaySettings);
+  const [styleOverrides, setStyleOverrides] = useState<PerTemplateStyleOverrides>(initial.styleOverrides);
   const hadSavedSession = initial.hadSavedSession;
 
   const templateMeta = useMemo(() => getTemplateMeta(templateId), [templateId]);
@@ -69,17 +73,24 @@ export function useCvState(persistenceEnabled: boolean) {
     [cv, templateMeta, displaySettings],
   );
 
+  const styleSettings = useMemo(
+    () => resolveStyleSettings(templateId, getTemplateDefaultStyle(templateId), styleOverrides),
+    [templateId, styleOverrides],
+  );
+
   // Save session whenever edit state changes
   useEffect(() => {
     if (persistenceEnabled) {
-      saveSession({ cv, templateId, displaySettings });
+      saveSession({ cv, templateId, displaySettings, styleOverrides });
     }
-  }, [cv, persistenceEnabled, templateId, displaySettings]);
+  }, [cv, persistenceEnabled, templateId, displaySettings, styleOverrides]);
 
   return {
     cv, setCv,
     templateId, setTemplateId,
     displaySettings, setDisplaySettings,
+    styleOverrides, setStyleOverrides,
+    styleSettings,
     templateMeta, renderModel,
     hadSavedSession,
   };

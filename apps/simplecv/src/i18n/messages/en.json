@@ -109,6 +109,14 @@
       "removeCategory": "Remove category",
       "emptyState": "No extras added yet. Add a category to get started."
     },
+    "style": {
+      "styleTitle": "Style",
+      "styleDescription": "Customize the visual style of this template",
+      "accentColor": "Accent Color",
+      "photoSize": "Photo Size",
+      "fontScale": "Text Size",
+      "resetDefaults": "Reset to defaults"
+    },
     "visibility": {
       "title": "Sections",
       "description": "Choose which sections to show",

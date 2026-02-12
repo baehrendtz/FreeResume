@@ -38,6 +38,8 @@ export default function MainPage() {
     cv, setCv,
     templateId, setTemplateId,
     displaySettings, setDisplaySettings,
+    styleOverrides, setStyleOverrides,
+    styleSettings,
     templateMeta, renderModel,
     hadSavedSession,
   } = useCvState(!showOnboarding);
@@ -137,6 +139,9 @@ export default function MainPage() {
                   onDisplaySettingsChange={setDisplaySettings}
                   templateId={templateId}
                   onTemplateSelect={(id: string) => { setTemplateId(id); trackTemplateSwitch(id); }}
+                  styleOverrides={styleOverrides}
+                  styleSettings={styleSettings}
+                  onStyleOverridesChange={setStyleOverrides}
                   labels={editor}
                 />
               </div>
@@ -181,9 +186,9 @@ export default function MainPage() {
                   >
                     <Maximize2 className="h-3.5 w-3.5" />
                   </Button>
-                  <CvPreview renderModel={renderModel} templateId={templateId} />
+                  <CvPreview renderModel={renderModel} templateId={templateId} styleSettings={styleSettings} />
                 </div>
-                <MeasureView templateId={templateId} renderModel={renderModel} onMeasure={setMetrics} />
+                <MeasureView templateId={templateId} renderModel={renderModel} onMeasure={setMetrics} styleSettings={styleSettings} />
               </div>
             </div>
           </div>
@@ -221,6 +226,7 @@ export default function MainPage() {
         onOpenChange={setShowPreview}
         renderModel={renderModel}
         templateId={templateId}
+        styleSettings={styleSettings}
       />
     </div>
   );

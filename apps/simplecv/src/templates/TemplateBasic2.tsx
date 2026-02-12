@@ -1,6 +1,7 @@
 "use client";
 
 import type { RenderModel } from "@/lib/fitting/types";
+import type { TemplateStyleValues } from "@/lib/model/TemplateStyleSettings";
 import { getCvStrings, resolveLanguageName, translateExtrasCategory } from "@/lib/cvLocale";
 import {
   getContactItems,
@@ -10,6 +11,7 @@ import {
 
 interface TemplateProps {
   cv: RenderModel;
+  styleSettings?: TemplateStyleValues;
 }
 
 /* ── Sidebar section heading ── */
@@ -68,12 +70,14 @@ function TimelineDot({ color, filled = false }: { color: string; filled?: boolea
   );
 }
 
-export default function TemplateBasic2({ cv }: TemplateProps) {
+export default function TemplateBasic2({ cv, styleSettings }: TemplateProps) {
   const labels = getCvStrings(cv.cvLanguage ?? "en");
   const contactItems = getContactItems(cv);
   const filteredBullets = (bullets: string[]) => bullets?.filter((b) => b.trim()) ?? [];
 
-  const accent = "#4a6fa5";
+  const accent = styleSettings?.accentColor ?? "#4a6fa5";
+  const photoSize = styleSettings?.photoSizePx ?? 128;
+  const fontZoom = (styleSettings?.fontSizePercent ?? 100) / 100;
   const sidebarBg = "#dce4ed";
   const timelineColor = "#c0c8d4";
 
@@ -81,7 +85,7 @@ export default function TemplateBasic2({ cv }: TemplateProps) {
     <div
       lang={cv.cvLanguage}
       className="cv-template font-sans text-[8pt] leading-[1.35] text-gray-800 max-w-[210mm] mx-auto bg-white min-h-[297mm] flex flex-col overflow-hidden"
-      style={{ borderRadius: "16px" }}
+      style={{ borderRadius: "16px", zoom: fontZoom }}
     >
       <div className="flex flex-1 relative">
         {/* Sidebar background — absolute div for html2canvas compatibility */}
@@ -98,8 +102,8 @@ export default function TemplateBasic2({ cv }: TemplateProps) {
               <img
                 src={cv.photo}
                 alt=""
-                className="w-[130px] h-[130px] rounded-full object-cover border-[3px] border-white"
-                style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.12)" }}
+                className="rounded-full object-cover border-[3px] border-white"
+                style={{ width: photoSize, height: photoSize, boxShadow: "0 2px 8px rgba(0,0,0,0.12)" }}
               />
             </div>
           )}

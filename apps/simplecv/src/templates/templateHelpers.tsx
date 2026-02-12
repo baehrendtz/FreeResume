@@ -47,9 +47,11 @@ export function getContactItems(cv: Pick<RenderModel, "location" | "email" | "ph
 export function SectionTitle({
   children,
   className,
+  style,
 }: {
   children: ReactNode;
   className?: string;
+  style?: React.CSSProperties;
 }) {
   return (
     <h2
@@ -57,6 +59,7 @@ export function SectionTitle({
         "text-[8pt] font-bold uppercase tracking-wider border-b pb-px mb-1",
         className,
       )}
+      style={style}
     >
       {children}
     </h2>
@@ -71,16 +74,18 @@ export function CvFooter({
   name,
   className,
   accentBar,
-  accentColor = "bg-gray-700",
+  accentColorHex,
 }: {
   name: string;
   className?: string;
   accentBar?: boolean;
-  accentColor?: string;
+  accentColorHex?: string;
 }) {
   return (
     <footer className={cn("mt-auto", className)}>
-      {accentBar && <div className={cn("h-1.5", accentColor)} />}
+      {accentBar && accentColorHex && (
+        <div className="h-1.5" style={{ backgroundColor: accentColorHex }} />
+      )}
       <div
         className={cn(
           "flex justify-between pt-1.5 pb-2",

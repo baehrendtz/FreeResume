@@ -1,10 +1,12 @@
 import { lazy, type ComponentType } from "react";
 import type { RenderModel, TemplateMeta } from "@/lib/fitting/types";
+import type { TemplateStyleValues } from "@/lib/model/TemplateStyleSettings";
 
 export interface TemplateEntry {
   name: string;
-  component: React.LazyExoticComponent<ComponentType<{ cv: RenderModel }>>;
+  component: React.LazyExoticComponent<ComponentType<{ cv: RenderModel; styleSettings?: TemplateStyleValues }>>;
   meta: TemplateMeta;
+  defaultStyle: TemplateStyleValues;
 }
 
 const professionalMeta: TemplateMeta = {
@@ -159,29 +161,61 @@ const creativeMeta: TemplateMeta = {
   },
 };
 
+const basicDefaultStyle: TemplateStyleValues = {
+  accentColor: "#0d9488",
+  photoSizePx: 64,
+  fontSizePercent: 100,
+};
+
+const professionalDefaultStyle: TemplateStyleValues = {
+  accentColor: "#1a1a2e",
+  photoSizePx: 80,
+  fontSizePercent: 100,
+};
+
+const basic2DefaultStyle: TemplateStyleValues = {
+  accentColor: "#4a6fa5",
+  photoSizePx: 128,
+  fontSizePercent: 100,
+};
+
+const creativeDefaultStyle: TemplateStyleValues = {
+  accentColor: "#06b6d4",
+  photoSizePx: 64,
+  fontSizePercent: 100,
+};
+
 export const templates: Record<string, TemplateEntry> = {
   basic: {
     name: "Basic",
     component: lazy(() => import("./TemplateBasic")),
     meta: basicMeta,
+    defaultStyle: basicDefaultStyle,
   },
   professional: {
     name: "Professional",
     component: lazy(() => import("./TemplateProfessional")),
     meta: professionalMeta,
+    defaultStyle: professionalDefaultStyle,
   },
   basic2: {
     name: "Basic 2",
     component: lazy(() => import("./TemplateBasic2")),
     meta: basic2Meta,
+    defaultStyle: basic2DefaultStyle,
   },
   creative: {
     name: "Creative",
     component: lazy(() => import("./TemplateCreative")),
     meta: creativeMeta,
+    defaultStyle: creativeDefaultStyle,
   },
 };
 
 export function getTemplateMeta(templateId: string): TemplateMeta {
   return templates[templateId]?.meta ?? templates.basic.meta;
+}
+
+export function getTemplateDefaultStyle(templateId: string): TemplateStyleValues {
+  return templates[templateId]?.defaultStyle ?? templates.basic.defaultStyle;
 }
