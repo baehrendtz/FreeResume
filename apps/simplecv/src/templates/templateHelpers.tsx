@@ -11,6 +11,27 @@ import { cn } from "@/lib/utils";
 import { getCvStrings, resolveLanguageName, formatCvDate, translateExtrasCategory, type CvLanguage } from "@/lib/cvLocale";
 
 /**
+ * Build inline styles for the CV root container that counter-scale width/height
+ * so that CSS `zoom` only affects text/spacing — not the overall A4 dimensions.
+ *
+ * Pre-zoom width:  210mm / fontZoom  →  after zoom: (210mm / z) × z = 210mm ✓
+ * Pre-zoom height: 297mm / fontZoom  →  after zoom: (297mm / z) × z = 297mm ✓
+ */
+export function scaledContainerStyle(
+  fontZoom: number,
+  lineHeight: number,
+  extra?: React.CSSProperties,
+): React.CSSProperties {
+  return {
+    zoom: fontZoom,
+    width: `calc(210mm / ${fontZoom})`,
+    minHeight: `calc(297mm / ${fontZoom})`,
+    lineHeight,
+    ...extra,
+  };
+}
+
+/**
  * Format a date range like "Sep 2025 – Present" (en) or "Sep 2025 – Pågående" (sv).
  * Uses locale-aware formatting via formatCvDate.
  */
@@ -47,9 +68,11 @@ export function getContactItems(cv: Pick<RenderModel, "location" | "email" | "ph
 export function SectionTitle({
   children,
   className,
+  style,
 }: {
   children: ReactNode;
   className?: string;
+  style?: React.CSSProperties;
 }) {
   return (
     <h2
@@ -57,6 +80,7 @@ export function SectionTitle({
         "text-[8pt] font-bold uppercase tracking-wider border-b pb-px mb-1",
         className,
       )}
+      style={style}
     >
       {children}
     </h2>
@@ -71,16 +95,18 @@ export function CvFooter({
   name,
   className,
   accentBar,
-  accentColor = "bg-gray-700",
+  accentColorHex,
 }: {
   name: string;
   className?: string;
   accentBar?: boolean;
-  accentColor?: string;
+  accentColorHex?: string;
 }) {
   return (
     <footer className={cn("mt-auto", className)}>
-      {accentBar && <div className={cn("h-1.5", accentColor)} />}
+      {accentBar && accentColorHex && (
+        <div className="h-1.5" style={{ backgroundColor: accentColorHex }} />
+      )}
       <div
         className={cn(
           "flex justify-between pt-1.5 pb-2",
@@ -108,6 +134,7 @@ interface ExperienceItemProps {
   companyClassName?: string;
   bulletClassName?: string;
   cvLanguage: CvLanguage;
+  lineHeightScale?: number;
 }
 
 export function ExperienceItem({
@@ -119,6 +146,7 @@ export function ExperienceItem({
   companyClassName = "text-[7.5pt] text-gray-500",
   bulletClassName = "text-[8.5pt] text-gray-700",
   cvLanguage,
+  lineHeightScale,
 }: ExperienceItemProps) {
   const dateStr = formatDateRange(exp.startDate, exp.endDate, cvLanguage);
   const filteredBullets = exp.bullets?.filter((b) => b.trim()) ?? [];
@@ -146,7 +174,10 @@ export function ExperienceItem({
         <p className="text-[7pt] italic text-gray-400">{exp.location}</p>
       )}
       {exp.description && (
-        <p className="text-[7.5pt] leading-[1.4] text-gray-700 mt-0.5 whitespace-pre-line">
+        <p
+          className="text-[7.5pt] text-gray-700 mt-0.5 whitespace-pre-line"
+          style={{ lineHeight: 1.4 * (lineHeightScale ?? 1) }}
+        >
           {exp.description}
         </p>
       )}
@@ -170,6 +201,7 @@ interface EducationItemProps {
   institutionClassName?: string;
   degreeClassName?: string;
   cvLanguage: CvLanguage;
+  lineHeightScale?: number;
 }
 
 export function EducationItem({
@@ -179,6 +211,7 @@ export function EducationItem({
   institutionClassName = "font-bold text-[8.5pt]",
   degreeClassName = "text-[7.5pt] text-gray-500",
   cvLanguage,
+  lineHeightScale,
 }: EducationItemProps) {
   const dateStr = formatDateRange(edu.startDate, edu.endDate, cvLanguage);
   return (
@@ -194,7 +227,10 @@ export function EducationItem({
         </p>
       )}
       {edu.description && (
-        <p className="text-[7.5pt] leading-[1.4] mt-0.5 text-gray-700">
+        <p
+          className="text-[7.5pt] mt-0.5 text-gray-700"
+          style={{ lineHeight: 1.4 * (lineHeightScale ?? 1) }}
+        >
           {edu.description}
         </p>
       )}
@@ -207,6 +243,7 @@ interface SkillsListProps {
   variant: "pills" | "bullets" | "inline";
   className?: string;
   pillClassName?: string;
+  pillStyle?: React.CSSProperties;
 }
 
 export function SkillsList({
@@ -214,6 +251,7 @@ export function SkillsList({
   variant,
   className,
   pillClassName = "px-2 py-0.5 bg-teal-50 text-teal-800 text-[7.5pt] rounded-full border border-teal-200",
+  pillStyle,
 }: SkillsListProps) {
   if (variant === "inline") {
     return (
@@ -238,7 +276,7 @@ export function SkillsList({
   return (
     <div className={cn("flex flex-wrap gap-1", className)}>
       {skills.map((skill, i) => (
-        <span key={i} className={pillClassName}>
+        <span key={i} className={pillClassName} style={pillStyle}>
           {skill}
         </span>
       ))}
@@ -258,6 +296,7 @@ interface LanguagesListProps {
   cvLanguage?: CvLanguage;
   className?: string;
   pillClassName?: string;
+  pillStyle?: React.CSSProperties;
 }
 
 export function LanguagesList({
@@ -266,6 +305,7 @@ export function LanguagesList({
   cvLanguage = "en",
   className,
   pillClassName = "px-2 py-0.5 bg-teal-50 text-teal-800 text-[7.5pt] rounded-full border border-teal-200",
+  pillStyle,
 }: LanguagesListProps) {
   if (variant === "bullets") {
     return (
@@ -283,7 +323,7 @@ export function LanguagesList({
   return (
     <div className={cn("flex flex-wrap gap-1", className)}>
       {languages.map((lang, i) => (
-        <span key={i} className={pillClassName}>
+        <span key={i} className={pillClassName} style={pillStyle}>
           {formatLanguageEntry(lang, cvLanguage)}
         </span>
       ))}

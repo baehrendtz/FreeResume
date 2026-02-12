@@ -11,6 +11,7 @@ export interface TemplateCapability {
   supportsLanguages: boolean;
   supportsExtras: boolean;
   supportsSidebar: boolean;
+  supportsSecondaryColor: boolean;
 }
 
 export interface TemplateContentPolicy {

@@ -2,6 +2,7 @@
 
 import { Suspense, useRef, useState, useEffect } from "react";
 import type { RenderModel } from "@/lib/fitting/types";
+import type { TemplateStyleValues } from "@/lib/model/TemplateStyleSettings";
 import { templates } from "@/templates/templateRegistry";
 import { TemplateErrorBoundary } from "@/components/TemplateErrorBoundary";
 
@@ -14,9 +15,10 @@ interface CvPreviewProps {
   renderModel: RenderModel;
   templateId: string;
   zoomLevel?: number;
+  styleSettings?: TemplateStyleValues;
 }
 
-export function CvPreview({ renderModel, templateId, zoomLevel }: CvPreviewProps) {
+export function CvPreview({ renderModel, templateId, zoomLevel, styleSettings }: CvPreviewProps) {
   const entry = templates[templateId] ?? templates.basic;
   const Template = entry.component;
 
@@ -46,7 +48,7 @@ export function CvPreview({ renderModel, templateId, zoomLevel }: CvPreviewProps
   return (
     <div
       ref={containerRef}
-      className={isZoomMode ? undefined : "overflow-hidden"}
+      className={isZoomMode ? undefined : "overflow-hidden w-full"}
       style={isZoomMode
         ? { width: A4_WIDTH * scale, height: A4_HEIGHT * scale }
         : { height: A4_HEIGHT * scale + 4 }
@@ -71,7 +73,7 @@ export function CvPreview({ renderModel, templateId, zoomLevel }: CvPreviewProps
                 </div>
               }
             >
-              <Template cv={renderModel} />
+              <Template cv={renderModel} styleSettings={styleSettings} />
             </Suspense>
           </TemplateErrorBoundary>
         </div>

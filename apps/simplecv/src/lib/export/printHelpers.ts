@@ -1,5 +1,6 @@
 import type { CvModel } from "@/lib/model/CvModel";
 import type { DisplaySettings } from "@/lib/model/DisplaySettings";
+import type { PerTemplateStyleOverrides } from "@/lib/model/TemplateStyleSettings";
 
 const STORAGE_KEY = "freeresume-print-data";
 const SESSION_KEY = "freeresume-session";
@@ -9,6 +10,7 @@ interface SessionData {
   mode?: "upload" | "edit";
   templateId: string;
   displaySettings?: DisplaySettings;
+  styleOverrides?: PerTemplateStyleOverrides;
 }
 
 export function saveSession(data: SessionData): void {

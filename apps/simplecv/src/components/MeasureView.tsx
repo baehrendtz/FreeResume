@@ -3,6 +3,7 @@
 import { useRef, useEffect, useCallback, Suspense } from "react";
 import type { RenderModel } from "@/lib/fitting/types";
 import type { LayoutMetrics } from "@/lib/fitting/types";
+import type { TemplateStyleValues } from "@/lib/model/TemplateStyleSettings";
 import { templates } from "@/templates/templateRegistry";
 import { TemplateErrorBoundary } from "@/components/TemplateErrorBoundary";
 
@@ -10,9 +11,10 @@ interface MeasureViewProps {
   templateId: string;
   renderModel: RenderModel;
   onMeasure: (metrics: LayoutMetrics) => void;
+  styleSettings?: TemplateStyleValues;
 }
 
-export function MeasureView({ templateId, renderModel, onMeasure }: MeasureViewProps) {
+export function MeasureView({ templateId, renderModel, onMeasure, styleSettings }: MeasureViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const pageRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -85,7 +87,7 @@ export function MeasureView({ templateId, renderModel, onMeasure }: MeasureViewP
       <div ref={containerRef}>
         <TemplateErrorBoundary>
           <Suspense fallback={null}>
-            <Template cv={renderModel} />
+            <Template cv={renderModel} styleSettings={styleSettings} />
           </Suspense>
         </TemplateErrorBoundary>
       </div>

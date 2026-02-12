@@ -109,6 +109,21 @@
       "removeCategory": "Remove category",
       "emptyState": "No extras added yet. Add a category to get started."
     },
+    "style": {
+      "styleTitle": "Style",
+      "styleDescription": "Customize the visual style of this template",
+      "accentColor": "Accent Color",
+      "secondaryColor": "Secondary Color",
+      "photoSize": "Photo Size",
+      "fontScale": "Text Size",
+      "photoShape": "Photo Shape",
+      "photoShapeCircle": "Circle",
+      "photoShapeRounded": "Rounded",
+      "photoShapeSquare": "Square",
+      "sidebarBgColor": "Sidebar Background",
+      "lineHeight": "Line Spacing",
+      "resetDefaults": "Reset to defaults"
+    },
     "visibility": {
       "title": "Sections",
       "description": "Choose which sections to show",

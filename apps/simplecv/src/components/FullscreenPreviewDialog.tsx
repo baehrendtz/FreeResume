@@ -10,12 +10,14 @@ import {
 import { Button } from "@/components/ui/button";
 import { CvPreview } from "@/components/CvPreview";
 import type { RenderModel } from "@/lib/fitting/types";
+import type { TemplateStyleValues } from "@/lib/model/TemplateStyleSettings";
 
 interface FullscreenPreviewDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   renderModel: RenderModel;
   templateId: string;
+  styleSettings?: TemplateStyleValues;
 }
 
 const MIN_ZOOM = 0.5;
@@ -27,6 +29,7 @@ export function FullscreenPreviewDialog({
   onOpenChange,
   renderModel,
   templateId,
+  styleSettings,
 }: FullscreenPreviewDialogProps) {
   const [zoom, setZoom] = useState(1.0);
 
@@ -80,6 +83,7 @@ export function FullscreenPreviewDialog({
               renderModel={renderModel}
               templateId={templateId}
               zoomLevel={zoom}
+              styleSettings={styleSettings}
             />
           </div>
         </div>

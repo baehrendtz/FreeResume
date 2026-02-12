@@ -38,6 +38,8 @@ export default function MainPage() {
     cv, setCv,
     templateId, setTemplateId,
     displaySettings, setDisplaySettings,
+    styleOverrides, setStyleOverrides,
+    styleSettings,
     templateMeta, renderModel,
     hadSavedSession,
   } = useCvState(!showOnboarding);
@@ -102,34 +104,8 @@ export default function MainPage() {
           />
         ) : (
           <div className="max-w-screen-2xl mx-auto px-6 py-8 pb-20 lg:pb-8 flex flex-col lg:h-full">
-            {metrics && !metrics.fits && (
-              <div className="print:hidden mb-4 flex items-center justify-between rounded-md px-3 py-2 text-sm bg-amber-50 text-amber-800 dark:bg-amber-950/30 dark:text-amber-400">
-                <div className="flex items-center gap-2">
-                  <AlertTriangle className="h-4 w-4 shrink-0" />
-                  <span>
-                    {t("editor.visibility.overflows", { pages: String(metrics.estimatedPages) })}
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  disabled={isFitting}
-                  onClick={handleAutoFit}
-                  className="ml-4 inline-flex items-center gap-1 rounded-md bg-amber-100 dark:bg-amber-900/50 px-2.5 py-1 text-xs font-medium text-amber-900 dark:text-amber-300 hover:bg-amber-200 dark:hover:bg-amber-900/70 transition-colors disabled:opacity-50"
-                >
-                  {isFitting ? (
-                    <>
-                      <Loader2 className="h-3 w-3 animate-spin" />
-                      {t("editor.visibility.fitting")}
-                    </>
-                  ) : (
-                    t("editor.visibility.autoFit")
-                  )}
-                </button>
-              </div>
-            )}
-
             <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-6 lg:min-h-0 lg:flex-1">
-              <div className="print:hidden lg:overflow-y-auto lg:min-h-0">
+              <div className="print:hidden lg:overflow-y-auto lg:min-h-0 min-w-0">
                 <CvEditor
                   defaultValues={cv}
                   onUpdate={setCv}
@@ -137,12 +113,15 @@ export default function MainPage() {
                   onDisplaySettingsChange={setDisplaySettings}
                   templateId={templateId}
                   onTemplateSelect={(id: string) => { setTemplateId(id); trackTemplateSwitch(id); }}
+                  styleOverrides={styleOverrides}
+                  styleSettings={styleSettings}
+                  onStyleOverridesChange={setStyleOverrides}
                   labels={editor}
                 />
               </div>
 
               {/* Desktop: visible. Mobile: off-screen but in DOM for html2canvas + MeasureView */}
-              <div className="max-lg:fixed max-lg:-left-[200vw] max-lg:w-[794px] lg:overflow-y-auto lg:min-h-0">
+              <div className="max-lg:fixed max-lg:-left-[200vw] max-lg:w-[794px] lg:overflow-y-auto lg:min-h-0 min-w-0">
                 {(() => {
                   const trim = computeTrimInfo(cv, renderModel);
                   const parts: string[] = [];
@@ -160,14 +139,39 @@ export default function MainPage() {
                   if (trim.summaryTruncated)
                     parts.push("summary truncated");
                   if (metrics && !metrics.fits)
-                    parts.push(`~${metrics.estimatedPages} pages`);
+                    parts.push(t("editor.visibility.overflows", { pages: String(metrics.estimatedPages) }));
                   if (parts.length === 0) return null;
                   return (
-                    <div className="print:hidden mb-2 flex items-center gap-2 rounded-md bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 px-3 py-2 text-xs text-amber-700 dark:text-amber-400">
-                      <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
-                      <span>
-                        {t("preview.trimWarning", { details: parts.join(", ") })}
-                      </span>
+                    <div className="print:hidden mb-2 rounded-md bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 px-3 py-2 text-xs text-amber-700 dark:text-amber-400">
+                      <div className="flex items-start gap-2">
+                        <AlertTriangle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
+                        <div className="flex-1">
+                          {parts.length === 1 ? (
+                            <span>{parts[0]}</span>
+                          ) : (
+                            <ul className="list-disc list-inside space-y-0.5">
+                              {parts.map((p, i) => <li key={i}>{p}</li>)}
+                            </ul>
+                          )}
+                        </div>
+                        {metrics && !metrics.fits && (
+                          <button
+                            type="button"
+                            onClick={handleAutoFit}
+                            disabled={isFitting}
+                            className="shrink-0 inline-flex items-center gap-1 rounded-md bg-amber-100 dark:bg-amber-900/50 px-2.5 py-1 text-xs font-medium text-amber-900 dark:text-amber-300 hover:bg-amber-200 dark:hover:bg-amber-900/70 transition-colors disabled:opacity-50"
+                          >
+                            {isFitting ? (
+                              <>
+                                <Loader2 className="h-3 w-3 animate-spin" />
+                                {t("editor.visibility.fitting")}
+                              </>
+                            ) : (
+                              t("editor.visibility.autoFit")
+                            )}
+                          </button>
+                        )}
+                      </div>
                     </div>
                   );
                 })()}
@@ -181,9 +185,9 @@ export default function MainPage() {
                   >
                     <Maximize2 className="h-3.5 w-3.5" />
                   </Button>
-                  <CvPreview renderModel={renderModel} templateId={templateId} />
+                  <CvPreview renderModel={renderModel} templateId={templateId} styleSettings={styleSettings} />
                 </div>
-                <MeasureView templateId={templateId} renderModel={renderModel} onMeasure={setMetrics} />
+                <MeasureView templateId={templateId} renderModel={renderModel} onMeasure={setMetrics} styleSettings={styleSettings} />
               </div>
             </div>
           </div>
@@ -221,6 +225,7 @@ export default function MainPage() {
         onOpenChange={setShowPreview}
         renderModel={renderModel}
         templateId={templateId}
+        styleSettings={styleSettings}
       />
     </div>
   );

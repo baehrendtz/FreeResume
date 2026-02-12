@@ -1,9 +1,11 @@
 "use client";
 
 import type { RenderModel } from "@/lib/fitting/types";
+import type { TemplateStyleValues } from "@/lib/model/TemplateStyleSettings";
 import { getCvStrings } from "@/lib/cvLocale";
 import { Briefcase, GraduationCap, Code, Globe, Star } from "lucide-react";
 import {
+  scaledContainerStyle,
   getContactItems,
   SectionTitle,
   ExperienceItem,
@@ -15,20 +17,32 @@ import {
 
 interface TemplateProps {
   cv: RenderModel;
+  styleSettings?: TemplateStyleValues;
 }
 
-const ACCENT = "#06b6d4"; // cyan-500
-const ACCENT2 = "#8b5cf6"; // violet-500
-const HEADER_BG = "linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)";
-const SIDEBAR_BG = "#f8fafc";
-const GRADIENT_BAR = "linear-gradient(to right, #22d3ee, #8b5cf6)"; // cyan-400 → violet-500
+const DEFAULT_ACCENT2 = "#8b5cf6"; // violet-500
 
-export default function TemplateCreative({ cv }: TemplateProps) {
+export default function TemplateCreative({ cv, styleSettings }: TemplateProps) {
   const cvLabels = getCvStrings(cv.cvLanguage ?? "en");
   const contactItems = getContactItems(cv);
 
+  const ACCENT = styleSettings?.accentColor ?? "#06b6d4";
+  const ACCENT2 = styleSettings?.secondaryColor ?? DEFAULT_ACCENT2;
+  const photoSize = styleSettings?.photoSizePx ?? 64;
+  const fontZoom = (styleSettings?.fontSizePercent ?? 100) / 100;
+  const photoShape = styleSettings?.photoShape ?? "circle";
+  const photoShapeClass =
+    photoShape === "circle" ? "rounded-full" :
+    photoShape === "rounded" ? "rounded-lg" : "rounded-none";
+  const SIDEBAR_BG = styleSettings?.sidebarBgColor ?? "#f8fafc";
+  const HEADER_BG = "linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)";
+  const GRADIENT_BAR = `linear-gradient(to right, ${ACCENT}, ${ACCENT2})`;
+  const BASE_LINE_HEIGHT = 1.3;
+  const lineHeight = BASE_LINE_HEIGHT * (styleSettings?.lineHeightPercent ?? 100) / 100;
+  const lineScale = (styleSettings?.lineHeightPercent ?? 100) / 100;
+
   return (
-    <div lang={cv.cvLanguage} className="cv-template font-sans text-[8pt] leading-[1.3] text-gray-800 max-w-[210mm] mx-auto bg-white min-h-[297mm] flex flex-col relative">
+    <div lang={cv.cvLanguage} className="cv-template font-sans text-[8pt] text-gray-800 mx-auto bg-white flex flex-col relative" style={scaledContainerStyle(fontZoom, lineHeight)}>
       {/* Top accent gradient bar */}
       <div style={{ height: 3, background: GRADIENT_BAR }} />
 
@@ -47,13 +61,14 @@ export default function TemplateCreative({ cv }: TemplateProps) {
           </div>
           {cv.photo && (
             <div
-              className="h-[68px] w-[68px] rounded-full shrink-0 flex items-center justify-center"
-              style={{ background: `linear-gradient(135deg, ${ACCENT}, ${ACCENT2})`, padding: 2 }}
+              className={`${photoShapeClass} shrink-0 flex items-center justify-center`}
+              style={{ width: photoSize + 4, height: photoSize + 4, background: `linear-gradient(135deg, ${ACCENT}, ${ACCENT2})`, padding: 2 }}
             >
               <img
                 src={cv.photo}
                 alt=""
-                className="h-[64px] w-[64px] rounded-full object-cover"
+                className={`${photoShapeClass} object-cover`}
+                style={{ width: photoSize, height: photoSize }}
               />
             </div>
           )}
@@ -69,7 +84,7 @@ export default function TemplateCreative({ cv }: TemplateProps) {
           <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2">
             {contactItems.map((item, i) => (
               <span key={i} className="flex items-center gap-1 text-[7pt] font-mono" style={{ color: "#e2e8f0" }}>
-                <span style={{ color: "#67e8f9" }}>{item.icon}</span>
+                <span style={{ color: `${ACCENT}99` }}>{item.icon}</span>
                 {item.value}
               </span>
             ))}
@@ -85,7 +100,7 @@ export default function TemplateCreative({ cv }: TemplateProps) {
         {/* Left sidebar */}
         <aside className="w-[28%] shrink-0 relative px-4 py-3 space-y-3">
           {cv.skills.length > 0 && (
-            <div style={{ borderLeft: "2px solid #22d3ee", paddingLeft: 8 }}>
+            <div style={{ borderLeft: `2px solid ${ACCENT}`, paddingLeft: 8 }}>
               <SectionTitle className="font-mono text-[7pt] tracking-[0.15em] text-gray-500 border-0 pb-0 mb-1.5">
                 <span className="flex items-center gap-1">
                   <Code style={{ width: 10, height: 10, color: ACCENT }} />
@@ -96,7 +111,8 @@ export default function TemplateCreative({ cv }: TemplateProps) {
                 skills={cv.skills}
                 variant="pills"
                 className="gap-1"
-                pillClassName="font-mono px-2 py-0.5 bg-cyan-50 text-cyan-800 text-[6.5pt] rounded-full border border-cyan-200"
+                pillClassName={`font-mono px-2 py-0.5 text-[6.5pt] rounded-full border`}
+                pillStyle={{ backgroundColor: `${ACCENT}15`, color: `${ACCENT}dd`, borderColor: `${ACCENT}40` }}
               />
             </div>
           )}
@@ -113,7 +129,8 @@ export default function TemplateCreative({ cv }: TemplateProps) {
                 languages={cv.languages}
                 variant="pills"
                 cvLanguage={cv.cvLanguage}
-                pillClassName="font-mono px-2 py-0.5 bg-violet-50 text-violet-800 text-[6.5pt] rounded-full border border-violet-200"
+                pillClassName={`font-mono px-2 py-0.5 text-[6.5pt] rounded-full border`}
+                pillStyle={{ backgroundColor: `${ACCENT2}15`, color: `${ACCENT2}dd`, borderColor: `${ACCENT2}40` }}
               />
             </div>
           )}
@@ -162,7 +179,7 @@ export default function TemplateCreative({ cv }: TemplateProps) {
                     {i < cv.experience.length - 1 && (
                       <div
                         className="flex-1 mt-0.5"
-                        style={{ width: 1.5, background: "linear-gradient(to bottom, #06b6d4, #e2e8f0)" }}
+                        style={{ width: 1.5, background: `linear-gradient(to bottom, ${ACCENT}, #e2e8f0)` }}
                       />
                     )}
                   </div>
@@ -176,6 +193,7 @@ export default function TemplateCreative({ cv }: TemplateProps) {
                       companyClassName="text-[7.5pt]"
                       bulletClassName="text-[7.5pt] text-gray-600"
                       cvLanguage={cv.cvLanguage}
+                      lineHeightScale={lineScale}
                     />
                   </div>
                 </div>
@@ -213,6 +231,7 @@ export default function TemplateCreative({ cv }: TemplateProps) {
                       dateClassName="font-mono text-[7pt] text-gray-400 whitespace-nowrap ml-4 tabular-nums"
                       degreeClassName="text-[7.5pt] text-gray-500"
                       cvLanguage={cv.cvLanguage}
+                      lineHeightScale={lineScale}
                     />
                   </div>
                 </div>
