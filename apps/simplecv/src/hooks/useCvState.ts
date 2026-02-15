@@ -31,6 +31,25 @@ function migrateLanguages(cv: CvModel): CvModel {
   return cv;
 }
 
+function migrateCompanyGroups(cv: CvModel): CvModel {
+  // If any entry already has a companyGroupId, skip migration
+  if (cv.experience.some((e) => e.companyGroupId)) return cv;
+
+  const experience = [...cv.experience];
+  let currentGroupId = crypto.randomUUID();
+
+  for (let i = 0; i < experience.length; i++) {
+    if (i > 0 && experience[i].company === experience[i - 1].company && experience[i].company) {
+      experience[i] = { ...experience[i], companyGroupId: experience[i - 1].companyGroupId };
+    } else {
+      currentGroupId = crypto.randomUUID();
+      experience[i] = { ...experience[i], companyGroupId: currentGroupId };
+    }
+  }
+
+  return { ...cv, experience };
+}
+
 function migrateLanguageNames(cv: CvModel): CvModel {
   const changed = cv.languages.map((lang) => {
     const id = findLanguageId(lang.name);
@@ -43,7 +62,7 @@ function loadInitialState() {
   const session = loadSession();
   if (session) {
     return {
-      cv: migrateLanguageNames(migrateLanguages(migrateExtras(session.cv))),
+      cv: migrateCompanyGroups(migrateLanguageNames(migrateLanguages(migrateExtras(session.cv)))),
       templateId: session.templateId,
       displaySettings: { ...defaultDisplaySettings, ...session.displaySettings },
       styleOverrides: session.styleOverrides ?? {},

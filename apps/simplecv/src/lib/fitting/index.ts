@@ -4,6 +4,8 @@ export type {
   TemplateContentPolicy,
   TemplateMeta,
   RenderExperience,
+  RenderExperienceGroup,
+  RenderExperienceRole,
   RenderEducation,
   RenderExtrasGroup,
   RenderModel,

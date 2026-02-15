@@ -8,7 +8,7 @@ import {
   getContactItems,
   SectionTitle,
   CvFooter,
-  ExperienceItem,
+  ExperienceGroupItem,
   EducationItem,
   SkillsList,
   LanguagesList,
@@ -138,16 +138,17 @@ export default function TemplateProfessional({ cv, styleSettings }: TemplateProp
           {cv.experience.length > 0 && (
             <section>
               <SectionTitle className={mainTitleClass}>{labels.professionalExperience}</SectionTitle>
-              {cv.experience.map((exp, i) => (
-                <ExperienceItem
+              {cv.experience.map((group, i) => (
+                <ExperienceGroupItem
                   key={i}
-                  exp={exp}
+                  group={group}
                   layout="company-first"
                   titleClassName="font-bold text-[8.5pt] text-gray-900"
                   dateClassName="text-[7pt] text-gray-500 whitespace-nowrap ml-4 tabular-nums"
                   bulletClassName="text-[7.5pt] text-gray-700"
                   cvLanguage={cv.cvLanguage}
                   lineHeightScale={lineScale}
+                  accentColor={accent}
                 />
               ))}
             </section>

@@ -4,6 +4,8 @@ import type { LanguageEntry } from "@/lib/model/CvModel";
 import type {
   RenderModel,
   RenderExperience,
+  RenderExperienceGroup,
+  RenderExperienceRole,
   RenderEducation,
   RenderExtrasGroup,
 } from "@/lib/fitting/types";
@@ -190,6 +192,117 @@ export function ExperienceItem({
           ))}
         </ul>
       )}
+    </div>
+  );
+}
+
+interface ExperienceGroupItemProps {
+  group: RenderExperienceGroup;
+  layout: "title-first" | "company-first";
+  className?: string;
+  dateClassName?: string;
+  titleClassName?: string;
+  companyClassName?: string;
+  bulletClassName?: string;
+  cvLanguage: CvLanguage;
+  lineHeightScale?: number;
+  accentColor?: string;
+}
+
+export function ExperienceGroupItem({
+  group,
+  layout,
+  className,
+  dateClassName = "text-[7.5pt] text-gray-500 whitespace-nowrap ml-4",
+  titleClassName = "font-bold text-[8.5pt]",
+  companyClassName = "text-[7.5pt] text-gray-500",
+  bulletClassName = "text-[8.5pt] text-gray-700",
+  cvLanguage,
+  lineHeightScale,
+  accentColor = "#6b7280",
+}: ExperienceGroupItemProps) {
+  if (group.isSingleRole) {
+    // Single role — render like the old ExperienceItem
+    const role = group.roles[0];
+    const exp: RenderExperience = {
+      title: role.title,
+      company: group.company,
+      location: role.location,
+      startDate: role.startDate,
+      endDate: role.endDate,
+      description: role.description,
+      bullets: role.bullets,
+    };
+    return (
+      <ExperienceItem
+        exp={exp}
+        layout={layout}
+        className={className}
+        dateClassName={dateClassName}
+        titleClassName={titleClassName}
+        companyClassName={companyClassName}
+        bulletClassName={bulletClassName}
+        cvLanguage={cvLanguage}
+        lineHeightScale={lineHeightScale}
+      />
+    );
+  }
+
+  // Multi-role group — company header with sub-roles
+  const groupDateStr = formatDateRange(group.startDate, group.endDate, cvLanguage);
+  const primaryLabel = layout === "title-first" ? group.company : group.company;
+
+  return (
+    <div className={cn("mb-1.5 break-inside-avoid", className)}>
+      {/* Company header */}
+      <div className="flex justify-between items-baseline">
+        <h3 className={titleClassName}>{primaryLabel}</h3>
+        {groupDateStr && <span className={dateClassName}>{groupDateStr}</span>}
+      </div>
+      {group.location && (
+        <p className={companyClassName}>{group.location}</p>
+      )}
+
+      {/* Sub-roles with left border */}
+      <div
+        className="ml-1 mt-1 pl-2.5 space-y-1"
+        style={{ borderLeft: `2px solid ${accentColor}30` }}
+      >
+        {group.roles.map((role, j) => {
+          const roleDateStr = formatDateRange(role.startDate, role.endDate, cvLanguage);
+          const filteredBullets = role.bullets?.filter((b) => b.trim()) ?? [];
+          return (
+            <div key={j} className="break-inside-avoid">
+              <div className="flex justify-between items-baseline">
+                <h4 className="font-semibold text-[8pt]">{role.title}</h4>
+                {roleDateStr && (
+                  <span className={dateClassName}>{roleDateStr}</span>
+                )}
+              </div>
+              {role.location && role.location !== group.location && (
+                <p className="text-[7pt] text-gray-400">{role.location}</p>
+              )}
+              {role.description && (
+                <p
+                  className="text-[7.5pt] text-gray-700 mt-0.5 whitespace-pre-line"
+                  style={{ lineHeight: 1.4 * (lineHeightScale ?? 1) }}
+                >
+                  {role.description}
+                </p>
+              )}
+              {filteredBullets.length > 0 && (
+                <ul className="list-disc list-outside ml-3.5 mt-0.5 space-y-0">
+                  {filteredBullets.map((bullet, k) => (
+                    <li key={k} className={bulletClassName}>
+                      {bullet}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

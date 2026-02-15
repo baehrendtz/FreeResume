@@ -66,7 +66,9 @@
       "emptyState": "No experience entries yet. Click below to add one.",
       "confirm": "Confirm?",
       "moveUp": "Move up",
-      "moveDown": "Move down"
+      "moveDown": "Move down",
+      "groupWith": "Group with previous",
+      "ungroupFrom": "Separate from group"
     },
     "education": {
       "institution": "Institution",

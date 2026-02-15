@@ -9,6 +9,7 @@ export const experienceSchema = z.object({
   description: z.string(),
   bullets: z.array(z.string()),
   hidden: z.boolean().optional(),
+  companyGroupId: z.string().optional(),
 });
 
 export const educationSchema = z.object({

@@ -63,6 +63,8 @@ export function useEditorLabels() {
       confirm: t("editor.experience.confirm"),
       moveUp: t("editor.experience.moveUp"),
       moveDown: t("editor.experience.moveDown"),
+      groupWith: t("editor.experience.groupWith"),
+      ungroupFrom: t("editor.experience.ungroupFrom"),
     },
     education: {
       institution: t("editor.education.institution"),

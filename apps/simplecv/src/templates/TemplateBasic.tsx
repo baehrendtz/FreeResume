@@ -7,7 +7,7 @@ import {
   scaledContainerStyle,
   SectionTitle,
   CvFooter,
-  ExperienceItem,
+  ExperienceGroupItem,
   EducationItem,
   SkillsList,
   LanguagesList,
@@ -77,8 +77,8 @@ export default function TemplateBasic({ cv, styleSettings }: TemplateProps) {
       {cv.experience.length > 0 && (
         <section className="mb-2.5">
           <SectionTitle className="tracking-[0.12em] mb-1.5" style={{ color: accent, borderColor: accent }}>{labels.experience}</SectionTitle>
-          {cv.experience.map((exp, i) => (
-            <ExperienceItem key={i} exp={exp} layout="title-first" cvLanguage={cv.cvLanguage} lineHeightScale={lineScale} />
+          {cv.experience.map((group, i) => (
+            <ExperienceGroupItem key={i} group={group} layout="title-first" cvLanguage={cv.cvLanguage} lineHeightScale={lineScale} accentColor={accent} />
           ))}
         </section>
       )}

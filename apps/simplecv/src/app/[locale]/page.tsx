@@ -125,8 +125,10 @@ export default function MainPage() {
                 {(() => {
                   const trim = computeTrimInfo(cv, renderModel);
                   const parts: string[] = [];
-                  if (trim.experienceHidden > 0)
-                    parts.push(`${renderModel.experience.length} of ${cv.experience.length} jobs`);
+                  if (trim.experienceHidden > 0) {
+                    const totalRenderRoles = renderModel.experience.reduce((s, g) => s + g.roles.length, 0);
+                    parts.push(`${totalRenderRoles} of ${cv.experience.filter(e => !e.hidden).length} jobs`);
+                  }
                   if (trim.educationHidden > 0)
                     parts.push(`${renderModel.education.length} of ${cv.education.length} education`);
                   if (trim.skillsHidden > 0)

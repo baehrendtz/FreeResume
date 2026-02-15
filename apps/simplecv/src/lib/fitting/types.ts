@@ -52,6 +52,24 @@ export interface RenderExperience {
   bullets: string[];
 }
 
+export interface RenderExperienceRole {
+  title: string;
+  location: string;
+  startDate: string;
+  endDate: string;
+  description: string;
+  bullets: string[];
+}
+
+export interface RenderExperienceGroup {
+  company: string;
+  location: string;
+  startDate: string;
+  endDate: string;
+  roles: RenderExperienceRole[];
+  isSingleRole: boolean;
+}
+
 export interface RenderEducation {
   institution: string;
   degree: string;
@@ -76,7 +94,7 @@ export interface RenderModel {
   website: string;
   photo: string;
   summary: string;
-  experience: RenderExperience[];
+  experience: RenderExperienceGroup[];
   education: RenderEducation[];
   skills: string[];
   languages: LanguageEntry[];

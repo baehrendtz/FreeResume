@@ -440,6 +440,19 @@ function parseExperience(lines: Line[]) {
   }
 
   if (current) entries.push(current);
+
+  // Assign companyGroupId: consecutive entries with the same company get the same groupId
+  let currentGroupId = crypto.randomUUID();
+  for (let i = 0; i < entries.length; i++) {
+    if (i > 0 && entries[i].company === entries[i - 1].company && entries[i].company) {
+      // Same company as previous — share groupId
+      entries[i].companyGroupId = entries[i - 1].companyGroupId;
+    } else {
+      currentGroupId = crypto.randomUUID();
+      entries[i].companyGroupId = currentGroupId;
+    }
+  }
+
   return entries;
 }
 

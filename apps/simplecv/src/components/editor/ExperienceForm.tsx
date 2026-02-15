@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Link, Unlink } from "lucide-react";
 import { EntryCard } from "./EntryCard";
 import type { CvModel } from "@/lib/model/CvModel";
 import { trackExperienceAdd, trackExperienceRemove } from "@/lib/analytics/gtag";
@@ -31,15 +31,28 @@ interface ExperienceFormProps {
     confirm: string;
     moveUp: string;
     moveDown: string;
+    groupWith?: string;
+    ungroupFrom?: string;
   };
 }
 
 export function ExperienceForm({ labels }: ExperienceFormProps) {
-  const { register, control, watch, setValue } = useFormContext<CvModel>();
+  const { register, control, watch, setValue, getValues } = useFormContext<CvModel>();
   const { fields, append, remove, move } = useFieldArray({
     control,
     name: "experience",
   });
+
+  const handleGroupWithPrevious = (index: number) => {
+    const prevGroupId = getValues(`experience.${index - 1}.companyGroupId`);
+    if (prevGroupId) {
+      setValue(`experience.${index}.companyGroupId`, prevGroupId);
+    }
+  };
+
+  const handleUngroupFromPrevious = (index: number) => {
+    setValue(`experience.${index}.companyGroupId`, crypto.randomUUID());
+  };
 
   return (
     <div className="space-y-4">
@@ -51,20 +64,31 @@ export function ExperienceForm({ labels }: ExperienceFormProps) {
         const title = watch(`experience.${index}.title`);
         const company = watch(`experience.${index}.company`);
         const isHidden = watch(`experience.${index}.hidden`) ?? false;
+        const currentGroupId = watch(`experience.${index}.companyGroupId`);
+        const prevGroupId = index > 0 ? watch(`experience.${index - 1}.companyGroupId`) : undefined;
+        const isGroupedWithPrevious = index > 0 && currentGroupId && currentGroupId === prevGroupId;
         const summary = title && company
           ? title + labels.at + company
           : title || company || "";
 
         return (
+          <div key={field.id}>
+            {isGroupedWithPrevious && (
+              <div className="ml-3 border-l-2 border-primary/30 pl-2 -mt-2 mb-1">
+                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                  <Link className="h-3 w-3" />
+                  {labels.groupWith ?? "Grouped with previous"}
+                </span>
+              </div>
+            )}
           <EntryCard
-            key={field.id}
             summary={summary}
             hidden={isHidden}
             onToggleHidden={() => setValue(`experience.${index}.hidden`, !isHidden)}
             onRemove={() => { remove(index); trackExperienceRemove(); }}
             onMoveUp={index > 0 ? () => move(index, index - 1) : undefined}
             onMoveDown={index < fields.length - 1 ? () => move(index, index + 1) : undefined}
-            showSeparator={index > 0}
+            showSeparator={index > 0 && !isGroupedWithPrevious}
             labels={{
               hide: labels.hide,
               show: labels.show,
@@ -87,6 +111,33 @@ export function ExperienceForm({ labels }: ExperienceFormProps) {
                 <Label className="text-xs">{labels.location}</Label>
                 <Input {...register(`experience.${index}.location`)} />
               </div>
+              {index > 0 && (
+                <div className="col-span-2 flex items-center gap-2">
+                  {isGroupedWithPrevious ? (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="h-7 text-xs"
+                      onClick={() => handleUngroupFromPrevious(index)}
+                    >
+                      <Unlink className="h-3 w-3 mr-1" />
+                      {labels.ungroupFrom ?? "Separate from group"}
+                    </Button>
+                  ) : (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="h-7 text-xs"
+                      onClick={() => handleGroupWithPrevious(index)}
+                    >
+                      <Link className="h-3 w-3 mr-1" />
+                      {labels.groupWith ?? "Group with previous"}
+                    </Button>
+                  )}
+                </div>
+              )}
               <div className="space-y-1 col-span-2 grid grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <Label className="text-xs">{labels.startDate}</Label>
@@ -129,6 +180,7 @@ export function ExperienceForm({ labels }: ExperienceFormProps) {
               <p className="text-xs text-muted-foreground">{labels.bulletsHint}</p>
             </div>
           </EntryCard>
+          </div>
         );
       })}
 

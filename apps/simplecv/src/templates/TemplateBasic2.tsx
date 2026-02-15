@@ -212,37 +212,83 @@ export default function TemplateBasic2({ cv, styleSettings }: TemplateProps) {
                   className="absolute left-0 top-1 bottom-0 w-px"
                   style={{ backgroundColor: timelineColor }}
                 />
-                {cv.experience.map((exp, i) => {
-                  const dateStr = formatDateRange(exp.startDate, exp.endDate, cv.cvLanguage);
-                  const bullets = filteredBullets(exp.bullets);
+                {cv.experience.map((group, i) => {
+                  if (group.isSingleRole) {
+                    const role = group.roles[0];
+                    const dateStr = formatDateRange(role.startDate, role.endDate, cv.cvLanguage);
+                    const bullets = filteredBullets(role.bullets);
+                    return (
+                      <div key={i} className="relative pl-5 mb-2.5 break-inside-avoid">
+                        <TimelineDot color={accent} filled />
+                        <div>
+                          <span className="font-bold text-[8.5pt] text-gray-900">{role.title}</span>
+                          {group.company && (
+                            <span className="text-[8.5pt] text-gray-500">
+                              {" \u00A0-\u00A0 "}{group.company}
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-[7.5pt] text-gray-500">
+                          {dateStr}
+                          {role.location && <>{dateStr ? " \u00A0\u00B7\u00A0 " : ""}{role.location}</>}
+                        </div>
+                        {role.description && (
+                          <p className="text-[7.5pt] text-gray-700 mt-0.5 whitespace-pre-line">{role.description}</p>
+                        )}
+                        {bullets.length > 0 && (
+                          <ul className="mt-1 space-y-0.5">
+                            {bullets.map((bullet, j) => (
+                              <li key={j} className="flex items-start gap-2 text-[7.5pt] text-gray-700 leading-[1.45]">
+                                <span className="mt-[4px] h-[4px] w-[4px] rounded-full shrink-0" style={{ backgroundColor: timelineColor }} />
+                                <span>{bullet}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                    );
+                  }
+
+                  // Multi-role group
+                  const groupDateStr = formatDateRange(group.startDate, group.endDate, cv.cvLanguage);
                   return (
                     <div key={i} className="relative pl-5 mb-2.5 break-inside-avoid">
                       <TimelineDot color={accent} filled />
                       <div>
-                        <span className="font-bold text-[8.5pt] text-gray-900">{exp.title}</span>
-                        {exp.company && (
-                          <span className="text-[8.5pt] text-gray-500">
-                            {" \u00A0-\u00A0 "}{exp.company}
-                          </span>
-                        )}
+                        <span className="font-bold text-[8.5pt] text-gray-900">{group.company}</span>
                       </div>
                       <div className="text-[7.5pt] text-gray-500">
-                        {dateStr}
-                        {exp.location && <>{dateStr ? " \u00A0\u00B7\u00A0 " : ""}{exp.location}</>}
+                        {groupDateStr}
+                        {group.location && <>{groupDateStr ? " \u00A0\u00B7\u00A0 " : ""}{group.location}</>}
                       </div>
-                      {exp.description && (
-                        <p className="text-[7.5pt] text-gray-700 mt-0.5 whitespace-pre-line">{exp.description}</p>
-                      )}
-                      {bullets.length > 0 && (
-                        <ul className="mt-1 space-y-0.5">
-                          {bullets.map((bullet, j) => (
-                            <li key={j} className="flex items-start gap-2 text-[7.5pt] text-gray-700 leading-[1.45]">
-                              <span className="mt-[4px] h-[4px] w-[4px] rounded-full shrink-0" style={{ backgroundColor: timelineColor }} />
-                              <span>{bullet}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
+                      {/* Sub-roles */}
+                      <div className="mt-1 ml-1 pl-2.5 space-y-1.5" style={{ borderLeft: `2px solid ${timelineColor}` }}>
+                        {group.roles.map((role, j) => {
+                          const roleDateStr = formatDateRange(role.startDate, role.endDate, cv.cvLanguage);
+                          const bullets = filteredBullets(role.bullets);
+                          return (
+                            <div key={j}>
+                              <div className="flex justify-between items-baseline">
+                                <span className="font-semibold text-[8pt] text-gray-800">{role.title}</span>
+                                {roleDateStr && <span className="text-[7pt] text-gray-500 whitespace-nowrap ml-2">{roleDateStr}</span>}
+                              </div>
+                              {role.description && (
+                                <p className="text-[7.5pt] text-gray-700 mt-0.5 whitespace-pre-line">{role.description}</p>
+                              )}
+                              {bullets.length > 0 && (
+                                <ul className="mt-0.5 space-y-0.5">
+                                  {bullets.map((bullet, k) => (
+                                    <li key={k} className="flex items-start gap-2 text-[7.5pt] text-gray-700 leading-[1.45]">
+                                      <span className="mt-[4px] h-[4px] w-[4px] rounded-full shrink-0" style={{ backgroundColor: timelineColor }} />
+                                      <span>{bullet}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
                   );
                 })}

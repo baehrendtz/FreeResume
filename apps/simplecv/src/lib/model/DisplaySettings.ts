@@ -37,9 +37,10 @@ export interface TrimInfo {
  * what content was trimmed by the fitting pipeline.
  */
 export function computeTrimInfo(cv: CvModel, renderModel: RenderModel): TrimInfo {
+  const totalRenderRoles = renderModel.experience.reduce((sum, g) => sum + g.roles.length, 0);
   const experienceHidden = Math.max(
     0,
-    cv.experience.length - renderModel.experience.length,
+    cv.experience.filter((e) => !e.hidden).length - totalRenderRoles,
   );
   const educationHidden = Math.max(
     0,

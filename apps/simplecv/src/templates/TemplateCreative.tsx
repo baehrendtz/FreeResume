@@ -8,7 +8,7 @@ import {
   scaledContainerStyle,
   getContactItems,
   SectionTitle,
-  ExperienceItem,
+  ExperienceGroupItem,
   EducationItem,
   SkillsList,
   LanguagesList,
@@ -166,7 +166,7 @@ export default function TemplateCreative({ cv, styleSettings }: TemplateProps) {
                 </SectionTitle>
                 <div className="h-[1.5px]" style={{ background: GRADIENT_BAR }} />
               </div>
-              {cv.experience.map((exp, i) => (
+              {cv.experience.map((group, i) => (
                 <div key={i} className="flex gap-2.5">
                   {/* Timeline: ring-dot + vertical line */}
                   <div className="flex flex-col items-center shrink-0 pt-[4px]" style={{ width: 12 }}>
@@ -185,8 +185,8 @@ export default function TemplateCreative({ cv, styleSettings }: TemplateProps) {
                   </div>
                   {/* Entry content */}
                   <div className="flex-1 min-w-0">
-                    <ExperienceItem
-                      exp={exp}
+                    <ExperienceGroupItem
+                      group={group}
                       layout="company-first"
                       titleClassName="font-semibold text-[8.5pt] text-gray-800"
                       dateClassName="font-mono text-[7pt] text-gray-400 whitespace-nowrap ml-4 tabular-nums"
@@ -194,6 +194,7 @@ export default function TemplateCreative({ cv, styleSettings }: TemplateProps) {
                       bulletClassName="text-[7.5pt] text-gray-600"
                       cvLanguage={cv.cvLanguage}
                       lineHeightScale={lineScale}
+                      accentColor={ACCENT}
                     />
                   </div>
                 </div>
