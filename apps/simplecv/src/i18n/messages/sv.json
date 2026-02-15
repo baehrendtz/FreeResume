@@ -252,6 +252,11 @@
     "decline": "Avböj",
     "settings": "Cookieinställningar"
   },
+  "auth": {
+    "signIn": "Logga in",
+    "signOut": "Logga ut",
+    "account": "Konto"
+  },
   "footer": {
     "copyright": "© {year} Free Resume",
     "openSource": "Gratis och öppen källkod"
