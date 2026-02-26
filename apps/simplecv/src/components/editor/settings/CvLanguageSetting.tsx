@@ -8,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { SettingsSection } from "./SettingsSection";
 import type { DisplaySettings } from "@/lib/model/DisplaySettings";
 
 interface CvLanguageSettingProps {
@@ -23,11 +24,7 @@ interface CvLanguageSettingProps {
 
 export function CvLanguageSetting({ labels, displaySettings, onDisplaySettingsChange }: CvLanguageSettingProps) {
   return (
-    <div className="rounded-lg border bg-card p-4 space-y-3">
-      <div>
-        <h3 className="text-sm font-medium">{labels.cvLanguageTitle}</h3>
-        <p className="text-xs text-muted-foreground">{labels.cvLanguageDescription}</p>
-      </div>
+    <SettingsSection title={labels.cvLanguageTitle} description={labels.cvLanguageDescription}>
       <div className="flex items-center justify-between py-0.5">
         <Label htmlFor="cv-language" className="text-sm">
           {labels.cvLanguageTitle}
@@ -47,6 +44,6 @@ export function CvLanguageSetting({ labels, displaySettings, onDisplaySettingsCh
           </SelectContent>
         </Select>
       </div>
-    </div>
+    </SettingsSection>
   );
 }

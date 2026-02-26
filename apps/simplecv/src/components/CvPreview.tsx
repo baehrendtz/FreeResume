@@ -6,10 +6,7 @@ import type { TemplateStyleValues } from "@/lib/model/TemplateStyleSettings";
 import { templates } from "@/templates/templateRegistry";
 import { TemplateErrorBoundary } from "@/components/TemplateErrorBoundary";
 
-/** Full-width of an A4 page in px at 96 dpi */
-const A4_WIDTH = 794;
-/** Full-height of an A4 page in px at 96 dpi */
-const A4_HEIGHT = 1123;
+import { A4_WIDTH_PX, A4_HEIGHT_PX } from "@/lib/constants";
 
 interface CvPreviewProps {
   renderModel: RenderModel;
@@ -35,7 +32,7 @@ export function CvPreview({ renderModel, templateId, zoomLevel, styleSettings }:
 
     const updateScale = () => {
       const width = el.clientWidth;
-      setAutoScale(Math.min(1, width / A4_WIDTH));
+      setAutoScale(Math.min(1, width / A4_WIDTH_PX));
     };
 
     updateScale();
@@ -50,8 +47,8 @@ export function CvPreview({ renderModel, templateId, zoomLevel, styleSettings }:
       ref={containerRef}
       className={isZoomMode ? undefined : "overflow-hidden w-full"}
       style={isZoomMode
-        ? { width: A4_WIDTH * scale, height: A4_HEIGHT * scale }
-        : { height: A4_HEIGHT * scale + 4 }
+        ? { width: A4_WIDTH_PX * scale, height: A4_HEIGHT_PX * scale }
+        : { height: A4_HEIGHT_PX * scale + 4 }
       }
     >
       {/* Light-scope wrapper: CV preview is always rendered with light theme */}
@@ -60,7 +57,7 @@ export function CvPreview({ renderModel, templateId, zoomLevel, styleSettings }:
           id="cv-preview"
           className="bg-white shadow-xl border border-gray-200 overflow-hidden rounded-sm text-left"
           style={{
-            width: A4_WIDTH,
+            width: A4_WIDTH_PX,
             transform: `scale(${scale})`,
             transformOrigin: "top left",
           }}

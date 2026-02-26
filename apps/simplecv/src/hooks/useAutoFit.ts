@@ -6,8 +6,7 @@ import type { DisplaySettings } from "@/lib/model/DisplaySettings";
 import type { LayoutMetrics, TemplateMeta } from "@/lib/fitting/types";
 import { fitToTemplate } from "@/lib/fitting";
 import { trackAutoFit } from "@/lib/analytics/gtag";
-
-const MAX_FIT_ITERATIONS = 20;
+import { MAX_FIT_ITERATIONS } from "@/lib/constants";
 
 export function useAutoFit(
   cv: CvModel,

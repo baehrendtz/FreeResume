@@ -1,6 +1,7 @@
 import type { CvModel } from "@/lib/model/CvModel";
 import type { DisplaySettings } from "@/lib/model/DisplaySettings";
 import type { PerTemplateStyleOverrides } from "@/lib/model/TemplateStyleSettings";
+import { A4_WIDTH_PX } from "@/lib/constants";
 
 const STORAGE_KEY = "freeresume-print-data";
 const SESSION_KEY = "freeresume-session";
@@ -82,7 +83,7 @@ export async function downloadPdf(name: string): Promise<void> {
   const savedTransform = el.style.transform;
   const savedWidth = el.style.width;
   el.style.transform = "none";
-  el.style.width = "794px";
+  el.style.width = `${A4_WIDTH_PX}px`;
 
   // Lower scale on mobile to avoid memory issues
   const isMobile = window.innerWidth < 1024;

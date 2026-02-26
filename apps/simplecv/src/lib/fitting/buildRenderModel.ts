@@ -1,6 +1,7 @@
 import type { CvModel, Experience } from "@/lib/model/CvModel";
 import type { DisplaySettings } from "@/lib/model/DisplaySettings";
 import type { TemplateMeta, RenderModel, RenderExperienceGroup, RenderExperienceRole } from "./types";
+import { assignCompanyGroupIds } from "@/lib/model/groupExperience";
 
 function simplifyLocation(loc: string): string {
   const parts = loc.split(", ");
@@ -11,24 +12,6 @@ function simplifyLocation(loc: string): string {
 }
 
 /**
- * Assign auto groupIds to entries that lack them, based on consecutive same company name.
- */
-function assignAutoGroupIds(entries: Experience[]): (Experience & { effectiveGroupId: string })[] {
-  let currentGroupId = crypto.randomUUID();
-  return entries.map((entry, i) => {
-    if (entry.companyGroupId) {
-      return { ...entry, effectiveGroupId: entry.companyGroupId };
-    }
-    // Auto-group: consecutive entries with same company name
-    if (i > 0 && entry.company === entries[i - 1].company && entry.company) {
-      return { ...entry, effectiveGroupId: currentGroupId };
-    }
-    currentGroupId = crypto.randomUUID();
-    return { ...entry, effectiveGroupId: currentGroupId };
-  });
-}
-
-/**
  * Group experience entries into RenderExperienceGroup[] for template rendering.
  */
 function groupExperienceEntries(
@@ -36,12 +19,12 @@ function groupExperienceEntries(
   settings: DisplaySettings,
   maxBulletChars?: number,
 ): RenderExperienceGroup[] {
-  const withIds = assignAutoGroupIds(entries);
+  const withGroupIds = assignCompanyGroupIds(entries);
   const groups: RenderExperienceGroup[] = [];
   let currentGroupId: string | null = null;
   let currentGroup: RenderExperienceGroup | null = null;
 
-  for (const entry of withIds) {
+  for (const entry of withGroupIds) {
     const role: RenderExperienceRole = {
       title: entry.title,
       location: settings.simplifyLocations ? simplifyLocation(entry.location) : entry.location,
@@ -56,7 +39,7 @@ function groupExperienceEntries(
       }),
     };
 
-    if (entry.effectiveGroupId === currentGroupId && currentGroup) {
+    if (entry.companyGroupId === currentGroupId && currentGroup) {
       // Add role to existing group
       currentGroup.roles.push(role);
       currentGroup.isSingleRole = false;
@@ -74,7 +57,7 @@ function groupExperienceEntries(
     } else {
       // Start new group
       if (currentGroup) groups.push(currentGroup);
-      currentGroupId = entry.effectiveGroupId;
+      currentGroupId = entry.companyGroupId ?? null;
       currentGroup = {
         company: entry.company,
         location: settings.simplifyLocations ? simplifyLocation(entry.location) : entry.location,

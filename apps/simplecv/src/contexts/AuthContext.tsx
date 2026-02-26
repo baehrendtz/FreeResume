@@ -35,8 +35,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           });
         })
       )
-      .catch(() => {
-        // Firebase not configured — show UI as signed-out
+      .catch((err) => {
+        if (process.env.NODE_ENV === "development") {
+          console.warn("Firebase init skipped:", err);
+        }
         setLoading(false);
       });
 

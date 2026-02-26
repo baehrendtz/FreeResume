@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import type { CvModel } from "@/lib/model/CvModel";
 import { trackPhotoUpload } from "@/lib/analytics/gtag";
+import { MAX_PHOTO_FILE_SIZE } from "@/lib/constants";
 
 interface BasicsFormProps {
   labels: {
@@ -37,8 +38,7 @@ export function BasicsForm({ labels }: BasicsFormProps) {
       const file = e.target.files?.[0];
       if (!file) return;
 
-      // 2MB limit
-      if (file.size > 2 * 1024 * 1024) {
+      if (file.size > MAX_PHOTO_FILE_SIZE) {
         setPhotoError(labels.photoTooLarge);
         e.target.value = "";
         return;

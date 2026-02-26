@@ -207,7 +207,10 @@ export function CvEditor({
     const subscription = methods.watch((data) => {
       handleUpdate(data as CvModel);
     });
-    return () => subscription.unsubscribe();
+    return () => {
+      subscription.unsubscribe();
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
   }, [methods, handleUpdate]);
 
   // Reset form only for external changes (PDF upload, auto-fit, session restore)

@@ -1,23 +1,14 @@
 "use client";
 
 import { useCallback } from "react";
-import { Minus, Plus, RotateCcw } from "lucide-react";
+import { RotateCcw } from "lucide-react";
 import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { NumericStepper } from "@/components/ui/numeric-stepper";
+import { ColorPickerField } from "@/components/ui/color-picker-field";
+import { SettingsSection } from "./SettingsSection";
+import { FONT_SIZE_RANGE, PHOTO_SIZE_RANGE, LINE_HEIGHT_RANGE } from "@/lib/constants";
 import type { PerTemplateStyleOverrides, TemplateStyleValues } from "@/lib/model/TemplateStyleSettings";
-
-const FONT_MIN = 80;
-const FONT_MAX = 120;
-const FONT_STEP = 5;
-
-const PHOTO_MIN = 48;
-const PHOTO_MAX = 144;
-const PHOTO_STEP = 16;
-
-const LINE_HEIGHT_MIN = 80;
-const LINE_HEIGHT_MAX = 120;
-const LINE_HEIGHT_STEP = 5;
 
 export interface StyleLabels {
   styleTitle: string;
@@ -74,110 +65,47 @@ export function TemplateStylePanel({
     onStyleOverridesChange(next);
   }, [templateId, styleOverrides, onStyleOverridesChange]);
 
-  const pct = styleSettings.fontSizePercent;
-  const photoPx = styleSettings.photoSizePx;
-  const lhPct = styleSettings.lineHeightPercent;
-
   return (
-    <div className="rounded-lg border bg-card p-4 space-y-3">
-      <div>
-        <h3 className="text-sm font-medium">{labels.styleTitle}</h3>
-        <p className="text-xs text-muted-foreground">{labels.styleDescription}</p>
-      </div>
-
+    <SettingsSection title={labels.styleTitle} description={labels.styleDescription}>
       {/* Accent color */}
-      <div className="flex items-center justify-between py-0.5">
-        <Label htmlFor="accent-color" className="text-sm">
-          {labels.accentColor}
-        </Label>
-        <div className="flex items-center gap-2">
-          <Input
-            id="accent-color"
-            type="color"
-            value={styleSettings.accentColor}
-            onChange={(e) => updateField("accentColor", e.target.value)}
-            className="w-10 h-8 p-0.5 cursor-pointer"
-          />
-          <span className="text-xs text-muted-foreground font-mono w-16">
-            {styleSettings.accentColor}
-          </span>
-        </div>
-      </div>
+      <ColorPickerField
+        id="accent-color"
+        label={labels.accentColor}
+        value={styleSettings.accentColor}
+        onChange={(v) => updateField("accentColor", v)}
+      />
 
       {/* Secondary color */}
       {supportsSecondaryColor && (
-        <div className="flex items-center justify-between py-0.5">
-          <Label htmlFor="secondary-color" className="text-sm">
-            {labels.secondaryColor}
-          </Label>
-          <div className="flex items-center gap-2">
-            <Input
-              id="secondary-color"
-              type="color"
-              value={styleSettings.secondaryColor}
-              onChange={(e) => updateField("secondaryColor", e.target.value)}
-              className="w-10 h-8 p-0.5 cursor-pointer"
-            />
-            <span className="text-xs text-muted-foreground font-mono w-16">
-              {styleSettings.secondaryColor}
-            </span>
-          </div>
-        </div>
+        <ColorPickerField
+          id="secondary-color"
+          label={labels.secondaryColor}
+          value={styleSettings.secondaryColor}
+          onChange={(v) => updateField("secondaryColor", v)}
+        />
       )}
 
       {/* Sidebar background color */}
       {supportsSidebar && (
-        <div className="flex items-center justify-between py-0.5">
-          <Label htmlFor="sidebar-bg-color" className="text-sm">
-            {labels.sidebarBgColor}
-          </Label>
-          <div className="flex items-center gap-2">
-            <Input
-              id="sidebar-bg-color"
-              type="color"
-              value={styleSettings.sidebarBgColor}
-              onChange={(e) => updateField("sidebarBgColor", e.target.value)}
-              className="w-10 h-8 p-0.5 cursor-pointer"
-            />
-            <span className="text-xs text-muted-foreground font-mono w-16">
-              {styleSettings.sidebarBgColor}
-            </span>
-          </div>
-        </div>
+        <ColorPickerField
+          id="sidebar-bg-color"
+          label={labels.sidebarBgColor}
+          value={styleSettings.sidebarBgColor}
+          onChange={(v) => updateField("sidebarBgColor", v)}
+        />
       )}
 
-      {/* Photo size — +/- stepper with px */}
+      {/* Photo size */}
       {supportsPhoto && (
-        <div className="flex items-center justify-between py-0.5">
-          <Label className="text-sm">
-            {labels.photoSize}
-          </Label>
-          <div className="flex items-center gap-1">
-            <Button
-              type="button"
-              variant="outline"
-              size="icon"
-              className="h-8 w-8"
-              disabled={photoPx <= PHOTO_MIN}
-              onClick={() => updateField("photoSizePx", Math.max(PHOTO_MIN, photoPx - PHOTO_STEP))}
-            >
-              <Minus className="h-3.5 w-3.5" />
-            </Button>
-            <span className="text-sm tabular-nums w-14 text-center font-medium">
-              {photoPx}px
-            </span>
-            <Button
-              type="button"
-              variant="outline"
-              size="icon"
-              className="h-8 w-8"
-              disabled={photoPx >= PHOTO_MAX}
-              onClick={() => updateField("photoSizePx", Math.min(PHOTO_MAX, photoPx + PHOTO_STEP))}
-            >
-              <Plus className="h-3.5 w-3.5" />
-            </Button>
-          </div>
-        </div>
+        <NumericStepper
+          label={labels.photoSize}
+          value={styleSettings.photoSizePx}
+          onChange={(v) => updateField("photoSizePx", v)}
+          min={PHOTO_SIZE_RANGE.min}
+          max={PHOTO_SIZE_RANGE.max}
+          step={PHOTO_SIZE_RANGE.step}
+          unit="px"
+        />
       )}
 
       {/* Photo shape — 3 toggle buttons */}
@@ -203,71 +131,29 @@ export function TemplateStylePanel({
         </div>
       )}
 
-      {/* Font size — +/- stepper with percentage */}
-      <div className="flex items-center justify-between py-0.5">
-        <Label className="text-sm">
-          {labels.fontScale}
-        </Label>
-        <div className="flex items-center gap-1">
-          <Button
-            type="button"
-            variant="outline"
-            size="icon"
-            className="h-8 w-8"
-            disabled={pct <= FONT_MIN}
-            onClick={() => updateField("fontSizePercent", Math.max(FONT_MIN, pct - FONT_STEP))}
-          >
-            <Minus className="h-3.5 w-3.5" />
-          </Button>
-          <span className="text-sm tabular-nums w-12 text-center font-medium">
-            {pct}%
-          </span>
-          <Button
-            type="button"
-            variant="outline"
-            size="icon"
-            className="h-8 w-8"
-            disabled={pct >= FONT_MAX}
-            onClick={() => updateField("fontSizePercent", Math.min(FONT_MAX, pct + FONT_STEP))}
-          >
-            <Plus className="h-3.5 w-3.5" />
-          </Button>
-        </div>
-      </div>
+      {/* Font size */}
+      <NumericStepper
+        label={labels.fontScale}
+        value={styleSettings.fontSizePercent}
+        onChange={(v) => updateField("fontSizePercent", v)}
+        min={FONT_SIZE_RANGE.min}
+        max={FONT_SIZE_RANGE.max}
+        step={FONT_SIZE_RANGE.step}
+        unit="%"
+      />
 
-      {/* Line height — +/- stepper with percentage */}
-      <div className="flex items-center justify-between py-0.5">
-        <Label className="text-sm">
-          {labels.lineHeight}
-        </Label>
-        <div className="flex items-center gap-1">
-          <Button
-            type="button"
-            variant="outline"
-            size="icon"
-            className="h-8 w-8"
-            disabled={lhPct <= LINE_HEIGHT_MIN}
-            onClick={() => updateField("lineHeightPercent", Math.max(LINE_HEIGHT_MIN, lhPct - LINE_HEIGHT_STEP))}
-          >
-            <Minus className="h-3.5 w-3.5" />
-          </Button>
-          <span className="text-sm tabular-nums w-12 text-center font-medium">
-            {lhPct}%
-          </span>
-          <Button
-            type="button"
-            variant="outline"
-            size="icon"
-            className="h-8 w-8"
-            disabled={lhPct >= LINE_HEIGHT_MAX}
-            onClick={() => updateField("lineHeightPercent", Math.min(LINE_HEIGHT_MAX, lhPct + LINE_HEIGHT_STEP))}
-          >
-            <Plus className="h-3.5 w-3.5" />
-          </Button>
-        </div>
-      </div>
+      {/* Line height */}
+      <NumericStepper
+        label={labels.lineHeight}
+        value={styleSettings.lineHeightPercent}
+        onChange={(v) => updateField("lineHeightPercent", v)}
+        min={LINE_HEIGHT_RANGE.min}
+        max={LINE_HEIGHT_RANGE.max}
+        step={LINE_HEIGHT_RANGE.step}
+        unit="%"
+      />
 
-      {/* Reset button — only visible when overrides exist */}
+      {/* Reset button */}
       {hasOverrides && (
         <Button
           type="button"
@@ -280,6 +166,6 @@ export function TemplateStylePanel({
           {labels.resetDefaults}
         </Button>
       )}
-    </div>
+    </SettingsSection>
   );
 }

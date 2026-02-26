@@ -126,30 +126,30 @@ const catalogByName = new Map<string, LanguageCatalogEntry>(
   ]),
 );
 
-/** Resolve a stored name/ID to a display name for the CV output (based on cvLanguage). */
-export function resolveLanguageName(nameOrId: string, cvLanguage: CvLanguage): string {
-  const byId = catalogById.get(nameOrId);
-  if (byId) return byId[cvLanguage];
-  const byName = catalogByName.get(nameOrId.toLowerCase());
-  if (byName) return byName[cvLanguage];
-  return nameOrId;
-}
-
 /** Find a catalog ID from a display name. Case-insensitive. Returns undefined if not found. */
 export function findLanguageId(displayName: string): string | undefined {
   const entry = catalogByName.get(displayName.toLowerCase());
   return entry?.id;
 }
 
-/** Resolve a stored name/ID to a display name for the editor UI (based on app locale). */
-export function resolveLanguageDisplayName(nameOrId: string, uiLocale: string): string {
-  const lang = uiLocale === "sv" ? "sv" : "en";
+/**
+ * Resolve a stored name or ID to a localized display name.
+ *
+ * @param nameOrId  - ISO 639-1 code (e.g. "en") or display name (e.g. "English")
+ * @param locale    - Target locale for the output ("en" | "sv"), or a full
+ *                    locale string where only "sv" is treated specially.
+ */
+export function resolveLanguageName(nameOrId: string, locale: string): string {
+  const lang: CvLanguage = locale === "sv" ? "sv" : "en";
   const byId = catalogById.get(nameOrId);
   if (byId) return byId[lang];
   const byName = catalogByName.get(nameOrId.toLowerCase());
   if (byName) return byName[lang];
   return nameOrId;
 }
+
+/** @deprecated Use `resolveLanguageName` instead. */
+export const resolveLanguageDisplayName = resolveLanguageName;
 
 // ---------------------------------------------------------------------------
 // Date formatting (locale-aware)

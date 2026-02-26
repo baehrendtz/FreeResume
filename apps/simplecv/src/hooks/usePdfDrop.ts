@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
+import { PDF_MIME_TYPE } from "@/lib/constants";
 
 interface UsePdfDropOptions {
   onFileSelected: (file: File) => void;
@@ -14,7 +15,7 @@ export function usePdfDrop({ onFileSelected, invalidFileTypeMessage }: UsePdfDro
 
   const handleFile = useCallback(
     (file: File) => {
-      if (file.type === "application/pdf") {
+      if (file.type === PDF_MIME_TYPE) {
         setError(null);
         onFileSelected(file);
       } else {

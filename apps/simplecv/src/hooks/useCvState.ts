@@ -8,6 +8,7 @@ import { buildRenderModel } from "@/lib/fitting";
 import { getTemplateMeta, getTemplateDefaultStyle } from "@/templates/templateRegistry";
 import { saveSession, loadSession } from "@/lib/export/printHelpers";
 import { findLanguageId } from "@/lib/cvLocale";
+import { assignCompanyGroupIds } from "@/lib/model/groupExperience";
 
 function migrateExtras(cv: CvModel): CvModel {
   const extras = cv.extras as unknown;
@@ -32,22 +33,8 @@ function migrateLanguages(cv: CvModel): CvModel {
 }
 
 function migrateCompanyGroups(cv: CvModel): CvModel {
-  // If any entry already has a companyGroupId, skip migration
   if (cv.experience.some((e) => e.companyGroupId)) return cv;
-
-  const experience = [...cv.experience];
-  let currentGroupId = crypto.randomUUID();
-
-  for (let i = 0; i < experience.length; i++) {
-    if (i > 0 && experience[i].company === experience[i - 1].company && experience[i].company) {
-      experience[i] = { ...experience[i], companyGroupId: experience[i - 1].companyGroupId };
-    } else {
-      currentGroupId = crypto.randomUUID();
-      experience[i] = { ...experience[i], companyGroupId: currentGroupId };
-    }
-  }
-
-  return { ...cv, experience };
+  return { ...cv, experience: assignCompanyGroupIds(cv.experience) };
 }
 
 function migrateLanguageNames(cv: CvModel): CvModel {

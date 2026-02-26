@@ -1,9 +1,7 @@
 "use client";
 
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Minus, Plus } from "lucide-react";
+import { NumericStepper } from "@/components/ui/numeric-stepper";
+import { SettingsSection } from "./SettingsSection";
 import type { DisplaySettings } from "@/lib/model/DisplaySettings";
 
 const LIMIT_FIELDS = [
@@ -32,65 +30,22 @@ interface ContentLimitsProps {
 
 export function ContentLimits({ labels, displaySettings, onDisplaySettingsChange }: ContentLimitsProps) {
   return (
-    <div className="rounded-lg border bg-card p-4 space-y-3">
-      <div>
-        <h3 className="text-sm font-medium">{labels.contentLimitsTitle}</h3>
-        <p className="text-xs text-muted-foreground">{labels.contentLimitsDescription}</p>
-      </div>
+    <SettingsSection title={labels.contentLimitsTitle} description={labels.contentLimitsDescription}>
       {LIMIT_FIELDS.map(({ key, min, max, step }) => (
-        <div key={key} className="flex items-center justify-between gap-2">
-          <Label htmlFor={`limit-${key}`} className="text-sm min-w-0 truncate" title={labels[key]}>
-            {labels[key]}
-          </Label>
-          <div className="flex items-center gap-1">
-            <Button
-              type="button"
-              variant="outline"
-              size="icon"
-              className="h-8 w-8"
-              disabled={displaySettings[key] <= min}
-              onClick={() =>
-                onDisplaySettingsChange({
-                  ...displaySettings,
-                  [key]: Math.max(min, displaySettings[key] - step),
-                })
-              }
-            >
-              <Minus className="h-3.5 w-3.5" />
-            </Button>
-            <Input
-              id={`limit-${key}`}
-              type="number"
-              min={min}
-              max={max}
-              step={step}
-              value={displaySettings[key]}
-              onChange={(e) => {
-                const val = parseInt(e.target.value, 10);
-                if (!isNaN(val) && val >= min && val <= max) {
-                  onDisplaySettingsChange({ ...displaySettings, [key]: val });
-                }
-              }}
-              className="w-16 text-center [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-            />
-            <Button
-              type="button"
-              variant="outline"
-              size="icon"
-              className="h-8 w-8"
-              disabled={displaySettings[key] >= max}
-              onClick={() =>
-                onDisplaySettingsChange({
-                  ...displaySettings,
-                  [key]: Math.min(max, displaySettings[key] + step),
-                })
-              }
-            >
-              <Plus className="h-3.5 w-3.5" />
-            </Button>
-          </div>
-        </div>
+        <NumericStepper
+          key={key}
+          id={`limit-${key}`}
+          label={labels[key]}
+          value={displaySettings[key]}
+          min={min}
+          max={max}
+          step={step}
+          editable
+          onChange={(val) =>
+            onDisplaySettingsChange({ ...displaySettings, [key]: val })
+          }
+        />
       ))}
-    </div>
+    </SettingsSection>
   );
 }

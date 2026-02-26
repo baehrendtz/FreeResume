@@ -2,6 +2,7 @@
 
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { SettingsSection } from "./SettingsSection";
 import type { DisplaySettings } from "@/lib/model/DisplaySettings";
 
 interface LocationFormattingProps {
@@ -16,11 +17,7 @@ interface LocationFormattingProps {
 
 export function LocationFormatting({ labels, displaySettings, onDisplaySettingsChange }: LocationFormattingProps) {
   return (
-    <div className="rounded-lg border bg-card p-4 space-y-3">
-      <div>
-        <h3 className="text-sm font-medium">{labels.simplifyLocationsTitle}</h3>
-        <p className="text-xs text-muted-foreground">{labels.simplifyLocationsDescription}</p>
-      </div>
+    <SettingsSection title={labels.simplifyLocationsTitle} description={labels.simplifyLocationsDescription}>
       <div className="flex items-center justify-between py-0.5">
         <Label htmlFor="simplify-locations" className="text-sm">
           {labels.simplifyLocations}
@@ -33,6 +30,6 @@ export function LocationFormatting({ labels, displaySettings, onDisplaySettingsC
           }
         />
       </div>
-    </div>
+    </SettingsSection>
   );
 }

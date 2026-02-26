@@ -19,7 +19,8 @@ export function usePdfImport(onImported: (result: ParseResult) => void) {
         const result = parseLinkedInPdf(pages);
         onImported(result);
         trackPdfUpload("success");
-      } catch {
+      } catch (err) {
+        console.error("PDF import failed:", err);
         trackPdfUpload("failure");
         setError("pdf_parse_failed");
       } finally {

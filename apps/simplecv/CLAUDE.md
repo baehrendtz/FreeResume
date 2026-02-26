@@ -64,3 +64,12 @@ CV data, templateId, and displaySettings are saved to sessionStorage on every ch
 - Validation: Zod v4 (`zod/v4` import path).
 - Templates declare their own capabilities and policies — the render pipeline adapts automatically.
 - `hidden` field on experience/education entries: optional boolean that hides the entry from the rendered CV without deleting it. Filtered in `buildRenderModel()` before slicing.
+
+## Code Quality Standards
+
+- **DRY**: Extract reusable components when the same pattern appears 2+ times. Shared UI: `NumericStepper`, `ColorPickerField`, `SettingsSection`.
+- **YAGNI**: Do not write code for hypothetical future needs. Only add what is currently required.
+- **Constants**: All magic numbers must be defined in `src/lib/constants.ts` — never inline numeric literals for dimensions, limits, or ranges.
+- **Error handling**: Always log unexpected errors. Only silence expected errors (QuotaExceeded for sessionStorage, GA blockers).
+- **Naming**: Use `parse*()` for all parsing functions consistently. Use `resolve*()` for lookup/resolution functions.
+- **Shared logic**: Company grouping logic lives in `src/lib/model/groupExperience.ts` — use `assignCompanyGroupIds()` everywhere.

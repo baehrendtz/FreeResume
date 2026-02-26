@@ -3,6 +3,7 @@
 import { useFormContext, Controller } from "react-hook-form";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { SettingsSection } from "./SettingsSection";
 import type { CvModel } from "@/lib/model/CvModel";
 import { trackSectionToggle } from "@/lib/analytics/gtag";
 
@@ -34,11 +35,7 @@ export function SectionToggles({ labels }: SectionTogglesProps) {
   const { control } = useFormContext<CvModel>();
 
   return (
-    <div className="rounded-lg border bg-card p-4 space-y-3">
-      <div>
-        <h3 className="text-sm font-medium">{labels.title}</h3>
-        <p className="text-xs text-muted-foreground">{labels.description}</p>
-      </div>
+    <SettingsSection title={labels.title} description={labels.description}>
       {SECTIONS.map((section) => (
         <Controller
           key={section}
@@ -61,6 +58,6 @@ export function SectionToggles({ labels }: SectionTogglesProps) {
           )}
         />
       ))}
-    </div>
+    </SettingsSection>
   );
 }
