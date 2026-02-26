@@ -22,3 +22,21 @@ export const PDF_MIME_TYPE = "application/pdf";
 export const FONT_SIZE_RANGE = { min: 80, max: 120, step: 5 } as const;
 export const PHOTO_SIZE_RANGE = { min: 48, max: 144, step: 16 } as const;
 export const LINE_HEIGHT_RANGE = { min: 80, max: 120, step: 5 } as const;
+
+/** Maximum PDF file size in bytes (10 MB) */
+export const MAX_PDF_FILE_SIZE = 10 * 1024 * 1024;
+
+/** Maximum number of PDF pages to process */
+export const MAX_PDF_PAGES = 20;
+
+// --- Zoom ranges ---
+export const PREVIEW_ZOOM = { min: 0.5, max: 3.0, step: 0.25 } as const;
+
+/** Zoom level for onboarding success preview */
+export const ONBOARDING_PREVIEW_ZOOM = 0.403;
+
+/** Debounce delay for form updates in ms */
+export const FORM_DEBOUNCE_MS = 150;
+
+/** Confirmation button timeout in ms */
+export const CONFIRMATION_TIMEOUT_MS = 3000;

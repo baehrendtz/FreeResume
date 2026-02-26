@@ -5,6 +5,7 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Eye, EyeOff, Trash2, ChevronUp, ChevronDown } from "lucide-react";
 import type { ReactNode } from "react";
+import { CONFIRMATION_TIMEOUT_MS } from "@/lib/constants";
 
 interface EntryCardProps {
   summary: string;
@@ -40,7 +41,7 @@ export function EntryCard({
 
   useEffect(() => {
     if (!confirming) return;
-    const timer = setTimeout(() => setConfirming(false), 3000);
+    const timer = setTimeout(() => setConfirming(false), CONFIRMATION_TIMEOUT_MS);
     return () => clearTimeout(timer);
   }, [confirming]);
 
@@ -70,6 +71,7 @@ export function EntryCard({
             className="h-7 w-7 text-muted-foreground shrink-0"
             onClick={onMoveUp}
             title={labels.moveUp}
+            aria-label={labels.moveUp}
           >
             <ChevronUp className="h-3.5 w-3.5" />
           </Button>
@@ -82,6 +84,7 @@ export function EntryCard({
             className="h-7 w-7 text-muted-foreground shrink-0"
             onClick={onMoveDown}
             title={labels.moveDown}
+            aria-label={labels.moveDown}
           >
             <ChevronDown className="h-3.5 w-3.5" />
           </Button>
@@ -92,6 +95,7 @@ export function EntryCard({
           size="sm"
           className="h-7 text-xs text-muted-foreground shrink-0"
           onClick={onToggleHidden}
+          aria-label={hidden ? labels.show : labels.hide}
         >
           {hidden ? (
             <>
@@ -111,6 +115,7 @@ export function EntryCard({
           size="sm"
           className={`h-7 text-xs shrink-0 ${confirming ? "text-destructive font-medium" : "text-muted-foreground hover:text-destructive"}`}
           onClick={handleRemoveClick}
+          aria-label={labels.remove}
         >
           <Trash2 className="h-3.5 w-3.5 mr-1" />
           {confirming ? (labels.confirm ?? "Confirm?") : labels.remove}

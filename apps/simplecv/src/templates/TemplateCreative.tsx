@@ -6,6 +6,7 @@ import { getCvStrings } from "@/lib/cvLocale";
 import { Briefcase, GraduationCap, Code, Globe, Star } from "lucide-react";
 import {
   scaledContainerStyle,
+  photoShapeClassName,
   getContactItems,
   SectionTitle,
   ExperienceGroupItem,
@@ -31,9 +32,7 @@ export default function TemplateCreative({ cv, styleSettings }: TemplateProps) {
   const photoSize = styleSettings?.photoSizePx ?? 64;
   const fontZoom = (styleSettings?.fontSizePercent ?? 100) / 100;
   const photoShape = styleSettings?.photoShape ?? "circle";
-  const photoShapeClass =
-    photoShape === "circle" ? "rounded-full" :
-    photoShape === "rounded" ? "rounded-lg" : "rounded-none";
+  const photoShapeClass = photoShapeClassName(photoShape);
   const SIDEBAR_BG = styleSettings?.sidebarBgColor ?? "#f8fafc";
   const HEADER_BG = "linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)";
   const GRADIENT_BAR = `linear-gradient(to right, ${ACCENT}, ${ACCENT2})`;

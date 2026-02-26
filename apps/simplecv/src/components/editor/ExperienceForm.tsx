@@ -47,6 +47,10 @@ export function ExperienceForm({ labels }: ExperienceFormProps) {
     const prevGroupId = getValues(`experience.${index - 1}.companyGroupId`);
     if (prevGroupId) {
       setValue(`experience.${index}.companyGroupId`, prevGroupId);
+    } else {
+      const newId = crypto.randomUUID();
+      setValue(`experience.${index - 1}.companyGroupId`, newId);
+      setValue(`experience.${index}.companyGroupId`, newId);
     }
   };
 
@@ -198,6 +202,7 @@ export function ExperienceForm({ labels }: ExperienceFormProps) {
             description: "",
             bullets: [],
             hidden: false,
+            companyGroupId: crypto.randomUUID(),
           });
           trackExperienceAdd();
         }}

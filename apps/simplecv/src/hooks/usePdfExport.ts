@@ -12,6 +12,8 @@ export function usePdfExport(name: string, templateId: string) {
     try {
       await downloadPdf(name);
       trackPdfDownload(templateId);
+    } catch (err) {
+      console.error("PDF export failed:", err);
     } finally {
       setDownloading(false);
     }

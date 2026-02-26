@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { CvPreview } from "@/components/CvPreview";
 import type { RenderModel } from "@/lib/fitting/types";
 import type { TemplateStyleValues } from "@/lib/model/TemplateStyleSettings";
+import { PREVIEW_ZOOM } from "@/lib/constants";
 
 interface FullscreenPreviewDialogProps {
   open: boolean;
@@ -19,10 +20,6 @@ interface FullscreenPreviewDialogProps {
   templateId: string;
   styleSettings?: TemplateStyleValues;
 }
-
-const MIN_ZOOM = 0.5;
-const MAX_ZOOM = 3.0;
-const ZOOM_STEP = 0.25;
 
 export function FullscreenPreviewDialog({
   open,
@@ -51,8 +48,9 @@ export function FullscreenPreviewDialog({
           <Button
             variant="outline"
             size="icon-sm"
-            disabled={zoom <= MIN_ZOOM}
-            onClick={() => setZoom((z) => Math.max(MIN_ZOOM, +(z - ZOOM_STEP).toFixed(2)))}
+            disabled={zoom <= PREVIEW_ZOOM.min}
+            onClick={() => setZoom((z) => Math.max(PREVIEW_ZOOM.min, +(z - PREVIEW_ZOOM.step).toFixed(2)))}
+            aria-label="Zoom out"
           >
             <ZoomOut className="h-4 w-4" />
           </Button>
@@ -69,8 +67,9 @@ export function FullscreenPreviewDialog({
           <Button
             variant="outline"
             size="icon-sm"
-            disabled={zoom >= MAX_ZOOM}
-            onClick={() => setZoom((z) => Math.min(MAX_ZOOM, +(z + ZOOM_STEP).toFixed(2)))}
+            disabled={zoom >= PREVIEW_ZOOM.max}
+            onClick={() => setZoom((z) => Math.min(PREVIEW_ZOOM.max, +(z + PREVIEW_ZOOM.step).toFixed(2)))}
+            aria-label="Zoom in"
           >
             <ZoomIn className="h-4 w-4" />
           </Button>

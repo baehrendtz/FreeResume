@@ -12,8 +12,7 @@ export interface PdfPage {
   items: PdfTextItem[];
 }
 
-const MAX_PDF_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
-const MAX_PDF_PAGES = 20;
+import { MAX_PDF_FILE_SIZE, MAX_PDF_PAGES } from "@/lib/constants";
 
 export async function extractText(file: File): Promise<PdfPage[]> {
   if (file.type && file.type !== "application/pdf") {
@@ -37,29 +36,33 @@ export async function extractText(file: File): Promise<PdfPage[]> {
   const pages: PdfPage[] = [];
 
   for (let i = 1; i <= pdf.numPages; i++) {
-    const page = await pdf.getPage(i);
-    const textContent = await page.getTextContent();
+    try {
+      const page = await pdf.getPage(i);
+      const textContent = await page.getTextContent();
 
-    const items: PdfTextItem[] = [];
-    for (const item of textContent.items) {
-      if (!("str" in item)) continue;
-      const textItem = item as TextItem;
-      const fontName = textItem.fontName || "";
-      const bold =
-        fontName.toLowerCase().includes("bold") ||
-        fontName.toLowerCase().includes("semibold");
+      const items: PdfTextItem[] = [];
+      for (const item of textContent.items) {
+        if (!("str" in item)) continue;
+        const textItem = item as TextItem;
+        const fontName = textItem.fontName || "";
+        const bold =
+          fontName.toLowerCase().includes("bold") ||
+          fontName.toLowerCase().includes("semibold");
 
-      items.push({
-        text: textItem.str,
-        x: textItem.transform[4],
-        y: textItem.transform[5],
-        fontSize: Math.abs(textItem.transform[0]),
-        fontName,
-        bold,
-      });
+        items.push({
+          text: textItem.str,
+          x: textItem.transform[4],
+          y: textItem.transform[5],
+          fontSize: Math.abs(textItem.transform[0]),
+          fontName,
+          bold,
+        });
+      }
+
+      pages.push({ pageNumber: i, items });
+    } catch (err) {
+      console.warn(`Skipping corrupt page ${i}:`, err);
     }
-
-    pages.push({ pageNumber: i, items });
   }
 
   return pages;

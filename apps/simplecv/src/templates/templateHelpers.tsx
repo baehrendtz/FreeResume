@@ -12,6 +12,11 @@ import type {
 import { cn } from "@/lib/utils";
 import { getCvStrings, resolveLanguageName, formatCvDate, translateExtrasCategory, type CvLanguage } from "@/lib/cvLocale";
 
+/** Map photoShape setting to Tailwind border-radius class. */
+export function photoShapeClassName(shape: "circle" | "rounded" | "square"): string {
+  return shape === "circle" ? "rounded-full" : shape === "rounded" ? "rounded-lg" : "rounded-none";
+}
+
 /**
  * Build inline styles for the CV root container that counter-scale width/height
  * so that CSS `zoom` only affects text/spacing — not the overall A4 dimensions.
@@ -250,7 +255,7 @@ export function ExperienceGroupItem({
 
   // Multi-role group — company header with sub-roles
   const groupDateStr = formatDateRange(group.startDate, group.endDate, cvLanguage);
-  const primaryLabel = layout === "title-first" ? group.company : group.company;
+  const primaryLabel = group.company;
 
   return (
     <div className={cn("mb-1.5 break-inside-avoid", className)}>

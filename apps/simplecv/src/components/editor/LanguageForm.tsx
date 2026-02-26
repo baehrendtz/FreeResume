@@ -31,7 +31,7 @@ import { cn } from "@/lib/utils";
 import type { CvModel, LanguageEntry, LanguageProficiency } from "@/lib/model/CvModel";
 import {
   LANGUAGE_CATALOG,
-  resolveLanguageDisplayName,
+  resolveLanguageName,
 } from "@/lib/cvLocale";
 
 const PROFICIENCY_LEVELS: LanguageProficiency[] = [
@@ -199,9 +199,9 @@ export function LanguageForm({ labels }: LanguageFormProps) {
                 <p className="text-sm text-muted-foreground py-2">{labels.emptyState}</p>
               )}
               {items.map((item, i) => (
-                <div key={i} className="flex items-center gap-2 py-1.5">
+                <div key={item.name} className="flex items-center gap-2 py-1.5">
                   <span className="text-sm font-medium flex-1 min-w-0 truncate">
-                    {resolveLanguageDisplayName(item.name, uiLocale)}
+                    {resolveLanguageName(item.name, uiLocale)}
                   </span>
                   <Select
                     value={item.level}
@@ -224,6 +224,7 @@ export function LanguageForm({ labels }: LanguageFormProps) {
                     type="button"
                     onClick={() => removeItem(i)}
                     className="text-muted-foreground hover:text-destructive shrink-0 p-0.5"
+                    aria-label="Remove language"
                   >
                     <X className="h-3.5 w-3.5" />
                   </button>

@@ -1,11 +1,12 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { FileText, Layout, Sparkles } from "lucide-react";
+import { FileText, Columns2, Layout, Sparkles } from "lucide-react";
 import { templates } from "@/templates/templateRegistry";
 
 const TEMPLATE_ICONS: Record<string, React.ReactNode> = {
   basic: <FileText className="h-3.5 w-3.5" />,
+  basic2: <Columns2 className="h-3.5 w-3.5" />,
   professional: <Layout className="h-3.5 w-3.5" />,
   creative: <Sparkles className="h-3.5 w-3.5" />,
 };

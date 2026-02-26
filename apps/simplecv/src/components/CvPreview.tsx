@@ -62,7 +62,7 @@ export function CvPreview({ renderModel, templateId, zoomLevel, styleSettings }:
             transformOrigin: "top left",
           }}
         >
-          <TemplateErrorBoundary>
+          <TemplateErrorBoundary resetKey={templateId}>
             <Suspense
               fallback={
                 <div className="p-8 text-center text-gray-500">

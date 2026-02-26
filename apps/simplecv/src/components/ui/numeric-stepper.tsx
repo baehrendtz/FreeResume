@@ -41,6 +41,7 @@ export function NumericStepper({
           className="h-8 w-8"
           disabled={value <= min}
           onClick={() => onChange(Math.max(min, value - step))}
+          aria-label={`Decrease ${label}`}
         >
           <Minus className="h-3.5 w-3.5" />
         </Button>
@@ -72,6 +73,7 @@ export function NumericStepper({
           className="h-8 w-8"
           disabled={value >= max}
           onClick={() => onChange(Math.min(max, value + step))}
+          aria-label={`Increase ${label}`}
         >
           <Plus className="h-3.5 w-3.5" />
         </Button>

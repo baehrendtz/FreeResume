@@ -5,6 +5,7 @@ import type { TemplateStyleValues } from "@/lib/model/TemplateStyleSettings";
 import { getCvStrings, resolveLanguageName, translateExtrasCategory } from "@/lib/cvLocale";
 import {
   scaledContainerStyle,
+  photoShapeClassName,
   getContactItems,
   formatDateRange,
   CvFooter,
@@ -80,9 +81,7 @@ export default function TemplateBasic2({ cv, styleSettings }: TemplateProps) {
   const photoSize = styleSettings?.photoSizePx ?? 128;
   const fontZoom = (styleSettings?.fontSizePercent ?? 100) / 100;
   const photoShape = styleSettings?.photoShape ?? "circle";
-  const photoShapeClass =
-    photoShape === "circle" ? "rounded-full" :
-    photoShape === "rounded" ? "rounded-lg" : "rounded-none";
+  const photoShapeClass = photoShapeClassName(photoShape);
   const sidebarBg = styleSettings?.sidebarBgColor ?? "#dce4ed";
   const timelineColor = "#c0c8d4";
   const BASE_LINE_HEIGHT = 1.35;
@@ -321,7 +320,7 @@ export default function TemplateBasic2({ cv, styleSettings }: TemplateProps) {
                       <TimelineDot color={accent} filled />
                       <div>
                         <span className="font-bold text-[8.5pt] text-gray-900">
-                          {edu.degree}{edu.field ? ` ${edu.field}` : ""}
+                          {edu.degree}{edu.field ? ` — ${edu.field}` : ""}
                         </span>
                         {dateStr && <span className="text-[8pt] text-gray-500 ml-2">{dateStr}</span>}
                       </div>

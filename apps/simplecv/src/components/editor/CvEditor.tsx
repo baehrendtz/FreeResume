@@ -23,6 +23,7 @@ import { WIZARD_STEPS } from "@/lib/wizard/steps";
 import { trackWizardStep, trackSkillAdd, trackSkillRemove } from "@/lib/analytics/gtag";
 import type { PerTemplateStyleOverrides, TemplateStyleValues } from "@/lib/model/TemplateStyleSettings";
 import { getTemplateMeta } from "@/templates/templateRegistry";
+import { FORM_DEBOUNCE_MS } from "@/lib/constants";
 
 interface CvEditorProps {
   defaultValues: CvModel;
@@ -184,7 +185,7 @@ export function CvEditor({
 
   const methods = useForm<CvModel>({
     defaultValues,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- zod v4.3 internal version mismatch with @hookform/resolvers
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- zod v4.3 internal version mismatch with @hookform/resolvers. TODO: Remove cast when @hookform/resolvers supports zod v4 natively
     resolver: zodResolver(cvModelSchema as any),
     mode: "onChange",
   });
@@ -198,7 +199,7 @@ export function CvEditor({
       debounceRef.current = setTimeout(() => {
         skipNextReset.current = true;
         onUpdate(data);
-      }, 150);
+      }, FORM_DEBOUNCE_MS);
     },
     [onUpdate]
   );
@@ -233,7 +234,7 @@ export function CvEditor({
 
   return (
     <FormProvider {...methods}>
-      <form ref={formRef}>
+      <form ref={formRef} onSubmit={(e) => e.preventDefault()}>
         <div className="flex flex-col md:flex-row">
           <WizardSidebar
             activeStep={activeStep}

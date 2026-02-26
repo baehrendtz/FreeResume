@@ -8,6 +8,7 @@ import { buildRenderModel } from "@/lib/fitting";
 import { getTemplateMeta } from "@/templates/templateRegistry";
 import { defaultDisplaySettings } from "@/lib/model/DisplaySettings";
 import type { CvModel } from "@/lib/model/CvModel";
+import { ONBOARDING_PREVIEW_ZOOM } from "@/lib/constants";
 
 interface OnboardingSuccessProps {
   cv: CvModel;
@@ -86,7 +87,7 @@ export function OnboardingSuccess({ cv, isFromScratch, labels, onComplete, onBac
             }`}
           >
             <CvPreview
-              zoomLevel={0.403}
+              zoomLevel={ONBOARDING_PREVIEW_ZOOM}
               templateId="basic"
               renderModel={previewRenderModel}
             />

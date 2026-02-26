@@ -49,11 +49,12 @@ export function saveCvForPrint(cv: CvModel): void {
 }
 
 export function loadCvForPrint(): CvModel | null {
-  const raw = sessionStorage.getItem(STORAGE_KEY);
-  if (!raw) return null;
   try {
+    const raw = sessionStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
     return JSON.parse(raw) as CvModel;
-  } catch {
+  } catch (err) {
+    console.error("Failed to load print data:", err);
     return null;
   }
 }
@@ -85,52 +86,53 @@ export async function downloadPdf(name: string): Promise<void> {
   el.style.transform = "none";
   el.style.width = `${A4_WIDTH_PX}px`;
 
-  // Lower scale on mobile to avoid memory issues
-  const isMobile = window.innerWidth < 1024;
-  const canvas = await html2canvas(el, {
-    scale: isMobile ? 2 : 3,
-    useCORS: true,
-    backgroundColor: "#ffffff",
-  });
+  try {
+    // Lower scale on mobile to avoid memory issues
+    const isMobile = window.innerWidth < 1024;
+    const canvas = await html2canvas(el, {
+      scale: isMobile ? 2 : 3,
+      useCORS: true,
+      backgroundColor: "#ffffff",
+    });
 
-  // Restore transform
-  el.style.transform = savedTransform;
-  el.style.width = savedWidth;
+    const imgData = canvas.toDataURL("image/jpeg", 0.92);
+    const imgW = canvas.width;
+    const imgH = canvas.height;
 
-  const imgData = canvas.toDataURL("image/jpeg", 0.92);
-  const imgW = canvas.width;
-  const imgH = canvas.height;
+    // Fit to exactly one A4 page — scale down if content is taller than A4
+    const scaleToWidth = A4_W / imgW;
+    const heightAtFullWidth = imgH * scaleToWidth;
 
-  // Fit to exactly one A4 page — scale down if content is taller than A4
-  const scaleToWidth = A4_W / imgW;
-  const heightAtFullWidth = imgH * scaleToWidth;
+    let pdfW: number;
+    let pdfH: number;
 
-  let pdfW: number;
-  let pdfH: number;
+    if (heightAtFullWidth <= A4_H) {
+      // Content fits within A4 height — use full width
+      pdfW = A4_W;
+      pdfH = heightAtFullWidth;
+    } else {
+      // Content is taller than A4 — scale to fit height, center horizontally
+      const scaleToHeight = A4_H / imgH;
+      pdfW = imgW * scaleToHeight;
+      pdfH = A4_H;
+    }
 
-  if (heightAtFullWidth <= A4_H) {
-    // Content fits within A4 height — use full width
-    pdfW = A4_W;
-    pdfH = heightAtFullWidth;
-  } else {
-    // Content is taller than A4 — scale to fit height, center horizontally
-    const scaleToHeight = A4_H / imgH;
-    pdfW = imgW * scaleToHeight;
-    pdfH = A4_H;
+    const pdf = new jsPDF({
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4",
+    });
+
+    // Center the image horizontally on the page
+    const xOffset = (A4_W - pdfW) / 2;
+    pdf.addImage(imgData, "JPEG", xOffset, 0, pdfW, pdfH, undefined, "FAST");
+
+    const filename = name
+      ? `${name.replace(/\s+/g, "_")}_CV.pdf`
+      : "cv.pdf";
+    pdf.save(filename);
+  } finally {
+    el.style.transform = savedTransform;
+    el.style.width = savedWidth;
   }
-
-  const pdf = new jsPDF({
-    orientation: "portrait",
-    unit: "mm",
-    format: "a4",
-  });
-
-  // Center the image horizontally on the page
-  const xOffset = (A4_W - pdfW) / 2;
-  pdf.addImage(imgData, "JPEG", xOffset, 0, pdfW, pdfH, undefined, "FAST");
-
-  const filename = name
-    ? `${name.replace(/\s+/g, "_")}_CV.pdf`
-    : "cv.pdf";
-  pdf.save(filename);
 }

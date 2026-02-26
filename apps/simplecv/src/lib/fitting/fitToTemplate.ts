@@ -67,6 +67,22 @@ export function fitToTemplate(
     };
   }
 
+  // 6. Remove last bullet per job (less destructive than hiding sections)
+  if (settings.maxBulletsPerJob > 0) {
+    return {
+      displaySettings: { ...settings, maxBulletsPerJob: 0 },
+      visibilityOverrides: {},
+    };
+  }
+
+  // 7. Reduce extras count
+  if (settings.maxExtras > 1 && vis.extras) {
+    return {
+      displaySettings: { ...settings, maxExtras: Math.max(1, settings.maxExtras - 3) },
+      visibilityOverrides: {},
+    };
+  }
+
   // --- Phase 2: Hide sections by ascending priority ---
 
   const priorities = meta.policy.priorities;
@@ -87,14 +103,6 @@ export function fitToTemplate(
   }
 
   // --- Phase 3: Last-resort reductions ---
-
-  // 7. Remove all bullets
-  if (settings.maxBulletsPerJob > 0) {
-    return {
-      displaySettings: { ...settings, maxBulletsPerJob: 0 },
-      visibilityOverrides: {},
-    };
-  }
 
   // 8. Minimize experience to 1
   if (settings.maxExperience > 1) {

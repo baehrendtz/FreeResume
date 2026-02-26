@@ -44,7 +44,7 @@ export function computeTrimInfo(cv: CvModel, renderModel: RenderModel): TrimInfo
   );
   const educationHidden = Math.max(
     0,
-    cv.education.length - renderModel.education.length,
+    cv.education.filter((e) => !e.hidden).length - renderModel.education.length,
   );
   const skillsHidden = Math.max(
     0,

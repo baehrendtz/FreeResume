@@ -50,6 +50,9 @@ export function BasicsForm({ labels }: BasicsFormProps) {
         setValue("photo", reader.result as string, { shouldDirty: true });
         trackPhotoUpload();
       };
+      reader.onerror = () => {
+        setPhotoError(labels.photoTooLarge);
+      };
       reader.readAsDataURL(file);
 
       // Reset so the same file can be re-selected

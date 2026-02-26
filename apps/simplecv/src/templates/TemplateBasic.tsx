@@ -5,6 +5,7 @@ import type { TemplateStyleValues } from "@/lib/model/TemplateStyleSettings";
 import { getCvStrings } from "@/lib/cvLocale";
 import {
   scaledContainerStyle,
+  photoShapeClassName,
   SectionTitle,
   CvFooter,
   ExperienceGroupItem,
@@ -27,9 +28,7 @@ export default function TemplateBasic({ cv, styleSettings }: TemplateProps) {
   const photoSize = styleSettings?.photoSizePx ?? 64;
   const fontZoom = (styleSettings?.fontSizePercent ?? 100) / 100;
   const photoShape = styleSettings?.photoShape ?? "circle";
-  const photoShapeClass =
-    photoShape === "circle" ? "rounded-full" :
-    photoShape === "rounded" ? "rounded-lg" : "rounded-none";
+  const photoShapeClass = photoShapeClassName(photoShape);
   const BASE_LINE_HEIGHT = 1.35;
   const lineHeight = BASE_LINE_HEIGHT * (styleSettings?.lineHeightPercent ?? 100) / 100;
   const lineScale = (styleSettings?.lineHeightPercent ?? 100) / 100;
