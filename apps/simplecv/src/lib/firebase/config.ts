@@ -11,7 +11,7 @@ const firebaseConfig = {
 let _app: FirebaseApp | undefined;
 let _auth: Auth | undefined;
 
-export function getFirebaseApp() {
+function getApp() {
   if (!_app) {
     _app =
       getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
@@ -21,7 +21,7 @@ export function getFirebaseApp() {
 
 export function getFirebaseAuth() {
   if (!_auth) {
-    _auth = getAuth(getFirebaseApp());
+    _auth = getAuth(getApp());
   }
   return _auth;
 }

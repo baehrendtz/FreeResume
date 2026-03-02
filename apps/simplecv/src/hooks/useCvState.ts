@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { type CvModel, createEmptyCvModel } from "@/lib/model/CvModel";
 import { type DisplaySettings, defaultDisplaySettings } from "@/lib/model/DisplaySettings";
 import { type PerTemplateStyleOverrides, resolveStyleSettings } from "@/lib/model/TemplateStyleSettings";
@@ -91,19 +91,6 @@ export function useCvState(persistenceEnabled: boolean) {
     }
   }, [cv, persistenceEnabled, templateId, displaySettings, styleOverrides]);
 
-  const replaceSession = useCallback(
-    (data: { cv: CvModel; templateId: string; displaySettings: DisplaySettings; styleOverrides: PerTemplateStyleOverrides }) => {
-      const migrated = migrateCompanyGroups(
-        migrateLanguageNames(migrateLanguages(migrateExtras(data.cv))),
-      );
-      setCv(migrated);
-      setTemplateId(data.templateId);
-      setDisplaySettings({ ...defaultDisplaySettings, ...data.displaySettings });
-      setStyleOverrides(data.styleOverrides ?? {});
-    },
-    [setCv, setTemplateId, setDisplaySettings, setStyleOverrides],
-  );
-
   return {
     cv, setCv,
     templateId, setTemplateId,
@@ -112,6 +99,5 @@ export function useCvState(persistenceEnabled: boolean) {
     styleSettings,
     templateMeta, renderModel,
     hadSavedSession,
-    replaceSession,
   };
 }

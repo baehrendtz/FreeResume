@@ -1,8 +1,6 @@
 "use client";
 
 import { useState, useCallback, useMemo } from "react";
-import { useAuth } from "@/contexts/AuthContext";
-import { useFirestoreSync } from "@/hooks/useFirestoreSync";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { createEmptyCvModel } from "@/lib/model/CvModel";
@@ -35,9 +33,6 @@ export default function MainPage() {
   const [showImport, setShowImport] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
 
-  // --- Auth ---
-  const { user, loading: authLoading } = useAuth();
-
   // --- Core CV state ---
   const {
     cv, setCv,
@@ -47,20 +42,7 @@ export default function MainPage() {
     styleSettings,
     templateMeta, renderModel,
     hadSavedSession,
-    replaceSession,
   } = useCvState(!showOnboarding);
-
-  // --- Firestore sync ---
-  const { firestoreLoading } = useFirestoreSync({
-    user,
-    authLoading,
-    cv,
-    templateId,
-    displaySettings,
-    styleOverrides,
-    onDataLoaded: replaceSession,
-    enabled: !showOnboarding || hadSavedSession,
-  });
 
   // Hide onboarding when a saved session was restored
   const didSkipOnboarding = useMemo(() => hadSavedSession, [hadSavedSession]);
@@ -123,12 +105,7 @@ export default function MainPage() {
         ) : (
           <div className="max-w-screen-2xl mx-auto px-6 py-8 pb-20 lg:pb-8 flex flex-col lg:h-full">
             <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-6 lg:min-h-0 lg:flex-1">
-              <div className="print:hidden lg:overflow-y-auto lg:min-h-0 min-w-0 relative">
-                {firestoreLoading && (
-                  <div className="absolute inset-0 z-20 flex items-center justify-center bg-background/60 backdrop-blur-sm rounded-lg">
-                    <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-                  </div>
-                )}
+              <div className="print:hidden lg:overflow-y-auto lg:min-h-0 min-w-0">
                 <CvEditor
                   defaultValues={cv}
                   onUpdate={setCv}

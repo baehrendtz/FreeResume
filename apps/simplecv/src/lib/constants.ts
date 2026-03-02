@@ -40,11 +40,3 @@ export const FORM_DEBOUNCE_MS = 150;
 
 /** Confirmation button timeout in ms */
 export const CONFIRMATION_TIMEOUT_MS = 3000;
-
-// --- Firestore sync ---
-
-/** Debounce delay before saving CV to Firestore in ms */
-export const FIRESTORE_SAVE_DEBOUNCE_MS = 3000;
-
-/** Max Firestore document size in bytes (leave margin below the 1 MiB limit) */
-export const FIRESTORE_MAX_DOC_BYTES = 900_000;
