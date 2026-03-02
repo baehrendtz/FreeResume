@@ -19,7 +19,6 @@ import {
   CircleHelp,
 } from "lucide-react";
 import { HelpDialog } from "@/components/HelpDialog";
-import { UserMenu, UserMenuMobile } from "@/components/UserMenu";
 import { trackThemeToggle, trackHelpOpened } from "@/lib/analytics/gtag";
 import { useTheme } from "@/hooks/useTheme";
 
@@ -104,8 +103,6 @@ export function AppHeader({
             </Button>
           ))}
 
-          <UserMenu />
-
           <LanguageSwitcher locale={locale} />
 
           {/* Desktop help */}
@@ -138,8 +135,6 @@ export function AppHeader({
                 </span>
               ))}
               {showActions && <DropdownMenuSeparator />}
-              <UserMenuMobile />
-              <DropdownMenuSeparator />
               {mounted && (
                 <>
                   <DropdownMenuItem onClick={toggleTheme}>

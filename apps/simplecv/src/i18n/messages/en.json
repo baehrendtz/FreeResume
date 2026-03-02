@@ -254,11 +254,6 @@
     "decline": "Decline",
     "settings": "Cookie settings"
   },
-  "auth": {
-    "signIn": "Sign in",
-    "signOut": "Sign out",
-    "account": "Account"
-  },
   "footer": {
     "copyright": "© {year} Free Resume",
     "openSource": "Free & open source"
