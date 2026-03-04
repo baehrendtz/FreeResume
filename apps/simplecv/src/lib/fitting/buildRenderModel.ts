@@ -2,6 +2,38 @@ import type { CvModel, Experience } from "@/lib/model/CvModel";
 import type { DisplaySettings } from "@/lib/model/DisplaySettings";
 import type { TemplateMeta, RenderModel, RenderExperienceGroup, RenderExperienceRole } from "./types";
 import { assignCompanyGroupIds } from "@/lib/model/groupExperience";
+import { MONTH_LOOKUP } from "@/lib/cvLocale";
+
+/**
+ * Parse a free-text date string like "Jan 2020" or "2020" into a comparable
+ * number (year * 12 + month). Returns null if the format is unrecognized.
+ */
+function parseDateToMonths(raw: string): number | null {
+  const trimmed = raw.trim();
+  if (!trimmed) return null;
+
+  // Year only, e.g. "2020"
+  const yearOnly = trimmed.match(/^(\d{4})$/);
+  if (yearOnly) return Number(yearOnly[1]) * 12;
+
+  // "Month Year" pattern, e.g. "Jan 2020" or "Oktober 2020"
+  const monthYear = trimmed.match(/^([A-Za-z\u00C0-\u00F6\u00F8-\u00FF]+)\s+(\d{4})$/);
+  if (monthYear) {
+    const month = MONTH_LOOKUP[monthYear[1].toLowerCase()];
+    if (month) return Number(monthYear[2]) * 12 + month;
+  }
+
+  return null;
+}
+
+/** Compare two date strings. Returns negative if a < b, positive if a > b, 0 if equal. */
+function compareDateStrings(a: string, b: string): number {
+  const am = parseDateToMonths(a);
+  const bm = parseDateToMonths(b);
+  if (am != null && bm != null) return am - bm;
+  // Fallback to lexicographic comparison if parsing fails
+  return a < b ? -1 : a > b ? 1 : 0;
+}
 
 function simplifyLocation(loc: string): string {
   const parts = loc.split(", ");
@@ -44,10 +76,10 @@ function groupExperienceEntries(
       currentGroup.roles.push(role);
       currentGroup.isSingleRole = false;
       // Expand date range
-      if (entry.startDate && (!currentGroup.startDate || entry.startDate < currentGroup.startDate)) {
+      if (entry.startDate && (!currentGroup.startDate || compareDateStrings(entry.startDate, currentGroup.startDate) < 0)) {
         currentGroup.startDate = entry.startDate;
       }
-      if (entry.endDate && (!currentGroup.endDate || entry.endDate > currentGroup.endDate)) {
+      if (entry.endDate && (!currentGroup.endDate || compareDateStrings(entry.endDate, currentGroup.endDate) > 0)) {
         currentGroup.endDate = entry.endDate;
       }
       // If any role has no endDate (current), the group endDate should also be empty (present)

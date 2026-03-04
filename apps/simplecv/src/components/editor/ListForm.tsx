@@ -78,7 +78,7 @@ export function ListForm({ fieldName, labels, onAdd, onRemove }: ListFormProps) 
             )}
             <div className="flex flex-wrap gap-1.5">
               {items.map((item, i) => (
-                <Badge key={item} variant="secondary" className="gap-1">
+                <Badge key={`${item}-${i}`} variant="secondary" className="gap-1">
                   {item}
                   <button
                     type="button"

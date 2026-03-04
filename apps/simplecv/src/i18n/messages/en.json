@@ -41,7 +41,8 @@
       "photo": "Profile Photo",
       "photoUpload": "Upload Photo",
       "photoRemove": "Remove",
-      "photoTooLarge": "Photo must be under 2MB"
+      "photoTooLarge": "Photo must be under 2MB",
+      "photoReadError": "Could not read photo file"
     },
     "summary": {
       "label": "Professional Summary",

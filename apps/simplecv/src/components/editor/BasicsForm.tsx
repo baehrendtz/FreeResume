@@ -23,6 +23,7 @@ interface BasicsFormProps {
     photoUpload: string;
     photoRemove: string;
     photoTooLarge: string;
+    photoReadError: string;
   };
 }
 
@@ -51,14 +52,14 @@ export function BasicsForm({ labels }: BasicsFormProps) {
         trackPhotoUpload();
       };
       reader.onerror = () => {
-        setPhotoError(labels.photoTooLarge);
+        setPhotoError(labels.photoReadError);
       };
       reader.readAsDataURL(file);
 
       // Reset so the same file can be re-selected
       e.target.value = "";
     },
-    [setValue, labels.photoTooLarge]
+    [setValue, labels.photoTooLarge, labels.photoReadError]
   );
 
   const personalFields = [

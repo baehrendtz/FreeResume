@@ -52,15 +52,19 @@ export function fitToTemplate(
   }
 
   // 4. Reduce education count
-  if (settings.maxEducation > 1 && vis.education && cv.education.length > 1) {
+  const visibleEducationCount = cv.education.filter((e) => !e.hidden).length;
+  if (settings.maxEducation > 1 && vis.education && visibleEducationCount > 1) {
     return {
       displaySettings: { ...settings, maxEducation: settings.maxEducation - 1 },
       visibilityOverrides: {},
     };
   }
 
-  // 5. Reduce experience count
-  if (settings.maxExperience > 2 && vis.experience && cv.experience.length > 2) {
+  // 5. Reduce experience count (compare against distinct visible groups, not raw entries)
+  const visibleGroupCount = new Set(
+    cv.experience.filter((e) => !e.hidden).map((e) => e.companyGroupId),
+  ).size;
+  if (settings.maxExperience > 2 && vis.experience && visibleGroupCount > 2) {
     return {
       displaySettings: { ...settings, maxExperience: settings.maxExperience - 1 },
       visibilityOverrides: {},

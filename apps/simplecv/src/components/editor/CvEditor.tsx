@@ -65,6 +65,7 @@ interface CvEditorProps {
       photoUpload: string;
       photoRemove: string;
       photoTooLarge: string;
+      photoReadError: string;
     };
     summary: { label: string; placeholder: string };
     experience: {

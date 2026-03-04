@@ -38,6 +38,7 @@ export function useEditorLabels() {
       photoUpload: t("editor.basics.photoUpload"),
       photoRemove: t("editor.basics.photoRemove"),
       photoTooLarge: t("editor.basics.photoTooLarge"),
+      photoReadError: t("editor.basics.photoReadError"),
     },
     summary: {
       label: t("editor.summary.label"),

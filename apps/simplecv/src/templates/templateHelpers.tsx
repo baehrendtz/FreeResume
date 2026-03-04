@@ -5,7 +5,6 @@ import type {
   RenderModel,
   RenderExperience,
   RenderExperienceGroup,
-  RenderExperienceRole,
   RenderEducation,
   RenderExtrasGroup,
 } from "@/lib/fitting/types";

@@ -58,6 +58,13 @@ export function ExperienceForm({ labels }: ExperienceFormProps) {
     setValue(`experience.${index}.companyGroupId`, crypto.randomUUID());
   };
 
+  const handleMove = (fromIndex: number, toIndex: number) => {
+    move(fromIndex, toIndex);
+    // Assign a fresh groupId to the moved entry so it doesn't stay
+    // silently grouped with its old neighbor after being moved away.
+    setValue(`experience.${toIndex}.companyGroupId`, crypto.randomUUID());
+  };
+
   return (
     <div className="space-y-4">
       {fields.length === 0 && (
@@ -90,8 +97,8 @@ export function ExperienceForm({ labels }: ExperienceFormProps) {
             hidden={isHidden}
             onToggleHidden={() => setValue(`experience.${index}.hidden`, !isHidden)}
             onRemove={() => { remove(index); trackExperienceRemove(); }}
-            onMoveUp={index > 0 ? () => move(index, index - 1) : undefined}
-            onMoveDown={index < fields.length - 1 ? () => move(index, index + 1) : undefined}
+            onMoveUp={index > 0 ? () => handleMove(index, index - 1) : undefined}
+            onMoveDown={index < fields.length - 1 ? () => handleMove(index, index + 1) : undefined}
             showSeparator={index > 0 && !isGroupedWithPrevious}
             labels={{
               hide: labels.hide,

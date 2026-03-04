@@ -130,7 +130,7 @@ export default function MainPage() {
                     parts.push(`${totalRenderRoles} of ${cv.experience.filter(e => !e.hidden).length} jobs`);
                   }
                   if (trim.educationHidden > 0)
-                    parts.push(`${renderModel.education.length} of ${cv.education.length} education`);
+                    parts.push(`${renderModel.education.length} of ${cv.education.filter(e => !e.hidden).length} education`);
                   if (trim.skillsHidden > 0)
                     parts.push(`${renderModel.skills.length} of ${cv.skills.length} skills`);
                   if (trim.extrasHidden > 0) {

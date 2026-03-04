@@ -41,7 +41,8 @@
       "photo": "Profilfoto",
       "photoUpload": "Ladda upp foto",
       "photoRemove": "Ta bort",
-      "photoTooLarge": "Fotot måste vara under 2MB"
+      "photoTooLarge": "Fotot måste vara under 2MB",
+      "photoReadError": "Kunde inte läsa fotofilen"
     },
     "summary": {
       "label": "Professionell sammanfattning",

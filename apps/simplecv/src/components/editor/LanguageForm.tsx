@@ -199,7 +199,7 @@ export function LanguageForm({ labels }: LanguageFormProps) {
                 <p className="text-sm text-muted-foreground py-2">{labels.emptyState}</p>
               )}
               {items.map((item, i) => (
-                <div key={item.name} className="flex items-center gap-2 py-1.5">
+                <div key={`${item.name}-${i}`} className="flex items-center gap-2 py-1.5">
                   <span className="text-sm font-medium flex-1 min-w-0 truncate">
                     {resolveLanguageName(item.name, uiLocale)}
                   </span>
