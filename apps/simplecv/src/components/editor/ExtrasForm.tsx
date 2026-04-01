@@ -85,7 +85,7 @@ export function ExtrasForm({ labels, categoryNames }: ExtrasFormProps) {
             {groups.map((group, gi) => (
               <div
                 key={group.category}
-                className="rounded-lg border bg-card p-3 space-y-2"
+                className="rounded-lg border bg-card p-4 space-y-3"
               >
                 <div className="flex items-center justify-between">
                   <h3 className="text-sm font-semibold capitalize">
@@ -109,7 +109,7 @@ export function ExtrasForm({ labels, categoryNames }: ExtrasFormProps) {
                       <button
                         type="button"
                         onClick={() => removeItem(gi, ii)}
-                        className="hover:text-destructive"
+                        className="hover:text-destructive focus-visible:text-destructive focus-visible:outline-none"
                       >
                         <X className="h-3 w-3" />
                       </button>
@@ -152,7 +152,7 @@ export function ExtrasForm({ labels, categoryNames }: ExtrasFormProps) {
                   value={newCategory || availableCategories[0] || ""}
                   onValueChange={(value) => setNewCategory(value)}
                 >
-                  <SelectTrigger className="w-[200px]">
+                  <SelectTrigger className="w-full sm:w-[200px]">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>

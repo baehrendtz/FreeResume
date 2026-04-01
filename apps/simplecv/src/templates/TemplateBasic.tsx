@@ -5,7 +5,8 @@ import type { TemplateStyleValues } from "@/lib/model/TemplateStyleSettings";
 import { getCvStrings } from "@/lib/cvLocale";
 import {
   scaledContainerStyle,
-  photoShapeClassName,
+  resolveTemplateStyles,
+  getContactItems,
   SectionTitle,
   CvFooter,
   ExperienceGroupItem,
@@ -22,16 +23,10 @@ interface TemplateProps {
 
 export default function TemplateBasic({ cv, styleSettings }: TemplateProps) {
   const labels = getCvStrings(cv.cvLanguage ?? "en");
-  const contactStrings = [cv.email, cv.phone, cv.location, cv.linkedIn, cv.website].filter(Boolean);
+  const contactItems = getContactItems(cv);
 
-  const accent = styleSettings?.accentColor ?? "#0d9488";
-  const photoSize = styleSettings?.photoSizePx ?? 64;
-  const fontZoom = (styleSettings?.fontSizePercent ?? 100) / 100;
-  const photoShape = styleSettings?.photoShape ?? "circle";
-  const photoShapeClass = photoShapeClassName(photoShape);
-  const BASE_LINE_HEIGHT = 1.35;
-  const lineHeight = BASE_LINE_HEIGHT * (styleSettings?.lineHeightPercent ?? 100) / 100;
-  const lineScale = (styleSettings?.lineHeightPercent ?? 100) / 100;
+  const { accent, photoSize, fontZoom, photoShapeClass, lineHeight, lineScale } =
+    resolveTemplateStyles(styleSettings, { accentColor: "#0d9488", photoSizePx: 64, baseLineHeight: 1.35 });
 
   return (
     <div
@@ -45,7 +40,7 @@ export default function TemplateBasic({ cv, styleSettings }: TemplateProps) {
           {cv.photo && (
             <img
               src={cv.photo}
-              alt=""
+              alt={cv.name || "Profile photo"}
               className={`${photoShapeClass} object-cover shrink-0`}
               style={{ width: photoSize, height: photoSize, borderColor: accent, borderWidth: 1, borderStyle: "solid" }}
             />
@@ -55,9 +50,9 @@ export default function TemplateBasic({ cv, styleSettings }: TemplateProps) {
             {cv.headline && (
               <p className="text-[9pt] font-medium mt-0.5" style={{ color: accent }}>{cv.headline}</p>
             )}
-            {contactStrings.length > 0 && (
+            {contactItems.length > 0 && (
               <p className="text-[7.5pt] text-gray-500 mt-1">
-                {contactStrings.join(" · ")}
+                {contactItems.map((c) => c.value).join(" · ")}
               </p>
             )}
           </div>

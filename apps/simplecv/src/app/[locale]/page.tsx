@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { createEmptyCvModel } from "@/lib/model/CvModel";
@@ -45,8 +45,7 @@ export default function MainPage() {
   } = useCvState(!showOnboarding);
 
   // Hide onboarding when a saved session was restored
-  const didSkipOnboarding = useMemo(() => hadSavedSession, [hadSavedSession]);
-  const effectiveShowOnboarding = showOnboarding && !didSkipOnboarding;
+  const effectiveShowOnboarding = showOnboarding && !hadSavedSession;
 
   // --- Auto-fit ---
   const { metrics, setMetrics, isFitting, handleAutoFit } = useAutoFit(
@@ -184,6 +183,7 @@ export default function MainPage() {
                     className="absolute top-2 right-2 z-10 bg-background/80 backdrop-blur-sm shadow-sm opacity-70 hover:opacity-100 transition-opacity"
                     onClick={() => { setShowPreview(true); trackFullscreenPreview(); }}
                     title={t("preview.fullscreen")}
+                    aria-label={t("preview.fullscreen")}
                   >
                     <Maximize2 className="h-3.5 w-3.5" />
                   </Button>

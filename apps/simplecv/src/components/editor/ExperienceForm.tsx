@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback } from "react";
 import { useFormContext, useFieldArray, Controller } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -43,7 +44,7 @@ export function ExperienceForm({ labels }: ExperienceFormProps) {
     name: "experience",
   });
 
-  const handleGroupWithPrevious = (index: number) => {
+  const handleGroupWithPrevious = useCallback((index: number) => {
     const prevGroupId = getValues(`experience.${index - 1}.companyGroupId`);
     if (prevGroupId) {
       setValue(`experience.${index}.companyGroupId`, prevGroupId);
@@ -52,18 +53,18 @@ export function ExperienceForm({ labels }: ExperienceFormProps) {
       setValue(`experience.${index - 1}.companyGroupId`, newId);
       setValue(`experience.${index}.companyGroupId`, newId);
     }
-  };
+  }, [getValues, setValue]);
 
-  const handleUngroupFromPrevious = (index: number) => {
+  const handleUngroupFromPrevious = useCallback((index: number) => {
     setValue(`experience.${index}.companyGroupId`, crypto.randomUUID());
-  };
+  }, [setValue]);
 
-  const handleMove = (fromIndex: number, toIndex: number) => {
+  const handleMove = useCallback((fromIndex: number, toIndex: number) => {
     move(fromIndex, toIndex);
     // Assign a fresh groupId to the moved entry so it doesn't stay
     // silently grouped with its old neighbor after being moved away.
     setValue(`experience.${toIndex}.companyGroupId`, crypto.randomUUID());
-  };
+  }, [move, setValue]);
 
   return (
     <div className="space-y-4">

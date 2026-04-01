@@ -10,10 +10,38 @@ import type {
 } from "@/lib/fitting/types";
 import { cn } from "@/lib/utils";
 import { getCvStrings, resolveLanguageName, formatCvDate, translateExtrasCategory, type CvLanguage } from "@/lib/cvLocale";
+import type { TemplateStyleValues } from "@/lib/model/TemplateStyleSettings";
 
 /** Map photoShape setting to Tailwind border-radius class. */
-export function photoShapeClassName(shape: "circle" | "rounded" | "square"): string {
+function photoShapeClassName(shape: "circle" | "rounded" | "square"): string {
   return shape === "circle" ? "rounded-full" : shape === "rounded" ? "rounded-lg" : "rounded-none";
+}
+
+interface TemplateStyleDefaults {
+  accentColor: string;
+  photoSizePx: number;
+  baseLineHeight: number;
+  photoShape?: "circle" | "rounded" | "square";
+  sidebarBgColor?: string;
+  secondaryColor?: string;
+}
+
+/** Derive common computed style values from TemplateStyleValues + template defaults. */
+export function resolveTemplateStyles(
+  styleSettings: TemplateStyleValues | undefined,
+  defaults: TemplateStyleDefaults,
+) {
+  const accent = styleSettings?.accentColor ?? defaults.accentColor;
+  const photoSize = styleSettings?.photoSizePx ?? defaults.photoSizePx;
+  const fontZoom = (styleSettings?.fontSizePercent ?? 100) / 100;
+  const photoShape = styleSettings?.photoShape ?? (defaults.photoShape ?? "circle");
+  const photoShapeClass = photoShapeClassName(photoShape);
+  const lineScale = (styleSettings?.lineHeightPercent ?? 100) / 100;
+  const lineHeight = defaults.baseLineHeight * lineScale;
+  const sidebarBg = styleSettings?.sidebarBgColor ?? defaults.sidebarBgColor;
+  const secondaryColor = styleSettings?.secondaryColor ?? defaults.secondaryColor;
+
+  return { accent, photoSize, fontZoom, photoShape, photoShapeClass, lineHeight, lineScale, sidebarBg, secondaryColor };
 }
 
 /**
@@ -143,7 +171,7 @@ interface ExperienceItemProps {
   lineHeightScale?: number;
 }
 
-export function ExperienceItem({
+function ExperienceItem({
   exp,
   layout,
   className,
@@ -198,6 +226,11 @@ export function ExperienceItem({
       )}
     </div>
   );
+}
+
+/** Filter empty/whitespace-only bullets. */
+export function filterBullets(bullets: string[]): string[] {
+  return bullets.filter((b) => b.trim());
 }
 
 interface ExperienceGroupItemProps {

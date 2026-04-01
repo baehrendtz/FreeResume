@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
 import type { CvModel } from "@/lib/model/CvModel";
+import { DUPLICATE_NOTIFICATION_MS } from "@/lib/constants";
 
 interface ListFormProps {
   fieldName: "skills";
@@ -23,7 +24,7 @@ export function ListForm({ fieldName, labels, onAdd, onRemove }: ListFormProps) 
 
   useEffect(() => {
     if (!showDuplicate) return;
-    const timer = setTimeout(() => setShowDuplicate(false), 2000);
+    const timer = setTimeout(() => setShowDuplicate(false), DUPLICATE_NOTIFICATION_MS);
     return () => clearTimeout(timer);
   }, [showDuplicate]);
 
@@ -52,7 +53,7 @@ export function ListForm({ fieldName, labels, onAdd, onRemove }: ListFormProps) 
         };
 
         return (
-          <div className="space-y-3">
+          <div className="space-y-4">
             <Label className="text-xs">{labels.label}</Label>
             <div className="flex gap-2">
               <Input
@@ -83,7 +84,7 @@ export function ListForm({ fieldName, labels, onAdd, onRemove }: ListFormProps) 
                   <button
                     type="button"
                     onClick={() => removeItem(i)}
-                    className="hover:text-destructive"
+                    className="hover:text-destructive focus-visible:text-destructive focus-visible:outline-none"
                     aria-label={`Remove ${item}`}
                   >
                     <X className="h-3 w-3" />

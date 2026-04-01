@@ -1,7 +1,6 @@
 import type { CvModel, Experience } from "@/lib/model/CvModel";
 import type { DisplaySettings } from "@/lib/model/DisplaySettings";
 import type { TemplateMeta, RenderModel, RenderExperienceGroup, RenderExperienceRole } from "./types";
-import { assignCompanyGroupIds } from "@/lib/model/groupExperience";
 import { MONTH_LOOKUP } from "@/lib/cvLocale";
 
 /**
@@ -51,12 +50,12 @@ function groupExperienceEntries(
   settings: DisplaySettings,
   maxBulletChars?: number,
 ): RenderExperienceGroup[] {
-  const withGroupIds = assignCompanyGroupIds(entries);
+  // Assumes entries already have companyGroupId assigned (via migration or parser).
   const groups: RenderExperienceGroup[] = [];
   let currentGroupId: string | null = null;
   let currentGroup: RenderExperienceGroup | null = null;
 
-  for (const entry of withGroupIds) {
+  for (const entry of entries) {
     const role: RenderExperienceRole = {
       title: entry.title,
       location: settings.simplifyLocations ? simplifyLocation(entry.location) : entry.location,
@@ -75,16 +74,16 @@ function groupExperienceEntries(
       // Add role to existing group
       currentGroup.roles.push(role);
       currentGroup.isSingleRole = false;
-      // Expand date range
+      // Expand date range: track earliest start and latest end
       if (entry.startDate && (!currentGroup.startDate || compareDateStrings(entry.startDate, currentGroup.startDate) < 0)) {
         currentGroup.startDate = entry.startDate;
       }
-      if (entry.endDate && (!currentGroup.endDate || compareDateStrings(entry.endDate, currentGroup.endDate) > 0)) {
-        currentGroup.endDate = entry.endDate;
-      }
-      // If any role has no endDate (current), the group endDate should also be empty (present)
       if (!entry.endDate) {
+        // Ongoing role — group is also ongoing
         currentGroup.endDate = "";
+      } else if (currentGroup.endDate !== "" && (!currentGroup.endDate || compareDateStrings(entry.endDate, currentGroup.endDate) > 0)) {
+        // Only update endDate if the group isn't already marked as ongoing
+        currentGroup.endDate = entry.endDate;
       }
     } else {
       // Start new group

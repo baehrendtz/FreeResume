@@ -5,7 +5,7 @@ import type { TemplateStyleValues } from "@/lib/model/TemplateStyleSettings";
 import { getCvStrings } from "@/lib/cvLocale";
 import {
   scaledContainerStyle,
-  photoShapeClassName,
+  resolveTemplateStyles,
   getContactItems,
   SectionTitle,
   CvFooter,
@@ -25,15 +25,8 @@ export default function TemplateProfessional({ cv, styleSettings }: TemplateProp
   const labels = getCvStrings(cv.cvLanguage ?? "en");
   const contactItems = getContactItems(cv);
 
-  const accent = styleSettings?.accentColor ?? "#1a1a2e";
-  const photoSize = styleSettings?.photoSizePx ?? 80;
-  const fontZoom = (styleSettings?.fontSizePercent ?? 100) / 100;
-  const photoShape = styleSettings?.photoShape ?? "circle";
-  const photoShapeClass = photoShapeClassName(photoShape);
-  const sidebarBg = styleSettings?.sidebarBgColor ?? "#f1f5f9";
-  const BASE_LINE_HEIGHT = 1.25;
-  const lineHeight = BASE_LINE_HEIGHT * (styleSettings?.lineHeightPercent ?? 100) / 100;
-  const lineScale = (styleSettings?.lineHeightPercent ?? 100) / 100;
+  const { accent, photoSize, fontZoom, photoShapeClass, lineHeight, lineScale, sidebarBg } =
+    resolveTemplateStyles(styleSettings, { accentColor: "#1a1a2e", photoSizePx: 80, baseLineHeight: 1.25, sidebarBgColor: "#f1f5f9" });
 
   const sidebarTitleClass = "tracking-[0.15em] text-gray-700 border-gray-300";
   const mainTitleClass = "tracking-[0.12em] text-gray-700 border-gray-200 mb-1.5";
@@ -53,7 +46,7 @@ export default function TemplateProfessional({ cv, styleSettings }: TemplateProp
           {cv.photo && (
             <img
               src={cv.photo}
-              alt=""
+              alt={cv.name || "Profile photo"}
               className={`${photoShapeClass} object-cover border-2 border-white/20 shrink-0`}
               style={{ width: photoSize, height: photoSize }}
             />

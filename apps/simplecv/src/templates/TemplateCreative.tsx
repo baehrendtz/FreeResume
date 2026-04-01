@@ -6,7 +6,7 @@ import { getCvStrings } from "@/lib/cvLocale";
 import { Briefcase, GraduationCap, Code, Globe, Star } from "lucide-react";
 import {
   scaledContainerStyle,
-  photoShapeClassName,
+  resolveTemplateStyles,
   getContactItems,
   SectionTitle,
   ExperienceGroupItem,
@@ -27,18 +27,11 @@ export default function TemplateCreative({ cv, styleSettings }: TemplateProps) {
   const cvLabels = getCvStrings(cv.cvLanguage ?? "en");
   const contactItems = getContactItems(cv);
 
-  const ACCENT = styleSettings?.accentColor ?? "#06b6d4";
-  const ACCENT2 = styleSettings?.secondaryColor ?? DEFAULT_ACCENT2;
-  const photoSize = styleSettings?.photoSizePx ?? 64;
-  const fontZoom = (styleSettings?.fontSizePercent ?? 100) / 100;
-  const photoShape = styleSettings?.photoShape ?? "circle";
-  const photoShapeClass = photoShapeClassName(photoShape);
-  const SIDEBAR_BG = styleSettings?.sidebarBgColor ?? "#f8fafc";
+  const styles = resolveTemplateStyles(styleSettings, { accentColor: "#06b6d4", photoSizePx: 64, baseLineHeight: 1.3, sidebarBgColor: "#f8fafc", secondaryColor: DEFAULT_ACCENT2 });
+  const { accent: ACCENT, photoSize, fontZoom, photoShapeClass, lineHeight, lineScale, sidebarBg: SIDEBAR_BG } = styles;
+  const ACCENT2 = styles.secondaryColor ?? DEFAULT_ACCENT2;
   const HEADER_BG = "linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)";
   const GRADIENT_BAR = `linear-gradient(to right, ${ACCENT}, ${ACCENT2})`;
-  const BASE_LINE_HEIGHT = 1.3;
-  const lineHeight = BASE_LINE_HEIGHT * (styleSettings?.lineHeightPercent ?? 100) / 100;
-  const lineScale = (styleSettings?.lineHeightPercent ?? 100) / 100;
 
   return (
     <div lang={cv.cvLanguage} className="cv-template font-sans text-[8pt] text-gray-800 mx-auto bg-white flex flex-col relative" style={scaledContainerStyle(fontZoom, lineHeight)}>
@@ -65,7 +58,7 @@ export default function TemplateCreative({ cv, styleSettings }: TemplateProps) {
             >
               <img
                 src={cv.photo}
-                alt=""
+                alt={cv.name || "Profile photo"}
                 className={`${photoShapeClass} object-cover`}
                 style={{ width: photoSize, height: photoSize }}
               />

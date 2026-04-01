@@ -5,13 +5,16 @@ import type { Experience } from "@/lib/model/CvModel";
  * Entries that already have a companyGroupId are left unchanged.
  */
 export function assignCompanyGroupIds(entries: Experience[]): Experience[] {
-  let currentGroupId = crypto.randomUUID();
+  let lastGroupId = crypto.randomUUID();
   return entries.map((entry, i) => {
-    if (entry.companyGroupId) return entry;
-    if (i > 0 && entry.company === entries[i - 1].company && entry.company) {
-      return { ...entry, companyGroupId: entries[i - 1].companyGroupId ?? currentGroupId };
+    if (entry.companyGroupId) {
+      lastGroupId = entry.companyGroupId;
+      return entry;
     }
-    currentGroupId = crypto.randomUUID();
-    return { ...entry, companyGroupId: currentGroupId };
+    if (i > 0 && entry.company === entries[i - 1].company && entry.company) {
+      return { ...entry, companyGroupId: lastGroupId };
+    }
+    lastGroupId = crypto.randomUUID();
+    return { ...entry, companyGroupId: lastGroupId };
   });
 }

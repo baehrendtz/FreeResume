@@ -5,9 +5,10 @@ import type { TemplateStyleValues } from "@/lib/model/TemplateStyleSettings";
 import { getCvStrings, resolveLanguageName, translateExtrasCategory } from "@/lib/cvLocale";
 import {
   scaledContainerStyle,
-  photoShapeClassName,
+  resolveTemplateStyles,
   getContactItems,
   formatDateRange,
+  filterBullets,
   CvFooter,
 } from "./templateHelpers";
 
@@ -75,17 +76,9 @@ function TimelineDot({ color, filled = false }: { color: string; filled?: boolea
 export default function TemplateBasic2({ cv, styleSettings }: TemplateProps) {
   const labels = getCvStrings(cv.cvLanguage ?? "en");
   const contactItems = getContactItems(cv);
-  const filteredBullets = (bullets: string[]) => bullets?.filter((b) => b.trim()) ?? [];
-
-  const accent = styleSettings?.accentColor ?? "#4a6fa5";
-  const photoSize = styleSettings?.photoSizePx ?? 128;
-  const fontZoom = (styleSettings?.fontSizePercent ?? 100) / 100;
-  const photoShape = styleSettings?.photoShape ?? "circle";
-  const photoShapeClass = photoShapeClassName(photoShape);
-  const sidebarBg = styleSettings?.sidebarBgColor ?? "#dce4ed";
+  const { accent, photoSize, fontZoom, photoShapeClass, lineHeight, sidebarBg } =
+    resolveTemplateStyles(styleSettings, { accentColor: "#4a6fa5", photoSizePx: 128, baseLineHeight: 1.35, sidebarBgColor: "#dce4ed" });
   const timelineColor = "#c0c8d4";
-  const BASE_LINE_HEIGHT = 1.35;
-  const lineHeight = BASE_LINE_HEIGHT * (styleSettings?.lineHeightPercent ?? 100) / 100;
 
   return (
     <div
@@ -107,7 +100,7 @@ export default function TemplateBasic2({ cv, styleSettings }: TemplateProps) {
             <div className="flex justify-center mb-5">
               <img
                 src={cv.photo}
-                alt=""
+                alt={cv.name || "Profile photo"}
                 className={`${photoShapeClass} object-cover border-[3px] border-white`}
                 style={{ width: photoSize, height: photoSize, boxShadow: "0 2px 8px rgba(0,0,0,0.12)" }}
               />
@@ -215,7 +208,7 @@ export default function TemplateBasic2({ cv, styleSettings }: TemplateProps) {
                   if (group.isSingleRole) {
                     const role = group.roles[0];
                     const dateStr = formatDateRange(role.startDate, role.endDate, cv.cvLanguage);
-                    const bullets = filteredBullets(role.bullets);
+                    const bullets = filterBullets(role.bullets);
                     return (
                       <div key={i} className="relative pl-5 mb-2.5 break-inside-avoid">
                         <TimelineDot color={accent} filled />
@@ -264,7 +257,7 @@ export default function TemplateBasic2({ cv, styleSettings }: TemplateProps) {
                       <div className="mt-1 ml-1 pl-2.5 space-y-1.5" style={{ borderLeft: `2px solid ${timelineColor}` }}>
                         {group.roles.map((role, j) => {
                           const roleDateStr = formatDateRange(role.startDate, role.endDate, cv.cvLanguage);
-                          const bullets = filteredBullets(role.bullets);
+                          const bullets = filterBullets(role.bullets);
                           return (
                             <div key={j}>
                               <div className="flex justify-between items-baseline">

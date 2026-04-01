@@ -4,6 +4,7 @@ import { detectSection, detectSectionLanguage, detectExtrasCategory, type Sectio
 import { parseDateRange } from "./dateParser";
 import { findLanguageId } from "@/lib/cvLocale";
 import { assignCompanyGroupIds } from "@/lib/model/groupExperience";
+import { PDF_Y_TOLERANCE, PDF_DEFAULT_COLUMN_GAP, PDF_COLUMN_MARGIN, PDF_MIN_COLUMN_GAP } from "@/lib/constants";
 
 interface Line {
   text: string;
@@ -22,7 +23,7 @@ function buildLines(items: (PdfTextItem & { page: number })[]): Line[] {
   // Sort by page asc, Y desc (top of page first), X asc
   const sorted = [...items].sort((a, b) => {
     if (a.page !== b.page) return a.page - b.page;
-    if (Math.abs(a.y - b.y) > 3) return b.y - a.y;
+    if (Math.abs(a.y - b.y) > PDF_Y_TOLERANCE) return b.y - a.y;
     return a.x - b.x;
   });
 
@@ -34,7 +35,7 @@ function buildLines(items: (PdfTextItem & { page: number })[]): Line[] {
 
     if (
       currentGroup.length === 0 ||
-      (Math.abs(item.y - currentGroup[0].y) <= 3 &&
+      (Math.abs(item.y - currentGroup[0].y) <= PDF_Y_TOLERANCE &&
         item.page === currentGroup[0].page)
     ) {
       currentGroup.push(item);
@@ -66,12 +67,12 @@ function groupToLine(items: (PdfTextItem & { page: number })[]): Line {
  * horizontal band), then find the first large gap between the two major start-X clusters.
  */
 function findColumnThreshold(items: PdfTextItem[]): number {
-  if (items.length === 0) return 200;
+  if (items.length === 0) return PDF_DEFAULT_COLUMN_GAP;
 
   // Group items into lines by Y proximity and take only the min X per line.
   // This gives us the "column start" positions, ignoring inline sub-items.
   const sorted = [...items].sort((a, b) => {
-    if (Math.abs(a.y - b.y) > 3) return b.y - a.y;
+    if (Math.abs(a.y - b.y) > PDF_Y_TOLERANCE) return b.y - a.y;
     return a.x - b.x;
   });
 
@@ -79,28 +80,28 @@ function findColumnThreshold(items: PdfTextItem[]): number {
   let prevY = -9999;
   for (const item of sorted) {
     if (item.text.trim() === "") continue;
-    if (Math.abs(item.y - prevY) > 3) {
+    if (Math.abs(item.y - prevY) > PDF_Y_TOLERANCE) {
       // New line — record its starting X
       lineStartXs.push(Math.round(item.x));
       prevY = item.y;
     }
   }
 
-  if (lineStartXs.length < 2) return 200;
+  if (lineStartXs.length < 2) return PDF_DEFAULT_COLUMN_GAP;
 
   const uniqueStarts = [...new Set(lineStartXs)].sort((a, b) => a - b);
 
-  // Find the first gap > 40 between consecutive unique start positions.
+  // Find the first gap exceeding the minimum column gap between consecutive start positions.
   // Place threshold just below the right cluster's starting X so that
   // all sub-items within the sidebar (which may have higher X) stay in the sidebar.
   for (let i = 1; i < uniqueStarts.length; i++) {
     const gap = uniqueStarts[i] - uniqueStarts[i - 1];
-    if (gap > 40) {
-      return uniqueStarts[i] - 10;
+    if (gap > PDF_MIN_COLUMN_GAP) {
+      return uniqueStarts[i] - PDF_COLUMN_MARGIN;
     }
   }
 
-  return 200;
+  return PDF_DEFAULT_COLUMN_GAP;
 }
 
 function mapProficiency(raw: string): LanguageProficiency {

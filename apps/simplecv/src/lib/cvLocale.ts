@@ -148,9 +148,6 @@ export function resolveLanguageName(nameOrId: string, locale: string): string {
   return nameOrId;
 }
 
-/** @deprecated Use `resolveLanguageName` instead. */
-export const resolveLanguageDisplayName = resolveLanguageName;
-
 // ---------------------------------------------------------------------------
 // Date formatting (locale-aware)
 // ---------------------------------------------------------------------------

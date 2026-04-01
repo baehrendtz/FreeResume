@@ -37,6 +37,7 @@ export interface TrimInfo {
  * what content was trimmed by the fitting pipeline.
  */
 export function computeTrimInfo(cv: CvModel, renderModel: RenderModel): TrimInfo {
+  // Count individual roles rendered (not groups) to compare against visible entries
   const totalRenderRoles = renderModel.experience.reduce((sum, g) => sum + g.roles.length, 0);
   const experienceHidden = Math.max(
     0,

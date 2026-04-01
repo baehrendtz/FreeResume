@@ -100,7 +100,7 @@ export function BasicsForm({ labels }: BasicsFormProps) {
     <div className="space-y-4">
       {/* Photo */}
       <div className="rounded-lg border bg-card p-4 space-y-2">
-        <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{labels.photo}</Label>
+        <Label className="text-xs">{labels.photo}</Label>
         <div className="flex items-center gap-3">
           {photo && (
             <img

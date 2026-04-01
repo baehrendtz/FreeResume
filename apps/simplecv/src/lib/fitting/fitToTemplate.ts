@@ -60,10 +60,13 @@ export function fitToTemplate(
     };
   }
 
-  // 5. Reduce experience count (compare against distinct visible groups, not raw entries)
-  const visibleGroupCount = new Set(
-    cv.experience.filter((e) => !e.hidden).map((e) => e.companyGroupId),
-  ).size;
+  // 5. Reduce experience count (count consecutive groups, not unique IDs or raw entries)
+  const visible = cv.experience.filter((e) => !e.hidden);
+  let visibleGroupCount = 0;
+  let lastGroupId: string | undefined;
+  for (const e of visible) {
+    if (e.companyGroupId !== lastGroupId) { visibleGroupCount++; lastGroupId = e.companyGroupId; }
+  }
   if (settings.maxExperience > 2 && vis.experience && visibleGroupCount > 2) {
     return {
       displaySettings: { ...settings, maxExperience: settings.maxExperience - 1 },

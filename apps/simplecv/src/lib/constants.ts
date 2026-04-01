@@ -40,3 +40,33 @@ export const FORM_DEBOUNCE_MS = 150;
 
 /** Confirmation button timeout in ms */
 export const CONFIRMATION_TIMEOUT_MS = 3000;
+
+/** Delay before triggering print in ms */
+export const PRINT_DELAY_MS = 500;
+
+/** Debounce delay for MeasureView in ms */
+export const MEASURE_DEBOUNCE_MS = 100;
+
+/** Duplicate notification dismissal timeout in ms */
+export const DUPLICATE_NOTIFICATION_MS = 2000;
+
+/** Onboarding preview fade-in delay in ms */
+export const ONBOARDING_FADE_DELAY_MS = 800;
+
+/** Cookie max-age in seconds (1 year) */
+export const COOKIE_MAX_AGE_SECONDS = 31536000;
+
+/** Y-coordinate tolerance for grouping text items on the same line in PDF parsing (px) */
+export const PDF_Y_TOLERANCE = 3;
+
+/** Default column boundary x-position for LinkedIn PDF sidebar detection (px) */
+export const PDF_DEFAULT_COLUMN_GAP = 200;
+
+/** Margin subtracted from column boundary detection (px) */
+export const PDF_COLUMN_MARGIN = 10;
+
+/** Minimum gap between X-clusters to detect a two-column layout (px) */
+export const PDF_MIN_COLUMN_GAP = 40;
+
+/** Mobile breakpoint width for reduced PDF export quality (px) */
+export const MOBILE_BREAKPOINT_PX = 1024;

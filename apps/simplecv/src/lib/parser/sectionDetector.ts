@@ -124,8 +124,7 @@ export function detectSectionLanguage(text: string): "sv" | "en" | null {
   const normalized = text.trim().toLowerCase();
   if (!(normalized in SECTION_MAP)) return null;
   if (SWEDISH_SECTIONS.has(normalized)) return "sv";
-  if (normalized in SECTION_MAP) return "en";
-  return null;
+  return "en";
 }
 
 export function detectSection(text: string): SectionType {

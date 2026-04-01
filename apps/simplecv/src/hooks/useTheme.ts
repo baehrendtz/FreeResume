@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useSyncExternalStore } from "react";
+import { COOKIE_MAX_AGE_SECONDS } from "@/lib/constants";
 
 function getThemeCookie(): string | null {
   if (typeof document === "undefined") return null;
@@ -9,7 +10,7 @@ function getThemeCookie(): string | null {
 }
 
 function setThemeCookie(v: string) {
-  document.cookie = `theme=${v};domain=.freeresume.eu;path=/;max-age=31536000;SameSite=Lax`;
+  document.cookie = `theme=${v};domain=.freeresume.eu;path=/;max-age=${COOKIE_MAX_AGE_SECONDS};SameSite=Lax`;
 }
 
 function getInitialTheme(): "light" | "dark" {

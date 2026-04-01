@@ -107,7 +107,7 @@ export function LanguageForm({ labels }: LanguageFormProps) {
         };
 
         return (
-          <div className="space-y-3">
+          <div className="space-y-4">
             <Label className="text-xs">{labels.label}</Label>
             <div className="flex gap-2 items-center">
               <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
@@ -173,7 +173,7 @@ export function LanguageForm({ labels }: LanguageFormProps) {
                 value={level}
                 onValueChange={(v) => setLevel(v as LanguageProficiency)}
               >
-                <SelectTrigger className="shrink-0 w-[200px]">
+                <SelectTrigger className="shrink-0 w-full sm:w-[200px]">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -209,7 +209,7 @@ export function LanguageForm({ labels }: LanguageFormProps) {
                       updateLevel(i, v as LanguageProficiency)
                     }
                   >
-                    <SelectTrigger size="sm" className="h-7 text-xs shrink-0 w-[200px]">
+                    <SelectTrigger size="sm" className="h-7 text-xs shrink-0 w-full sm:w-[200px]">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -223,7 +223,7 @@ export function LanguageForm({ labels }: LanguageFormProps) {
                   <button
                     type="button"
                     onClick={() => removeItem(i)}
-                    className="text-muted-foreground hover:text-destructive shrink-0 p-0.5"
+                    className="text-muted-foreground hover:text-destructive focus-visible:text-destructive focus-visible:outline-none shrink-0 p-0.5"
                     aria-label="Remove language"
                   >
                     <X className="h-3.5 w-3.5" />
