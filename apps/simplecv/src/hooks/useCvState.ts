@@ -49,7 +49,8 @@ function loadInitialState() {
   const session = loadSession();
   if (session) {
     return {
-      cv: migrateCompanyGroups(migrateLanguageNames(migrateLanguages(migrateExtras(session.cv)))),
+      cv: [migrateExtras, migrateLanguages, migrateLanguageNames, migrateCompanyGroups]
+        .reduce((model, fn) => fn(model), session.cv),
       templateId: session.templateId,
       displaySettings: { ...defaultDisplaySettings, ...session.displaySettings },
       styleOverrides: session.styleOverrides ?? {},

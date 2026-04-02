@@ -8,7 +8,7 @@ import { buildRenderModel } from "@/lib/fitting";
 import { getTemplateMeta } from "@/templates/templateRegistry";
 import { defaultDisplaySettings } from "@/lib/model/DisplaySettings";
 import type { CvModel } from "@/lib/model/CvModel";
-import { ONBOARDING_PREVIEW_ZOOM, ONBOARDING_FADE_DELAY_MS } from "@/lib/constants";
+
 
 interface OnboardingSuccessProps {
   cv: CvModel;
@@ -32,7 +32,7 @@ export function OnboardingSuccess({ cv, isFromScratch, labels, onComplete, onBac
 
   useEffect(() => {
     if (isFromScratch) return;
-    const timer = setTimeout(() => setShowPreview(true), ONBOARDING_FADE_DELAY_MS);
+    const timer = setTimeout(() => setShowPreview(true), 800);
     return () => clearTimeout(timer);
   }, [isFromScratch]);
 
@@ -87,7 +87,7 @@ export function OnboardingSuccess({ cv, isFromScratch, labels, onComplete, onBac
             }`}
           >
             <CvPreview
-              zoomLevel={ONBOARDING_PREVIEW_ZOOM}
+              zoomLevel={0.403}
               templateId="basic"
               renderModel={previewRenderModel}
             />

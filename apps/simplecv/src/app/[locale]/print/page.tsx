@@ -8,7 +8,7 @@ import { buildRenderModel } from "@/lib/fitting";
 import { getTemplateMeta, getTemplateDefaultStyle } from "@/templates/templateRegistry";
 import { loadCvForPrint, loadSession } from "@/lib/export/printHelpers";
 import { CvPreview } from "@/components/CvPreview";
-import { PRINT_DELAY_MS } from "@/lib/constants";
+
 
 export default function PrintPage() {
   const [cv, setCv] = useState<CvModel | null>(null);
@@ -25,7 +25,7 @@ export default function PrintPage() {
     if (session?.styleOverrides) setStyleOverrides(session.styleOverrides);
     setCv(data ?? createEmptyCvModel());
     /* eslint-enable react-hooks/set-state-in-effect */
-    const timer = setTimeout(() => window.print(), PRINT_DELAY_MS);
+    const timer = setTimeout(() => window.print(), 500);
     return () => clearTimeout(timer);
   }, []);
 

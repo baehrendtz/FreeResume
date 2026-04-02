@@ -108,13 +108,13 @@ export default function MainPage() {
                 <CvEditor
                   defaultValues={cv}
                   onUpdate={setCv}
-                  displaySettings={displaySettings}
-                  onDisplaySettingsChange={setDisplaySettings}
+                  settings={{
+                    displaySettings, onDisplaySettingsChange: setDisplaySettings,
+                    styleOverrides, styleSettings: styleSettings!,
+                    onStyleOverridesChange: setStyleOverrides,
+                  }}
                   templateId={templateId}
                   onTemplateSelect={(id: string) => { setTemplateId(id); trackTemplateSwitch(id); }}
-                  styleOverrides={styleOverrides}
-                  styleSettings={styleSettings}
-                  onStyleOverridesChange={setStyleOverrides}
                   labels={editor}
                 />
               </div>

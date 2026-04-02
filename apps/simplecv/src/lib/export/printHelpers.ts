@@ -1,14 +1,13 @@
 import type { CvModel } from "@/lib/model/CvModel";
 import type { DisplaySettings } from "@/lib/model/DisplaySettings";
 import type { PerTemplateStyleOverrides } from "@/lib/model/TemplateStyleSettings";
-import { A4_WIDTH_PX, MOBILE_BREAKPOINT_PX } from "@/lib/constants";
+import { A4_WIDTH_PX } from "@/lib/constants";
 
 const STORAGE_KEY = "freeresume-print-data";
 const SESSION_KEY = "freeresume-session";
 
 interface SessionData {
   cv: CvModel;
-  mode?: "upload" | "edit";
   templateId: string;
   displaySettings?: DisplaySettings;
   styleOverrides?: PerTemplateStyleOverrides;
@@ -88,7 +87,7 @@ export async function downloadPdf(name: string): Promise<void> {
 
   try {
     // Lower scale on mobile to avoid memory issues
-    const isMobile = window.innerWidth < MOBILE_BREAKPOINT_PX;
+    const isMobile = window.innerWidth < 1024;
     const canvas = await html2canvas(el, {
       scale: isMobile ? 2 : 3,
       useCORS: true,

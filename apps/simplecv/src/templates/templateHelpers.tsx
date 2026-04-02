@@ -12,11 +12,6 @@ import { cn } from "@/lib/utils";
 import { getCvStrings, resolveLanguageName, formatCvDate, translateExtrasCategory, type CvLanguage } from "@/lib/cvLocale";
 import type { TemplateStyleValues } from "@/lib/model/TemplateStyleSettings";
 
-/** Map photoShape setting to Tailwind border-radius class. */
-function photoShapeClassName(shape: "circle" | "rounded" | "square"): string {
-  return shape === "circle" ? "rounded-full" : shape === "rounded" ? "rounded-lg" : "rounded-none";
-}
-
 interface TemplateStyleDefaults {
   accentColor: string;
   photoSizePx: number;
@@ -35,7 +30,7 @@ export function resolveTemplateStyles(
   const photoSize = styleSettings?.photoSizePx ?? defaults.photoSizePx;
   const fontZoom = (styleSettings?.fontSizePercent ?? 100) / 100;
   const photoShape = styleSettings?.photoShape ?? (defaults.photoShape ?? "circle");
-  const photoShapeClass = photoShapeClassName(photoShape);
+  const photoShapeClass = photoShape === "circle" ? "rounded-full" : photoShape === "rounded" ? "rounded-lg" : "rounded-none";
   const lineScale = (styleSettings?.lineHeightPercent ?? 100) / 100;
   const lineHeight = defaults.baseLineHeight * lineScale;
   const sidebarBg = styleSettings?.sidebarBgColor ?? defaults.sidebarBgColor;

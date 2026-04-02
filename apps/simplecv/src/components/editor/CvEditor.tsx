@@ -25,16 +25,20 @@ import type { PerTemplateStyleOverrides, TemplateStyleValues } from "@/lib/model
 import { getTemplateMeta } from "@/templates/templateRegistry";
 import { FORM_DEBOUNCE_MS } from "@/lib/constants";
 
+export interface EditorSettings {
+  displaySettings: DisplaySettings;
+  onDisplaySettingsChange: (s: DisplaySettings) => void;
+  styleOverrides: PerTemplateStyleOverrides;
+  styleSettings: TemplateStyleValues;
+  onStyleOverridesChange: (overrides: PerTemplateStyleOverrides) => void;
+}
+
 interface CvEditorProps {
   defaultValues: CvModel;
   onUpdate: (cv: CvModel) => void;
-  displaySettings?: DisplaySettings;
-  onDisplaySettingsChange?: (s: DisplaySettings) => void;
+  settings?: EditorSettings;
   templateId: string;
   onTemplateSelect: (id: string) => void;
-  styleOverrides?: PerTemplateStyleOverrides;
-  styleSettings?: TemplateStyleValues;
-  onStyleOverridesChange?: (overrides: PerTemplateStyleOverrides) => void;
   labels: {
     tabs: {
       template: string;
@@ -171,15 +175,12 @@ interface CvEditorProps {
 export function CvEditor({
   defaultValues,
   onUpdate,
-  displaySettings,
-  onDisplaySettingsChange,
+  settings,
   templateId,
   onTemplateSelect,
-  styleOverrides,
-  styleSettings,
-  onStyleOverridesChange,
   labels,
 }: CvEditorProps) {
+  const { displaySettings, onDisplaySettingsChange, styleOverrides, styleSettings, onStyleOverridesChange } = settings ?? {};
   const [activeStep, setActiveStep] = useState("basics");
   const [collapsed, setCollapsed] = useState(false);
   const formContentRef = useRef<HTMLDivElement>(null);

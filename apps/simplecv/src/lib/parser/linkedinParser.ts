@@ -4,7 +4,12 @@ import { detectSection, detectSectionLanguage, detectExtrasCategory, type Sectio
 import { parseDateRange } from "./dateParser";
 import { findLanguageId } from "@/lib/cvLocale";
 import { assignCompanyGroupIds } from "@/lib/model/groupExperience";
-import { PDF_Y_TOLERANCE, PDF_DEFAULT_COLUMN_GAP, PDF_COLUMN_MARGIN, PDF_MIN_COLUMN_GAP } from "@/lib/constants";
+
+// PDF text-item grouping tolerances
+const Y_TOLERANCE = 3;
+const DEFAULT_COLUMN_GAP = 200;
+const COLUMN_MARGIN = 10;
+const MIN_COLUMN_GAP = 40;
 
 interface Line {
   text: string;
@@ -23,7 +28,7 @@ function buildLines(items: (PdfTextItem & { page: number })[]): Line[] {
   // Sort by page asc, Y desc (top of page first), X asc
   const sorted = [...items].sort((a, b) => {
     if (a.page !== b.page) return a.page - b.page;
-    if (Math.abs(a.y - b.y) > PDF_Y_TOLERANCE) return b.y - a.y;
+    if (Math.abs(a.y - b.y) > Y_TOLERANCE) return b.y - a.y;
     return a.x - b.x;
   });
 
@@ -35,7 +40,7 @@ function buildLines(items: (PdfTextItem & { page: number })[]): Line[] {
 
     if (
       currentGroup.length === 0 ||
-      (Math.abs(item.y - currentGroup[0].y) <= PDF_Y_TOLERANCE &&
+      (Math.abs(item.y - currentGroup[0].y) <= Y_TOLERANCE &&
         item.page === currentGroup[0].page)
     ) {
       currentGroup.push(item);
@@ -67,12 +72,12 @@ function groupToLine(items: (PdfTextItem & { page: number })[]): Line {
  * horizontal band), then find the first large gap between the two major start-X clusters.
  */
 function findColumnThreshold(items: PdfTextItem[]): number {
-  if (items.length === 0) return PDF_DEFAULT_COLUMN_GAP;
+  if (items.length === 0) return DEFAULT_COLUMN_GAP;
 
   // Group items into lines by Y proximity and take only the min X per line.
   // This gives us the "column start" positions, ignoring inline sub-items.
   const sorted = [...items].sort((a, b) => {
-    if (Math.abs(a.y - b.y) > PDF_Y_TOLERANCE) return b.y - a.y;
+    if (Math.abs(a.y - b.y) > Y_TOLERANCE) return b.y - a.y;
     return a.x - b.x;
   });
 
@@ -80,14 +85,14 @@ function findColumnThreshold(items: PdfTextItem[]): number {
   let prevY = -9999;
   for (const item of sorted) {
     if (item.text.trim() === "") continue;
-    if (Math.abs(item.y - prevY) > PDF_Y_TOLERANCE) {
+    if (Math.abs(item.y - prevY) > Y_TOLERANCE) {
       // New line — record its starting X
       lineStartXs.push(Math.round(item.x));
       prevY = item.y;
     }
   }
 
-  if (lineStartXs.length < 2) return PDF_DEFAULT_COLUMN_GAP;
+  if (lineStartXs.length < 2) return DEFAULT_COLUMN_GAP;
 
   const uniqueStarts = [...new Set(lineStartXs)].sort((a, b) => a - b);
 
@@ -96,12 +101,12 @@ function findColumnThreshold(items: PdfTextItem[]): number {
   // all sub-items within the sidebar (which may have higher X) stay in the sidebar.
   for (let i = 1; i < uniqueStarts.length; i++) {
     const gap = uniqueStarts[i] - uniqueStarts[i - 1];
-    if (gap > PDF_MIN_COLUMN_GAP) {
-      return uniqueStarts[i] - PDF_COLUMN_MARGIN;
+    if (gap > MIN_COLUMN_GAP) {
+      return uniqueStarts[i] - COLUMN_MARGIN;
     }
   }
 
-  return PDF_DEFAULT_COLUMN_GAP;
+  return DEFAULT_COLUMN_GAP;
 }
 
 function mapProficiency(raw: string): LanguageProficiency {

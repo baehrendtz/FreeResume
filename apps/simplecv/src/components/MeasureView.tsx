@@ -6,7 +6,7 @@ import type { LayoutMetrics } from "@/lib/fitting/types";
 import type { TemplateStyleValues } from "@/lib/model/TemplateStyleSettings";
 import { templates } from "@/templates/templateRegistry";
 import { TemplateErrorBoundary } from "@/components/TemplateErrorBoundary";
-import { MEASURE_DEBOUNCE_MS } from "@/lib/constants";
+
 
 interface MeasureViewProps {
   templateId: string;
@@ -41,7 +41,7 @@ export function MeasureView({ templateId, renderModel, onMeasure, styleSettings 
 
   const debouncedMeasure = useCallback(() => {
     if (timerRef.current) clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(measure, MEASURE_DEBOUNCE_MS);
+    timerRef.current = setTimeout(measure, 100);
   }, [measure]);
 
   useEffect(() => {
