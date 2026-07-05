@@ -36,31 +36,55 @@ export function clearConsent(domain?: string) {
   document.cookie = `${COOKIE_NAME}=${domainPart}; Path=/; SameSite=Lax; Max-Age=0`;
 }
 
-let gaLoaded = false;
+let gaInitialized = false;
 
-export function loadGoogleAnalytics(
+// Consent Mode v2: gtag.js laddas alltid, men med allt samtycke nekat som
+// standard. Innan användaren accepterat skickas endast cookielösa pings.
+export function initGoogleAnalytics(
   measurementId: string,
   linkerDomains: readonly string[],
 ) {
-  if (typeof window === "undefined" || gaLoaded) return;
-  if (document.querySelector(`script[src*="googletagmanager.com/gtag/js"]`))
-    return;
-  gaLoaded = true;
-
-  const script = document.createElement("script");
-  script.async = true;
-  script.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
-  document.head.appendChild(script);
+  if (typeof window === "undefined" || gaInitialized) return;
+  gaInitialized = true;
 
   window.dataLayer = window.dataLayer || [];
-  function gtag(...args: unknown[]) {
-    window.dataLayer!.push(args);
+  function gtag(..._args: unknown[]) {
+    // gtag.js ignorerar vanliga arrayer, kommandon måste pushas som arguments-objektet
+    // eslint-disable-next-line prefer-rest-params
+    window.dataLayer!.push(arguments);
   }
   window.gtag = gtag;
+
+  gtag("consent", "default", {
+    ad_storage: "denied",
+    ad_user_data: "denied",
+    ad_personalization: "denied",
+    analytics_storage: "denied",
+    wait_for_update: 500,
+  });
+
   gtag("js", new Date());
   gtag("config", measurementId, {
     linker: { domains: [...linkerDomains] },
   });
+
+  if (!document.querySelector(`script[src*="googletagmanager.com/gtag/js"]`)) {
+    const script = document.createElement("script");
+    script.async = true;
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
+    document.head.appendChild(script);
+  }
+}
+
+export function grantAnalyticsConsent() {
+  if (typeof window === "undefined") return;
+  window.gtag?.("consent", "update", { analytics_storage: "granted" });
+}
+
+export function denyAnalyticsConsent() {
+  if (typeof window === "undefined") return;
+  window.gtag?.("consent", "update", { analytics_storage: "denied" });
+  removeGoogleAnalyticsCookies();
 }
 
 export function removeGoogleAnalyticsCookies() {

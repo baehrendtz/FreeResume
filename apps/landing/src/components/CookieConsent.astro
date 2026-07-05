@@ -44,7 +44,7 @@ const t = {
 </div>
 
 <script>
-  import { getConsent, setConsent, loadGoogleAnalytics, removeGoogleAnalyticsCookies } from "@freeresume/shared/consent";
+  import { getConsent, setConsent, initGoogleAnalytics, grantAnalyticsConsent, denyAnalyticsConsent } from "@freeresume/shared/consent";
   import { BRAND } from "@freeresume/shared/brand";
 
   const banner = document.getElementById("cookie-consent-banner")!;
@@ -59,23 +59,24 @@ const t = {
     banner.classList.add("hidden");
   }
 
+  initGoogleAnalytics(BRAND.ga.measurementId, BRAND.ga.linkerDomains);
+
   const consent = getConsent();
   if (consent === null) {
     showBanner();
   } else if (consent === "accepted") {
-    loadGoogleAnalytics(BRAND.ga.measurementId, BRAND.ga.linkerDomains);
+    grantAnalyticsConsent();
   }
 
   acceptBtn.addEventListener("click", () => {
     setConsent("accepted");
-    loadGoogleAnalytics(BRAND.ga.measurementId, BRAND.ga.linkerDomains);
+    grantAnalyticsConsent();
     hideBanner();
   });
 
   declineBtn.addEventListener("click", () => {
     setConsent("declined");
-    removeGoogleAnalyticsCookies();
-    delete window.gtag;
+    denyAnalyticsConsent();
     hideBanner();
   });
 

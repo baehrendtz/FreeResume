@@ -7,8 +7,9 @@ import { BRAND } from "@freeresume/shared/brand";
 import {
   getConsent,
   setConsent,
-  loadGoogleAnalytics,
-  removeGoogleAnalyticsCookies,
+  initGoogleAnalytics,
+  grantAnalyticsConsent,
+  denyAnalyticsConsent,
 } from "@freeresume/shared/consent";
 
 export function CookieConsent() {
@@ -25,9 +26,9 @@ export function CookieConsent() {
 
   useEffect(() => {
     if (!mounted) return;
-    const consent = getConsent();
-    if (consent === "accepted") {
-      loadGoogleAnalytics(BRAND.ga.measurementId, BRAND.ga.linkerDomains);
+    initGoogleAnalytics(BRAND.ga.measurementId, BRAND.ga.linkerDomains);
+    if (getConsent() === "accepted") {
+      grantAnalyticsConsent();
     }
   }, [mounted]);
 
@@ -40,21 +41,20 @@ export function CookieConsent() {
 
   const handleAccept = () => {
     setConsent("accepted");
-    loadGoogleAnalytics(BRAND.ga.measurementId, BRAND.ga.linkerDomains);
+    grantAnalyticsConsent();
     setVisible(false);
   };
 
   const handleDecline = () => {
     setConsent("declined");
-    removeGoogleAnalyticsCookies();
-    delete window.gtag;
+    denyAnalyticsConsent();
     setVisible(false);
   };
 
   if (!mounted || !visible) return null;
 
   return (
-    <div className="print:hidden fixed bottom-0 inset-x-0 z-50 p-4">
+    <div className="print:hidden fixed bottom-0 inset-x-0 z-50 p-4 pb-[calc(1rem+env(safe-area-inset-bottom,0px))]">
       <div className="mx-auto max-w-lg rounded-lg border bg-background/95 backdrop-blur-sm shadow-lg p-4 flex flex-col sm:flex-row items-center gap-3">
         <p className="text-sm text-muted-foreground flex-1">
           {t("message")}

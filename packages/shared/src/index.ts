@@ -3,7 +3,9 @@ export {
   getConsent,
   setConsent,
   clearConsent,
-  loadGoogleAnalytics,
+  initGoogleAnalytics,
+  grantAnalyticsConsent,
+  denyAnalyticsConsent,
   removeGoogleAnalyticsCookies,
 } from "./consent";
 export type { ConsentValue } from "./consent";
