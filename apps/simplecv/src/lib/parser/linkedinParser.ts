@@ -7,7 +7,6 @@ import { assignCompanyGroupIds } from "@/lib/model/groupExperience";
 
 // PDF text-item grouping tolerances
 const Y_TOLERANCE = 3;
-const DEFAULT_COLUMN_GAP = 200;
 const COLUMN_MARGIN = 10;
 const MIN_COLUMN_GAP = 40;
 
@@ -25,10 +24,13 @@ interface Line {
  * Items on the same Y coordinate (within tolerance) on the same page are merged.
  */
 function buildLines(items: (PdfTextItem & { page: number })[]): Line[] {
-  // Sort by page asc, Y desc (top of page first), X asc
+  // Sort strictly by page asc, Y desc (top of page first), X asc. Tolerance-based
+  // comparison must NOT live in the comparator, it isn't transitive and breaks
+  // Array.sort's contract. Y-tolerance grouping happens in the sweep below, and
+  // items within a group are re-ordered by X in groupToLine.
   const sorted = [...items].sort((a, b) => {
     if (a.page !== b.page) return a.page - b.page;
-    if (Math.abs(a.y - b.y) > Y_TOLERANCE) return b.y - a.y;
+    if (a.y !== b.y) return b.y - a.y;
     return a.x - b.x;
   });
 
@@ -57,7 +59,8 @@ function buildLines(items: (PdfTextItem & { page: number })[]): Line[] {
 }
 
 function groupToLine(items: (PdfTextItem & { page: number })[]): Line {
-  const text = items.map((i) => i.text).join(" ").trim();
+  const ordered = [...items].sort((a, b) => a.x - b.x);
+  const text = ordered.map((i) => i.text).join(" ").trim();
   const bold = items.some((i) => i.bold);
   const fontSize = Math.max(...items.map((i) => i.fontSize));
   const x = Math.min(...items.map((i) => i.x));
@@ -72,27 +75,32 @@ function groupToLine(items: (PdfTextItem & { page: number })[]): Line {
  * horizontal band), then find the first large gap between the two major start-X clusters.
  */
 function findColumnThreshold(items: PdfTextItem[]): number {
-  if (items.length === 0) return DEFAULT_COLUMN_GAP;
+  // 0 = no sidebar: every item is treated as main content
+  if (items.length === 0) return 0;
 
   // Group items into lines by Y proximity and take only the min X per line.
   // This gives us the "column start" positions, ignoring inline sub-items.
-  const sorted = [...items].sort((a, b) => {
-    if (Math.abs(a.y - b.y) > Y_TOLERANCE) return b.y - a.y;
-    return a.x - b.x;
-  });
+  // Strict sort (no tolerance in the comparator, see buildLines).
+  const sorted = [...items].sort((a, b) => (a.y !== b.y ? b.y - a.y : a.x - b.x));
 
   const lineStartXs: number[] = [];
   let prevY = -9999;
   for (const item of sorted) {
     if (item.text.trim() === "") continue;
     if (Math.abs(item.y - prevY) > Y_TOLERANCE) {
-      // New line — record its starting X
+      // New line, record its starting X
       lineStartXs.push(Math.round(item.x));
       prevY = item.y;
+    } else {
+      // Same visual line, keep the leftmost X
+      lineStartXs[lineStartXs.length - 1] = Math.min(
+        lineStartXs[lineStartXs.length - 1],
+        Math.round(item.x),
+      );
     }
   }
 
-  if (lineStartXs.length < 2) return DEFAULT_COLUMN_GAP;
+  if (lineStartXs.length < 2) return 0;
 
   const uniqueStarts = [...new Set(lineStartXs)].sort((a, b) => a - b);
 
@@ -106,7 +114,8 @@ function findColumnThreshold(items: PdfTextItem[]): number {
     }
   }
 
-  return DEFAULT_COLUMN_GAP;
+  // No column gap found, single-column PDF, everything is main content
+  return 0;
 }
 
 function mapProficiency(raw: string): LanguageProficiency {
@@ -405,7 +414,7 @@ function parseExperience(lines: Line[]) {
           bullets: [],
         };
       } else if (current && !current.startDate) {
-        // Two consecutive headers without a date between them —
+        // Two consecutive headers without a date between them ,
         // the first was the company name, this is the role title.
         lastCompanyName = current.title;
         current.company = current.title;
@@ -470,6 +479,15 @@ function getBaseFontSize(lines: Line[]): number {
   return baseFs;
 }
 
+/** Split "Bachelor's degree, Economics" into degree and field. */
+function parseDegreeField(text: string): { degree: string; field: string } {
+  if (text.includes(",")) {
+    const [deg, ...rest] = text.split(",");
+    return { degree: deg.trim(), field: rest.join(",").trim() };
+  }
+  return { degree: text, field: "" };
+}
+
 function parseEducation(lines: Line[]) {
   const baseFontSize = getBaseFontSize(lines);
   const entries: CvModel["education"] = [];
@@ -497,27 +515,15 @@ function parseEducation(lines: Line[]) {
         // Also extract degree text if dates are inline (e.g. "Bachelor's degree, Economics · (2010 - 2012)")
         const textBeforeDates = line.text
           .replace(/·\s*\(.*\)$/, "")
-          .replace(/\d{4}\s*[-–—]\s*(?:\d{4}|present|nu|pågående|current)/i, "")
+          .replace(/\d{4}\s*[-\u2013\u2014]\s*(?:\d{4}|present|nu|pågående|current)/i, "")
           .trim();
         if (textBeforeDates && !current.degree) {
-          if (textBeforeDates.includes(",")) {
-            const [deg, ...rest] = textBeforeDates.split(",");
-            current.degree = deg.trim();
-            current.field = rest.join(",").trim();
-          } else {
-            current.degree = textBeforeDates;
-          }
+          ({ degree: current.degree, field: current.field } = parseDegreeField(textBeforeDates));
         }
       } else if (!current.degree) {
         // Degree line without dates
         const text = line.text.replace(/·\s*\(.*\)$/, "").trim();
-        if (text.includes(",")) {
-          const [deg, ...rest] = text.split(",");
-          current.degree = deg.trim();
-          current.field = rest.join(",").trim();
-        } else {
-          current.degree = text;
-        }
+        ({ degree: current.degree, field: current.field } = parseDegreeField(text));
       } else if (!current.field && line.text.length < 80) {
         current.field = line.text;
       } else {
@@ -591,12 +597,19 @@ function extractContactInfo(cv: CvModel, text: string) {
 }
 
 function isAddressLine(text: string): boolean {
-  // Address lines: postal codes (e.g. "114 32") or start with street number (e.g. "12 Main St")
-  return /\d{3}\s*\d{2}/.test(text) || /^\d+\s+\w/.test(text.trim());
+  // Phone-like lines (e.g. "0701234567 (Mobile)") must never be read as addresses
+  if (/\+?\d[\d\s()-]{7,}\d/.test(text)) return false;
+  // Address lines: postal codes (e.g. "114 32") or start with street number (e.g. "12 Main St").
+  // The postal code pattern requires the space so long digit runs don't match.
+  return /\d{3}\s\d{2}/.test(text) || /^\d+\s+\w/.test(text.trim());
 }
 
 function isLocation(text: string): boolean {
-  return /,/.test(text) && text.length < 80 && !/\d{4}/.test(text);
+  if (!/,/.test(text) || text.length >= 80 || /\d{4}/.test(text)) return false;
+  // A bare comma also matches headlines like "CTO, Co-founder at X" ,
+  // reject job-title patterns so they aren't eaten from the headline.
+  if (/\s(at|hos|på|för|of)\s|@/i.test(text)) return false;
+  return true;
 }
 
 function looksLikeLocation(text: string): boolean {

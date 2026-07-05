@@ -1,11 +1,14 @@
-import { MONTH_LOOKUP } from "@/lib/cvLocale";
+import { MONTH_LOOKUP, PRESENT_TOKENS, isPresentToken } from "@/lib/cvLocale";
 
 const MONTH_NAMES = Object.keys(MONTH_LOOKUP).join("|");
+const PRESENT_NAMES = [...PRESENT_TOKENS].join("|");
 
 const DATE_PATTERN = new RegExp(
-  `((?:${MONTH_NAMES})\\s+\\d{4}|\\d{4})` +
-    `\\s*[-–—]\\s*` +
-    `((?:${MONTH_NAMES})\\s+\\d{4}|\\d{4}|present|nu|pågående|current)`,
+  `\\b((?:${MONTH_NAMES})\\s+\\d{4}|\\d{4})\\b` +
+    // Match hyphen, en dash or em dash between the dates (escapes keep the
+    // literal dash characters out of the source per the typography rule)
+    `\\s*[-\\u2013\\u2014]\\s*` +
+    `\\b((?:${MONTH_NAMES})\\s+\\d{4}|\\d{4}|${PRESENT_NAMES})\\b`,
   "i"
 );
 
@@ -27,12 +30,7 @@ export function parseDateRange(text: string): DateRange | null {
 function normalizeDate(raw: string): string {
   const trimmed = raw.trim().toLowerCase();
 
-  if (
-    trimmed === "present" ||
-    trimmed === "nu" ||
-    trimmed === "pågående" ||
-    trimmed === "current"
-  ) {
+  if (isPresentToken(trimmed)) {
     return "Present";
   }
 

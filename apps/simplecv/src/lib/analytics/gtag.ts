@@ -1,7 +1,3 @@
-import { BRAND } from "@freeresume/shared/brand";
-
-export const GA_MEASUREMENT_ID = BRAND.ga.measurementId;
-
 declare global {
   interface Window {
     gtag?: (...args: unknown[]) => void;
@@ -14,7 +10,7 @@ function gtagEvent(eventName: string, params?: Record<string, string | boolean>)
   try {
     window.gtag("event", eventName, params);
   } catch {
-    // Silently ignore — GA may be blocked by ad blockers
+    // Silently ignore, GA may be blocked by ad blockers
   }
 }
 
@@ -30,10 +26,6 @@ export function trackPdfDownload(templateId: string) {
 
 export function trackTemplateSwitch(templateId: string) {
   gtagEvent("template_switch", { template_id: templateId });
-}
-
-export function trackStartFromScratch() {
-  gtagEvent("start_from_scratch");
 }
 
 export function trackAutoFit() {

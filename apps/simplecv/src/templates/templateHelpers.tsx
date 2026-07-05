@@ -41,7 +41,7 @@ export function resolveTemplateStyles(
 
 /**
  * Build inline styles for the CV root container that counter-scale width/height
- * so that CSS `zoom` only affects text/spacing — not the overall A4 dimensions.
+ * so that CSS `zoom` only affects text/spacing, not the overall A4 dimensions.
  *
  * Pre-zoom width:  210mm / fontZoom  →  after zoom: (210mm / z) × z = 210mm ✓
  * Pre-zoom height: 297mm / fontZoom  →  after zoom: (297mm / z) × z = 297mm ✓
@@ -61,14 +61,14 @@ export function scaledContainerStyle(
 }
 
 /**
- * Format a date range like "Sep 2025 – Present" (en) or "Sep 2025 – Pågående" (sv).
+ * Format a date range like "Sep 2025 - Present" (en) or "Sep 2025 - Pågående" (sv).
  * Uses locale-aware formatting via formatCvDate.
  */
 export function formatDateRange(startDate: string, endDate: string, cvLanguage: CvLanguage = "en"): string {
   if (!startDate && !endDate) return "";
   if (startDate && !endDate) return formatCvDate(startDate, cvLanguage);
   if (!startDate && endDate) return formatCvDate(endDate, cvLanguage);
-  return `${formatCvDate(startDate, cvLanguage)} – ${formatCvDate(endDate, cvLanguage)}`;
+  return `${formatCvDate(startDate, cvLanguage)} - ${formatCvDate(endDate, cvLanguage)}`;
 }
 
 export interface ContactItem {
@@ -125,23 +125,24 @@ export function CvFooter({
   className,
   accentBar,
   accentColorHex,
+  accentBarStyle,
 }: {
   name: string;
   className?: string;
   accentBar?: boolean;
   accentColorHex?: string;
+  /** Custom accent bar styling (e.g. a gradient), overrides accentColorHex */
+  accentBarStyle?: React.CSSProperties;
 }) {
+  const barStyle =
+    accentBarStyle ?? (accentBar && accentColorHex ? { backgroundColor: accentColorHex } : undefined);
   return (
     <footer className={cn("mt-auto", className)}>
-      {accentBar && accentColorHex && (
-        <div className="h-1.5" style={{ backgroundColor: accentColorHex }} />
-      )}
+      {barStyle && <div className="h-1.5" style={barStyle} />}
       <div
         className={cn(
-          "flex justify-between pt-1.5 pb-2",
-          accentBar
-            ? "text-[8pt] text-gray-500"
-            : "text-[8pt] text-gray-500 border-t border-gray-200",
+          "flex justify-between pt-1.5 pb-2 text-[8pt] text-gray-500",
+          !barStyle && "border-t border-gray-200",
         )}
       >
         <span className="font-medium">{name}</span>
@@ -254,7 +255,7 @@ export function ExperienceGroupItem({
   accentColor = "#6b7280",
 }: ExperienceGroupItemProps) {
   if (group.isSingleRole) {
-    // Single role — render like the old ExperienceItem
+    // Single role, render like the old ExperienceItem
     const role = group.roles[0];
     const exp: RenderExperience = {
       title: role.title,
@@ -280,7 +281,7 @@ export function ExperienceGroupItem({
     );
   }
 
-  // Multi-role group — company header with sub-roles
+  // Multi-role group, company header with sub-roles
   const groupDateStr = formatDateRange(group.startDate, group.endDate, cvLanguage);
   const primaryLabel = group.company;
 
@@ -368,7 +369,8 @@ export function EducationItem({
       {(edu.degree || edu.field) && (
         <p className={degreeClassName}>
           {edu.degree}
-          {edu.field ? ` — ${edu.field}` : ""}
+          {edu.degree && edu.field ? ", " : ""}
+          {edu.field}
         </p>
       )}
       {edu.description && (
@@ -429,7 +431,7 @@ export function SkillsList({
   );
 }
 
-function formatLanguageEntry(entry: LanguageEntry, cvLanguage: CvLanguage): string {
+export function formatLanguageEntry(entry: LanguageEntry, cvLanguage: CvLanguage): string {
   const labels = getCvStrings(cvLanguage);
   const displayName = resolveLanguageName(entry.name, cvLanguage);
   return `${displayName} (${labels[entry.level]})`;

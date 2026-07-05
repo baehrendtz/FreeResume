@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { type CvModel, createEmptyCvModel } from "@/lib/model/CvModel";
+import { z } from "zod/v4";
+import { type CvModel, createEmptyCvModel, cvModelSchema } from "@/lib/model/CvModel";
 import { type DisplaySettings, defaultDisplaySettings } from "@/lib/model/DisplaySettings";
 import { type PerTemplateStyleOverrides, resolveStyleSettings } from "@/lib/model/TemplateStyleSettings";
 import { buildRenderModel } from "@/lib/fitting";
@@ -45,12 +46,35 @@ function migrateLanguageNames(cv: CvModel): CvModel {
   return { ...cv, languages: changed };
 }
 
+// Same shape as cvModelSchema but without the min-length requirement on name ,
+// in-progress sessions are legitimately saved before a name has been typed.
+const sessionCvSchema = cvModelSchema.extend({ name: z.string() });
+
+/** Migrate + validate a session CV. Returns null if the data is unusable. */
+function parseSessionCv(raw: CvModel): CvModel | null {
+  const empty = createEmptyCvModel();
+  // Heal missing fields from older sessions before strict validation
+  const healed = {
+    ...empty,
+    ...raw,
+    sectionsVisibility: { ...empty.sectionsVisibility, ...(raw.sectionsVisibility ?? {}) },
+  };
+  const migrated = [migrateExtras, migrateLanguages, migrateLanguageNames, migrateCompanyGroups]
+    .reduce((model, fn) => fn(model), healed);
+  const result = sessionCvSchema.safeParse(migrated);
+  if (!result.success) {
+    console.error("Discarding invalid saved session:", result.error);
+    return null;
+  }
+  return result.data;
+}
+
 function loadInitialState() {
   const session = loadSession();
-  if (session) {
+  const cv = session ? parseSessionCv(session.cv) : null;
+  if (session && cv) {
     return {
-      cv: [migrateExtras, migrateLanguages, migrateLanguageNames, migrateCompanyGroups]
-        .reduce((model, fn) => fn(model), session.cv),
+      cv,
       templateId: session.templateId,
       displaySettings: { ...defaultDisplaySettings, ...session.displaySettings },
       styleOverrides: session.styleOverrides ?? {},
@@ -85,12 +109,15 @@ export function useCvState(persistenceEnabled: boolean) {
     [templateId, styleOverrides],
   );
 
-  // Save session whenever edit state changes
+  // Save session whenever edit state changes. A restored session must keep
+  // persisting even though the onboarding flag never flips (onboarding is
+  // skipped entirely when a session exists).
+  const persist = persistenceEnabled || hadSavedSession;
   useEffect(() => {
-    if (persistenceEnabled) {
+    if (persist) {
       saveSession({ cv, templateId, displaySettings, styleOverrides });
     }
-  }, [cv, persistenceEnabled, templateId, displaySettings, styleOverrides]);
+  }, [cv, persist, templateId, displaySettings, styleOverrides]);
 
   return {
     cv, setCv,

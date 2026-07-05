@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
@@ -6,6 +6,13 @@ const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
 });
+
+// viewport-fit=cover is required for env(safe-area-inset-*) to be non-zero on iOS
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
 
 export const metadata: Metadata = {
   title: "Free Resume",
@@ -29,7 +36,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* SAFE: dangerouslySetInnerHTML with static string — no user input. Inlined to prevent dark-mode flash on load. */}
+        {/* SAFE: dangerouslySetInnerHTML with static string, no user input. Inlined to prevent dark-mode flash on load. */}
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){try{var c=document.cookie.match('(^|; )theme=([^;]*)');var t=localStorage.getItem("theme")||(c?c[2]:null);if(t==="dark"||(t==null&&window.matchMedia("(prefers-color-scheme:dark)").matches)){document.documentElement.classList.add("dark")}}catch(e){}})()`,

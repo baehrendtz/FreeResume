@@ -35,7 +35,7 @@ export function CvLanguageSetting({ labels, displaySettings, onDisplaySettingsCh
             onDisplaySettingsChange({ ...displaySettings, cvLanguage: v as "en" | "sv" })
           }
         >
-          <SelectTrigger className="w-[140px]">
+          <SelectTrigger id="cv-language" className="w-[140px]">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>

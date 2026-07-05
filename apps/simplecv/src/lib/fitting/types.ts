@@ -2,8 +2,6 @@ import type { SectionsVisibility, LanguageEntry } from "@/lib/model/CvModel";
 
 // --- Template metadata ---
 
-export type PageTarget = 1 | 2 | 3 | "auto";
-
 export interface TemplateCapability {
   supportsPhoto: boolean;
   supportsSummary: boolean;
@@ -15,10 +13,7 @@ export interface TemplateCapability {
 }
 
 export interface TemplateContentPolicy {
-  pageTarget: PageTarget;
-  hardOnePage: boolean;
-  overflowStrategy: "truncate" | "hideLowestPriority" | "allowPages";
-  defaultVisibility: SectionsVisibility;
+  /** Section hide order for auto-fit, lower number is hidden first */
   priorities: {
     summary: number;
     experience: number;
@@ -27,9 +22,6 @@ export interface TemplateContentPolicy {
     languages: number;
     extras: number;
   };
-  experienceItemPriority: "recentFirst" | "asIs";
-  maxExperienceItems?: number;
-  maxSummaryChars?: number;
   maxBulletChars?: number;
 }
 
@@ -107,9 +99,6 @@ export interface RenderModel {
 
 export interface LayoutMetrics {
   fits: boolean;
-  contentHeightPx: number;
-  pageHeightPx: number;
-  overflowPx: number;
   estimatedPages: number;
 }
 
@@ -120,5 +109,5 @@ export interface FitResult {
   visibilityOverrides: Partial<SectionsVisibility>;
 }
 
-// Re-export for convenience (avoid circular dep – use type-only)
+// Re-export for convenience (avoid circular dep, use type-only)
 import type { DisplaySettings } from "@/lib/model/DisplaySettings";

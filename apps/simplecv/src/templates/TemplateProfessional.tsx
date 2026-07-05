@@ -69,7 +69,7 @@ export default function TemplateProfessional({ cv, styleSettings }: TemplateProp
 
       {/* Two-column body with full-height sidebar background */}
       <div className="flex flex-1 relative">
-        {/* Sidebar background — absolute div for html2canvas compatibility */}
+        {/* Sidebar background, absolute div for html2canvas compatibility */}
         <div className="absolute left-0 top-0 bottom-0 w-[27%]" style={{ backgroundColor: sidebarBg }} />
 
         {/* Sidebar */}
@@ -111,7 +111,7 @@ export default function TemplateProfessional({ cv, styleSettings }: TemplateProp
           )}
 
           {/* Extras */}
-          {cv.extras?.length > 0 && (
+          {cv.extras.length > 0 && (
             <div>
               <SectionTitle className={sidebarTitleClass}>{labels.extras}</SectionTitle>
               <ExtrasList

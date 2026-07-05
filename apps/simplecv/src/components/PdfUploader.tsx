@@ -10,7 +10,7 @@ interface PdfUploaderProps {
   uploadLabel: string;
   dropzoneLabel: string;
   processingLabel: string;
-  invalidFileTypeLabel?: string;
+  invalidFileTypeLabel: string;
   startFromScratchLabel?: string;
   onStartFromScratch?: () => void;
 }
@@ -38,10 +38,19 @@ export function PdfUploader({
             ? "border-blue-500 bg-blue-50 dark:bg-blue-950/20 scale-[1.02]"
             : "border-muted-foreground/25 hover:border-blue-400 hover:bg-muted/50"
         }`}
+        role="button"
+        tabIndex={processing ? -1 : 0}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        onClick={() => inputRef.current?.click()}
+        onClick={() => !processing && inputRef.current?.click()}
+        onKeyDown={(e) => {
+          if ((e.key === "Enter" || e.key === " ") && !processing) {
+            e.preventDefault();
+            inputRef.current?.click();
+          }
+        }}
+        aria-label={uploadLabel}
       >
         <div className={`rounded-full p-4 transition-colors ${
           dragOver ? "bg-blue-100 dark:bg-blue-900/30" : "bg-muted"

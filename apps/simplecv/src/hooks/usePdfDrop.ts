@@ -2,10 +2,16 @@
 
 import { useCallback, useRef, useState } from "react";
 
-
 interface UsePdfDropOptions {
   onFileSelected: (file: File) => void;
-  invalidFileTypeMessage?: string;
+  invalidFileTypeMessage: string;
+}
+
+/** True if the file looks like a PDF. Some platforms deliver dropped files
+ *  with an empty MIME type, match extractText's lenient rule. */
+function isPdfFile(file: File): boolean {
+  if (file.type) return file.type === "application/pdf";
+  return file.name.toLowerCase().endsWith(".pdf");
 }
 
 export function usePdfDrop({ onFileSelected, invalidFileTypeMessage }: UsePdfDropOptions) {
@@ -15,11 +21,11 @@ export function usePdfDrop({ onFileSelected, invalidFileTypeMessage }: UsePdfDro
 
   const handleFile = useCallback(
     (file: File) => {
-      if (file.type === "application/pdf") {
+      if (isPdfFile(file)) {
         setError(null);
         onFileSelected(file);
       } else {
-        setError(invalidFileTypeMessage ?? "Please select a PDF file");
+        setError(invalidFileTypeMessage);
       }
     },
     [onFileSelected, invalidFileTypeMessage],
@@ -39,6 +45,8 @@ export function usePdfDrop({ onFileSelected, invalidFileTypeMessage }: UsePdfDro
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
       if (file) handleFile(file);
+      // Reset so selecting the same file again re-triggers onChange
+      e.target.value = "";
     },
     [handleFile],
   );
@@ -48,7 +56,9 @@ export function usePdfDrop({ onFileSelected, invalidFileTypeMessage }: UsePdfDro
     setDragOver(true);
   }, []);
 
-  const handleDragLeave = useCallback(() => {
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    // Ignore leave events fired when the pointer moves onto a child element
+    if (e.currentTarget.contains(e.relatedTarget as Node)) return;
     setDragOver(false);
   }, []);
 

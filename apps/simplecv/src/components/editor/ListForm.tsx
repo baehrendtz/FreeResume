@@ -8,30 +8,30 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
 import type { CvModel } from "@/lib/model/CvModel";
-
+import { DUPLICATE_WARNING_TIMEOUT_MS } from "@/lib/constants";
 
 interface ListFormProps {
-  fieldName: "skills";
-  labels: { label: string; placeholder: string; add: string; emptyState: string; duplicateWarning: string };
+  labels: { label: string; placeholder: string; add: string; remove: string; emptyState: string; duplicateWarning: string };
   onAdd?: () => void;
   onRemove?: () => void;
 }
 
-export function ListForm({ fieldName, labels, onAdd, onRemove }: ListFormProps) {
+/** Tag-style editor for the skills list. */
+export function ListForm({ labels, onAdd, onRemove }: ListFormProps) {
   const { control } = useFormContext<CvModel>();
   const [input, setInput] = useState("");
   const [showDuplicate, setShowDuplicate] = useState(false);
 
   useEffect(() => {
     if (!showDuplicate) return;
-    const timer = setTimeout(() => setShowDuplicate(false), 2000);
+    const timer = setTimeout(() => setShowDuplicate(false), DUPLICATE_WARNING_TIMEOUT_MS);
     return () => clearTimeout(timer);
   }, [showDuplicate]);
 
   return (
     <Controller
       control={control}
-      name={fieldName}
+      name="skills"
       render={({ field }) => {
         const items: string[] = field.value ?? [];
 
@@ -84,8 +84,8 @@ export function ListForm({ fieldName, labels, onAdd, onRemove }: ListFormProps) 
                   <button
                     type="button"
                     onClick={() => removeItem(i)}
-                    className="hover:text-destructive focus-visible:text-destructive focus-visible:outline-none"
-                    aria-label={`Remove ${item}`}
+                    className="hover:text-destructive focus-visible:text-destructive focus-visible:outline-none p-1.5 -m-1"
+                    aria-label={`${labels.remove} ${item}`}
                   >
                     <X className="h-3 w-3" />
                   </button>

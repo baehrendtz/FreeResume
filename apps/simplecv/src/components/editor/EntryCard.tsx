@@ -19,7 +19,7 @@ interface EntryCardProps {
     hide: string;
     show: string;
     remove: string;
-    confirm?: string;
+    confirm: string;
     moveUp?: string;
     moveDown?: string;
   };
@@ -68,7 +68,7 @@ export function EntryCard({
             type="button"
             variant="ghost"
             size="icon-sm"
-            className="h-7 w-7 text-muted-foreground shrink-0"
+            className="h-9 w-9 md:h-7 md:w-7 text-muted-foreground shrink-0"
             onClick={onMoveUp}
             title={labels.moveUp}
             aria-label={labels.moveUp}
@@ -81,7 +81,7 @@ export function EntryCard({
             type="button"
             variant="ghost"
             size="icon-sm"
-            className="h-7 w-7 text-muted-foreground shrink-0"
+            className="h-9 w-9 md:h-7 md:w-7 text-muted-foreground shrink-0"
             onClick={onMoveDown}
             title={labels.moveDown}
             aria-label={labels.moveDown}
@@ -93,7 +93,7 @@ export function EntryCard({
           type="button"
           variant="ghost"
           size="sm"
-          className="h-7 text-xs text-muted-foreground shrink-0"
+          className="h-9 md:h-7 text-xs text-muted-foreground shrink-0"
           onClick={onToggleHidden}
           aria-label={hidden ? labels.show : labels.hide}
         >
@@ -113,12 +113,12 @@ export function EntryCard({
           type="button"
           variant="ghost"
           size="sm"
-          className={`h-7 text-xs shrink-0 ${confirming ? "text-destructive font-medium" : "text-muted-foreground hover:text-destructive"}`}
+          className={`h-9 md:h-7 text-xs shrink-0 ${confirming ? "text-destructive font-medium" : "text-muted-foreground hover:text-destructive"}`}
           onClick={handleRemoveClick}
           aria-label={labels.remove}
         >
           <Trash2 className="h-3.5 w-3.5 mr-1" />
-          {confirming ? (labels.confirm ?? "Confirm?") : labels.remove}
+          {confirming ? labels.confirm : labels.remove}
         </Button>
       </div>
       {!hidden && children}

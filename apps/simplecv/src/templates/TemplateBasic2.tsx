@@ -2,12 +2,13 @@
 
 import type { RenderModel } from "@/lib/fitting/types";
 import type { TemplateStyleValues } from "@/lib/model/TemplateStyleSettings";
-import { getCvStrings, resolveLanguageName, translateExtrasCategory } from "@/lib/cvLocale";
+import { getCvStrings, translateExtrasCategory } from "@/lib/cvLocale";
 import {
   scaledContainerStyle,
   resolveTemplateStyles,
   getContactItems,
   formatDateRange,
+  formatLanguageEntry,
   filterBullets,
   CvFooter,
 } from "./templateHelpers";
@@ -60,15 +61,11 @@ function MainSectionHeading({
 }
 
 /* ── Timeline dot ── */
-function TimelineDot({ color, filled = false }: { color: string; filled?: boolean }) {
+function TimelineDot({ color }: { color: string }) {
   return (
     <div
       className="absolute left-[-3.5px] top-[5px] h-[8px] w-[8px] rounded-full"
-      style={
-        filled
-          ? { backgroundColor: color }
-          : { backgroundColor: "white", border: `2px solid ${color}` }
-      }
+      style={{ backgroundColor: color }}
     />
   );
 }
@@ -83,11 +80,11 @@ export default function TemplateBasic2({ cv, styleSettings }: TemplateProps) {
   return (
     <div
       lang={cv.cvLanguage}
-      className="cv-template font-sans text-[8pt] text-gray-800 mx-auto bg-white flex flex-col overflow-hidden"
+      className="cv-template font-sans text-[8pt] text-gray-800 mx-auto bg-white flex flex-col"
       style={scaledContainerStyle(fontZoom, lineHeight, { borderRadius: "16px" })}
     >
       <div className="flex flex-1 relative">
-        {/* Sidebar background — absolute div for html2canvas compatibility */}
+        {/* Sidebar background, absolute div for html2canvas compatibility */}
         <div
           className="absolute left-0 top-0 bottom-0 w-[34%]"
           style={{ backgroundColor: sidebarBg, borderRadius: "16px 0 0 16px" }}
@@ -161,7 +158,7 @@ export default function TemplateBasic2({ cv, styleSettings }: TemplateProps) {
                       className="h-[5px] w-[5px] rounded-full shrink-0"
                       style={{ backgroundColor: accent }}
                     />
-                    {resolveLanguageName(lang.name, cv.cvLanguage)} ({labels[lang.level]})
+                    {formatLanguageEntry(lang, cv.cvLanguage)}
                   </li>
                 ))}
               </ul>
@@ -211,7 +208,7 @@ export default function TemplateBasic2({ cv, styleSettings }: TemplateProps) {
                     const bullets = filterBullets(role.bullets);
                     return (
                       <div key={i} className="relative pl-5 mb-2.5 break-inside-avoid">
-                        <TimelineDot color={accent} filled />
+                        <TimelineDot color={accent} />
                         <div>
                           <span className="font-bold text-[8.5pt] text-gray-900">{role.title}</span>
                           {group.company && (
@@ -245,7 +242,7 @@ export default function TemplateBasic2({ cv, styleSettings }: TemplateProps) {
                   const groupDateStr = formatDateRange(group.startDate, group.endDate, cv.cvLanguage);
                   return (
                     <div key={i} className="relative pl-5 mb-2.5 break-inside-avoid">
-                      <TimelineDot color={accent} filled />
+                      <TimelineDot color={accent} />
                       <div>
                         <span className="font-bold text-[8.5pt] text-gray-900">{group.company}</span>
                       </div>
@@ -310,10 +307,10 @@ export default function TemplateBasic2({ cv, styleSettings }: TemplateProps) {
                   const dateStr = formatDateRange(edu.startDate, edu.endDate, cv.cvLanguage);
                   return (
                     <div key={i} className="relative pl-5 mb-2.5 break-inside-avoid">
-                      <TimelineDot color={accent} filled />
+                      <TimelineDot color={accent} />
                       <div>
                         <span className="font-bold text-[8.5pt] text-gray-900">
-                          {edu.degree}{edu.field ? ` — ${edu.field}` : ""}
+                          {edu.degree}{edu.degree && edu.field ? ", " : ""}{edu.field}
                         </span>
                         {dateStr && <span className="text-[8pt] text-gray-500 ml-2">{dateStr}</span>}
                       </div>
@@ -331,7 +328,7 @@ export default function TemplateBasic2({ cv, styleSettings }: TemplateProps) {
           )}
 
           {/* Extras (Certifications etc.) with timeline */}
-          {cv.extras?.length > 0 && (
+          {cv.extras.length > 0 && (
             <section className="mb-3">
               <MainSectionHeading color={accent} icon={
                 <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -357,7 +354,7 @@ export default function TemplateBasic2({ cv, styleSettings }: TemplateProps) {
                     )}
                     {group.items.map((item, j) => (
                       <div key={j} className="relative pl-5 mb-1">
-                        <TimelineDot color={accent} filled />
+                        <TimelineDot color={accent} />
                         <span className="text-[7.5pt] text-gray-700">{item}</span>
                       </div>
                     ))}

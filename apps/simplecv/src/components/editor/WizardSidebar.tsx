@@ -9,8 +9,14 @@ interface WizardSidebarProps {
   onStepSelect: (id: string) => void;
   tabLabels: Record<string, string>;
   groupLabels: Record<string, string>;
+  sidebarLabels: { expand: string; collapse: string };
   collapsed: boolean;
   onToggleCollapse: () => void;
+}
+
+/** Resolve step ids to their WIZARD_STEPS definitions, skipping unknown ids. */
+function resolveSteps(ids: readonly string[]) {
+  return ids.flatMap((id) => WIZARD_STEPS.find((s) => s.id === id) ?? []);
 }
 
 export function WizardSidebar({
@@ -18,6 +24,7 @@ export function WizardSidebar({
   onStepSelect,
   tabLabels,
   groupLabels,
+  sidebarLabels,
   collapsed,
   onToggleCollapse,
 }: WizardSidebarProps) {
@@ -35,7 +42,8 @@ export function WizardSidebar({
             type="button"
             onClick={onToggleCollapse}
             className="flex items-center justify-center p-1.5 rounded-md border border-border text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
-            title={collapsed ? "Expand" : "Collapse"}
+            title={collapsed ? sidebarLabels.expand : sidebarLabels.collapse}
+            aria-label={collapsed ? sidebarLabels.expand : sidebarLabels.collapse}
           >
             {collapsed ? (
               <ChevronRight className="h-4 w-4" />
@@ -46,9 +54,7 @@ export function WizardSidebar({
         </div>
 
         {STEP_GROUPS.map((group, groupIndex) => {
-          const groupSteps = group.steps
-            .map((id) => WIZARD_STEPS.find((s) => s.id === id)!)
-            .filter(Boolean);
+          const groupSteps = resolveSteps(group.steps);
 
           return (
             <div key={group.id}>
@@ -71,6 +77,7 @@ export function WizardSidebar({
                     type="button"
                     onClick={() => onStepSelect(step.id)}
                     title={collapsed ? tabLabels[step.id] : undefined}
+                    aria-current={isActive ? "step" : undefined}
                     className={cn(
                       "flex items-center gap-2 rounded-md text-sm transition-colors text-left w-full",
                       collapsed ? "px-2 py-2 justify-center" : "px-3 py-2",
@@ -91,12 +98,8 @@ export function WizardSidebar({
 
       {/* Mobile stepper */}
       <nav className="md:hidden flex gap-1.5 overflow-x-auto scrollbar-hide pb-2 px-1">
-        {STEP_GROUPS.map((group, groupIndex) => {
-          const groupSteps = group.steps
-            .map((id) => WIZARD_STEPS.find((s) => s.id === id)!)
-            .filter(Boolean);
-
-          return groupSteps.map((step) => {
+        {STEP_GROUPS.map((group, groupIndex) =>
+          resolveSteps(group.steps).map((step) => {
             const Icon = step.icon;
             const isActive = step.id === activeStep;
             return (
@@ -105,19 +108,21 @@ export function WizardSidebar({
                 type="button"
                 onClick={() => onStepSelect(step.id)}
                 className={cn(
-                  "flex items-center justify-center shrink-0 w-8 h-8 rounded-full text-xs font-medium transition-colors",
+                  "flex items-center justify-center shrink-0 w-10 h-10 rounded-full text-xs font-medium transition-colors",
                   isActive
                     ? "bg-primary text-primary-foreground"
                     : "bg-muted text-muted-foreground",
                   groupIndex > 0 && step.id === group.steps[0] && "ml-2",
                 )}
                 title={tabLabels[step.id]}
+                aria-label={tabLabels[step.id]}
+                aria-current={isActive ? "step" : undefined}
               >
                 <Icon className="h-4 w-4" />
               </button>
             );
-          });
-        })}
+          }),
+        )}
       </nav>
     </>
   );

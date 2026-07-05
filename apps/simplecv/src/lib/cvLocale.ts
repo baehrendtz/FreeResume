@@ -66,6 +66,10 @@ const CV_LABELS = {
 } as const;
 
 export type CvLanguage = keyof typeof CV_LABELS;
+
+/** Canonical list of extras category keys, single source shared by the
+ *  editor, the parser and the label maps. */
+export const EXTRAS_CATEGORIES = Object.keys(CV_LABELS.en.extrasCategories);
 export type CvStrings = (typeof CV_LABELS)[CvLanguage]["sections"]
   & (typeof CV_LABELS)[CvLanguage]["proficiency"]
   & (typeof CV_LABELS)[CvLanguage]["defaults"];
@@ -178,7 +182,12 @@ const MONTH_ABBR: Record<number, LocaleMap> = {
   12: { en: "Dec", sv: "Dec" },
 };
 
-const PRESENT_TOKENS = new Set(["present", "nu", "pågående", "pagaende", "current"]);
+export const PRESENT_TOKENS = new Set(["present", "nu", "pågående", "pagaende", "current"]);
+
+/** True if the string is a "present/ongoing" date token in any supported language. */
+export function isPresentToken(raw: string): boolean {
+  return PRESENT_TOKENS.has(raw.trim().toLowerCase());
+}
 
 /**
  * Format a raw date string according to cvLanguage.

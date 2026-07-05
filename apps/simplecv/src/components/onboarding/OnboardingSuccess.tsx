@@ -8,7 +8,9 @@ import { buildRenderModel } from "@/lib/fitting";
 import { getTemplateMeta } from "@/templates/templateRegistry";
 import { defaultDisplaySettings } from "@/lib/model/DisplaySettings";
 import type { CvModel } from "@/lib/model/CvModel";
+import { ONBOARDING_PREVIEW_DELAY_MS } from "@/lib/constants";
 
+const DEFAULT_TEMPLATE_ID = "basic";
 
 interface OnboardingSuccessProps {
   cv: CvModel;
@@ -32,13 +34,13 @@ export function OnboardingSuccess({ cv, isFromScratch, labels, onComplete, onBac
 
   useEffect(() => {
     if (isFromScratch) return;
-    const timer = setTimeout(() => setShowPreview(true), 800);
+    const timer = setTimeout(() => setShowPreview(true), ONBOARDING_PREVIEW_DELAY_MS);
     return () => clearTimeout(timer);
   }, [isFromScratch]);
 
   const previewRenderModel = useMemo(() => {
     if (isFromScratch) return null;
-    const meta = getTemplateMeta("basic");
+    const meta = getTemplateMeta(DEFAULT_TEMPLATE_ID);
     return buildRenderModel(cv, meta, defaultDisplaySettings);
   }, [cv, isFromScratch]);
 
@@ -77,18 +79,17 @@ export function OnboardingSuccess({ cv, isFromScratch, labels, onComplete, onBac
           </div>
         </div>
 
-        {/* Right: CV preview (hidden on mobile) */}
+        {/* Right: imported-CV preview (auto-scales to its container width) */}
         {previewRenderModel && (
           <div
-            className={`hidden md:block overflow-hidden rounded-lg shadow-lg transition-all duration-700 ease-out ${
+            className={`overflow-hidden rounded-lg shadow-lg transition-all duration-700 ease-out w-full max-w-[280px] md:max-w-sm ${
               showPreview
-                ? "opacity-100 translate-x-0 max-w-sm"
-                : "opacity-0 translate-x-8 max-w-0"
+                ? "opacity-100 translate-x-0"
+                : "opacity-0 translate-x-8"
             }`}
           >
             <CvPreview
-              zoomLevel={0.403}
-              templateId="basic"
+              templateId={DEFAULT_TEMPLATE_ID}
               renderModel={previewRenderModel}
             />
           </div>

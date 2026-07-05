@@ -1,5 +1,4 @@
 export type {
-  PageTarget,
   TemplateCapability,
   TemplateContentPolicy,
   TemplateMeta,

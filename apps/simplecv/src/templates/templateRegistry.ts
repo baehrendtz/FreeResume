@@ -3,7 +3,6 @@ import type { RenderModel, TemplateMeta } from "@/lib/fitting/types";
 import type { TemplateStyleValues } from "@/lib/model/TemplateStyleSettings";
 
 export interface TemplateEntry {
-  name: string;
   component: React.LazyExoticComponent<ComponentType<{ cv: RenderModel; styleSettings?: TemplateStyleValues }>>;
   meta: TemplateMeta;
   defaultStyle: TemplateStyleValues;
@@ -16,16 +15,6 @@ const DEFAULT_PRIORITIES = {
   skills: 2,
   extras: 1,
   languages: 1,
-} as const;
-
-const DEFAULT_VISIBILITY = {
-  photo: true,
-  summary: true,
-  experience: true,
-  education: true,
-  skills: true,
-  languages: true,
-  extras: true,
 } as const;
 
 const professionalMeta: TemplateMeta = {
@@ -41,13 +30,7 @@ const professionalMeta: TemplateMeta = {
     supportsSecondaryColor: false,
   },
   policy: {
-    pageTarget: 1,
-    hardOnePage: true,
-    overflowStrategy: "truncate",
-    defaultVisibility: { ...DEFAULT_VISIBILITY },
     priorities: { ...DEFAULT_PRIORITIES },
-    experienceItemPriority: "recentFirst",
-    maxSummaryChars: 400,
     maxBulletChars: 200,
   },
 };
@@ -65,13 +48,7 @@ const basicMeta: TemplateMeta = {
     supportsSecondaryColor: false,
   },
   policy: {
-    pageTarget: 1,
-    hardOnePage: true,
-    overflowStrategy: "truncate",
-    defaultVisibility: { ...DEFAULT_VISIBILITY },
     priorities: { ...DEFAULT_PRIORITIES },
-    experienceItemPriority: "recentFirst",
-    maxSummaryChars: 300,
     maxBulletChars: 150,
   },
 };
@@ -89,13 +66,7 @@ const basic2Meta: TemplateMeta = {
     supportsSecondaryColor: false,
   },
   policy: {
-    pageTarget: 1,
-    hardOnePage: true,
-    overflowStrategy: "truncate",
-    defaultVisibility: { ...DEFAULT_VISIBILITY },
     priorities: { ...DEFAULT_PRIORITIES },
-    experienceItemPriority: "recentFirst",
-    maxSummaryChars: 350,
     maxBulletChars: 180,
   },
 };
@@ -113,13 +84,7 @@ const creativeMeta: TemplateMeta = {
     supportsSecondaryColor: true,
   },
   policy: {
-    pageTarget: 1,
-    hardOnePage: true,
-    overflowStrategy: "truncate",
-    defaultVisibility: { ...DEFAULT_VISIBILITY },
     priorities: { ...DEFAULT_PRIORITIES },
-    experienceItemPriority: "recentFirst",
-    maxSummaryChars: 350,
     maxBulletChars: 180,
   },
 };
@@ -166,25 +131,21 @@ const creativeDefaultStyle: TemplateStyleValues = {
 
 export const templates: Record<string, TemplateEntry> = {
   basic: {
-    name: "Basic",
     component: lazy(() => import("./TemplateBasic")),
     meta: basicMeta,
     defaultStyle: basicDefaultStyle,
   },
   professional: {
-    name: "Professional",
     component: lazy(() => import("./TemplateProfessional")),
     meta: professionalMeta,
     defaultStyle: professionalDefaultStyle,
   },
   basic2: {
-    name: "Basic 2",
     component: lazy(() => import("./TemplateBasic2")),
     meta: basic2Meta,
     defaultStyle: basic2DefaultStyle,
   },
   creative: {
-    name: "Creative",
     component: lazy(() => import("./TemplateCreative")),
     meta: creativeMeta,
     defaultStyle: creativeDefaultStyle,

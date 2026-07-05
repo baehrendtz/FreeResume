@@ -18,12 +18,14 @@ import { SectionToggles } from "./settings/SectionToggles";
 import { ContentLimits } from "./settings/ContentLimits";
 import { LocationFormatting } from "./settings/LocationFormatting";
 import { CvLanguageSetting } from "./settings/CvLanguageSetting";
+import { PageTargetSetting } from "./settings/PageTargetSetting";
 import { TemplateStylePanel } from "./settings/TemplateStylePanel";
 import { WIZARD_STEPS } from "@/lib/wizard/steps";
 import { trackWizardStep, trackSkillAdd, trackSkillRemove } from "@/lib/analytics/gtag";
 import type { PerTemplateStyleOverrides, TemplateStyleValues } from "@/lib/model/TemplateStyleSettings";
 import { getTemplateMeta } from "@/templates/templateRegistry";
 import { FORM_DEBOUNCE_MS } from "@/lib/constants";
+import type { useEditorLabels } from "@/hooks/useEditorLabels";
 
 export interface EditorSettings {
   displaySettings: DisplaySettings;
@@ -33,143 +35,17 @@ export interface EditorSettings {
   onStyleOverridesChange: (overrides: PerTemplateStyleOverrides) => void;
 }
 
+/** The full editor label tree comes from useEditorLabels, typed from the
+ *  hook so the two can never drift apart. */
+export type EditorLabels = ReturnType<typeof useEditorLabels>["editor"];
+
 interface CvEditorProps {
   defaultValues: CvModel;
   onUpdate: (cv: CvModel) => void;
-  settings?: EditorSettings;
+  settings: EditorSettings;
   templateId: string;
   onTemplateSelect: (id: string) => void;
-  labels: {
-    tabs: {
-      template: string;
-      basics: string;
-      summary: string;
-      experience: string;
-      education: string;
-      skills: string;
-      languages: string;
-      extras: string;
-      visibility: string;
-    };
-    groups: {
-      theme: string;
-      content: string;
-      settings: string;
-    };
-    basics: {
-      name: string;
-      nameRequired: string;
-      headline: string;
-      email: string;
-      phone: string;
-      location: string;
-      linkedIn: string;
-      website: string;
-      photo: string;
-      photoUpload: string;
-      photoRemove: string;
-      photoTooLarge: string;
-      photoReadError: string;
-    };
-    summary: { label: string; placeholder: string };
-    experience: {
-      title: string;
-      company: string;
-      location: string;
-      startDate: string;
-      endDate: string;
-      datePlaceholder: string;
-      endDatePlaceholder: string;
-      description: string;
-      bullets: string;
-      bulletsHint: string;
-      add: string;
-      remove: string;
-      hide: string;
-      show: string;
-      at: string;
-      emptyState: string;
-      confirm: string;
-      moveUp: string;
-      moveDown: string;
-    };
-    education: {
-      institution: string;
-      degree: string;
-      field: string;
-      startDate: string;
-      endDate: string;
-      datePlaceholder: string;
-      endDatePlaceholder: string;
-      description: string;
-      add: string;
-      remove: string;
-      hide: string;
-      show: string;
-      emptyState: string;
-      confirm: string;
-      moveUp: string;
-      moveDown: string;
-    };
-    skills: { label: string; placeholder: string; add: string; emptyState: string; duplicateWarning: string };
-    languages: {
-      label: string;
-      placeholder: string;
-      add: string;
-      levelLabel: string;
-      native: string;
-      full_professional: string;
-      professional_working: string;
-      limited_working: string;
-      elementary: string;
-      noResults: string;
-      emptyState: string;
-    };
-    extras: { label: string; placeholder: string; add: string; addCategory: string; removeCategory: string; emptyState: string };
-    extrasCategories: Record<string, string>;
-    style: {
-      styleTitle: string;
-      styleDescription: string;
-      accentColor: string;
-      secondaryColor: string;
-      photoSize: string;
-      fontScale: string;
-      photoShape: string;
-      photoShapeCircle: string;
-      photoShapeRounded: string;
-      photoShapeSquare: string;
-      sidebarBgColor: string;
-      lineHeight: string;
-      resetDefaults: string;
-    };
-    visibility: {
-      title: string;
-      description: string;
-      photo: string;
-      summary: string;
-      experience: string;
-      education: string;
-      skills: string;
-      languages: string;
-      extras: string;
-      contentLimitsTitle: string;
-      contentLimitsDescription: string;
-      maxExperience: string;
-      maxEducation: string;
-      maxSkills: string;
-      maxBulletsPerJob: string;
-      summaryMaxChars: string;
-      maxExtras: string;
-      simplifyLocationsTitle: string;
-      simplifyLocationsDescription: string;
-      simplifyLocations: string;
-      cvLanguageTitle: string;
-      cvLanguageDescription: string;
-      cvLanguageEn: string;
-      cvLanguageSv: string;
-      template: string;
-    };
-  };
+  labels: EditorLabels;
 }
 
 export function CvEditor({
@@ -180,10 +56,9 @@ export function CvEditor({
   onTemplateSelect,
   labels,
 }: CvEditorProps) {
-  const { displaySettings, onDisplaySettingsChange, styleOverrides, styleSettings, onStyleOverridesChange } = settings ?? {};
+  const { displaySettings, onDisplaySettingsChange, styleOverrides, styleSettings, onStyleOverridesChange } = settings;
   const [activeStep, setActiveStep] = useState("basics");
   const [collapsed, setCollapsed] = useState(false);
-  const formContentRef = useRef<HTMLDivElement>(null);
 
   const methods = useForm<CvModel>({
     defaultValues,
@@ -207,7 +82,11 @@ export function CvEditor({
   );
 
   useEffect(() => {
-    const subscription = methods.watch((data) => {
+    const subscription = methods.watch((data, { name }) => {
+      // Reset-triggered notifications have no field name, skipping them
+      // stops external updates (import, auto-fit, session restore) from
+      // being echoed straight back to the parent as a redundant setCv.
+      if (name === undefined) return;
       handleUpdate(data as CvModel);
     });
     return () => {
@@ -243,12 +122,13 @@ export function CvEditor({
             onStepSelect={handleStepSelect}
             tabLabels={labels.tabs}
             groupLabels={labels.groups}
+            sidebarLabels={labels.sidebar}
             collapsed={collapsed}
             onToggleCollapse={() => setCollapsed((c) => !c)}
           />
 
           {/* Form content */}
-          <div ref={formContentRef} className="flex-1 md:pl-4 min-w-0 pt-2 md:pt-0">
+          <div className="flex-1 md:pl-4 min-w-0 pt-2 md:pt-0">
             {(() => {
               const step = WIZARD_STEPS.find((s) => s.id === activeStep);
               if (!step) return null;
@@ -263,32 +143,25 @@ export function CvEditor({
             {activeStep === "template" && (
               <div className="space-y-4">
                 <TemplateSwitcher activeId={templateId} onSelect={onTemplateSelect} />
-                {styleOverrides && styleSettings && onStyleOverridesChange && (
-                  <TemplateStylePanel
-                    templateId={templateId}
-                    styleSettings={styleSettings}
-                    styleOverrides={styleOverrides}
-                    onStyleOverridesChange={onStyleOverridesChange}
-                    supportsPhoto={getTemplateMeta(templateId).capabilities.supportsPhoto}
-                    supportsSidebar={getTemplateMeta(templateId).capabilities.supportsSidebar}
-                    supportsSecondaryColor={getTemplateMeta(templateId).capabilities.supportsSecondaryColor}
-                    labels={labels.style}
-                  />
-                )}
+                <TemplateStylePanel
+                  templateId={templateId}
+                  styleSettings={styleSettings}
+                  styleOverrides={styleOverrides}
+                  onStyleOverridesChange={onStyleOverridesChange}
+                  supportsPhoto={getTemplateMeta(templateId).capabilities.supportsPhoto}
+                  supportsSidebar={getTemplateMeta(templateId).capabilities.supportsSidebar}
+                  supportsSecondaryColor={getTemplateMeta(templateId).capabilities.supportsSecondaryColor}
+                  labels={labels.style}
+                />
               </div>
             )}
             {activeStep === "visibility" && (
               <div className="space-y-4">
-                {displaySettings && onDisplaySettingsChange && (
-                  <CvLanguageSetting labels={labels.visibility} displaySettings={displaySettings} onDisplaySettingsChange={onDisplaySettingsChange} />
-                )}
+                <CvLanguageSetting labels={labels.visibility} displaySettings={displaySettings} onDisplaySettingsChange={onDisplaySettingsChange} />
                 <SectionToggles labels={labels.visibility} />
-                {displaySettings && onDisplaySettingsChange && (
-                  <>
-                    <ContentLimits labels={labels.visibility} displaySettings={displaySettings} onDisplaySettingsChange={onDisplaySettingsChange} />
-                    <LocationFormatting labels={labels.visibility} displaySettings={displaySettings} onDisplaySettingsChange={onDisplaySettingsChange} />
-                  </>
-                )}
+                <PageTargetSetting labels={labels.visibility} displaySettings={displaySettings} onDisplaySettingsChange={onDisplaySettingsChange} />
+                <ContentLimits labels={labels.visibility} displaySettings={displaySettings} onDisplaySettingsChange={onDisplaySettingsChange} />
+                <LocationFormatting labels={labels.visibility} displaySettings={displaySettings} onDisplaySettingsChange={onDisplaySettingsChange} />
               </div>
             )}
             {activeStep === "basics" && <BasicsForm labels={labels.basics} />}
@@ -296,13 +169,13 @@ export function CvEditor({
               <SummaryForm
                 label={labels.summary.label}
                 placeholder={labels.summary.placeholder}
-                maxChars={displaySettings?.summaryMaxChars}
+                maxChars={displaySettings.summaryMaxChars}
               />
             )}
             {activeStep === "experience" && <ExperienceForm labels={labels.experience} />}
             {activeStep === "education" && <EducationForm labels={labels.education} />}
             {activeStep === "skills" && (
-              <ListForm fieldName="skills" labels={labels.skills} onAdd={trackSkillAdd} onRemove={trackSkillRemove} />
+              <ListForm labels={labels.skills} onAdd={trackSkillAdd} onRemove={trackSkillRemove} />
             )}
             {activeStep === "languages" && (
               <LanguageForm labels={labels.languages} />

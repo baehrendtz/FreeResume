@@ -1,7 +1,12 @@
 import type { CvModel, Experience } from "@/lib/model/CvModel";
 import type { DisplaySettings } from "@/lib/model/DisplaySettings";
 import type { TemplateMeta, RenderModel, RenderExperienceGroup, RenderExperienceRole } from "./types";
-import { MONTH_LOOKUP } from "@/lib/cvLocale";
+import { MONTH_LOOKUP, isPresentToken } from "@/lib/cvLocale";
+
+/** True if the date string marks an ongoing role (empty or a "present" token). */
+function isOngoingDate(raw: string): boolean {
+  return !raw.trim() || isPresentToken(raw);
+}
 
 /**
  * Parse a free-text date string like "Jan 2020" or "2020" into a comparable
@@ -11,9 +16,11 @@ function parseDateToMonths(raw: string): number | null {
   const trimmed = raw.trim();
   if (!trimmed) return null;
 
-  // Year only, e.g. "2020"
+  if (isPresentToken(trimmed)) return Infinity;
+
+  // Year only, e.g. "2020", mid-year so it sorts between spring and autumn dates
   const yearOnly = trimmed.match(/^(\d{4})$/);
-  if (yearOnly) return Number(yearOnly[1]) * 12;
+  if (yearOnly) return Number(yearOnly[1]) * 12 + 6;
 
   // "Month Year" pattern, e.g. "Jan 2020" or "Oktober 2020"
   const monthYear = trimmed.match(/^([A-Za-z\u00C0-\u00F6\u00F8-\u00FF]+)\s+(\d{4})$/);
@@ -78,10 +85,10 @@ function groupExperienceEntries(
       if (entry.startDate && (!currentGroup.startDate || compareDateStrings(entry.startDate, currentGroup.startDate) < 0)) {
         currentGroup.startDate = entry.startDate;
       }
-      if (!entry.endDate) {
-        // Ongoing role — group is also ongoing
-        currentGroup.endDate = "";
-      } else if (currentGroup.endDate !== "" && (!currentGroup.endDate || compareDateStrings(entry.endDate, currentGroup.endDate) > 0)) {
+      if (isOngoingDate(entry.endDate)) {
+        // Ongoing role, group is also ongoing (keep "Present" token if given)
+        currentGroup.endDate = entry.endDate;
+      } else if (!isOngoingDate(currentGroup.endDate) && compareDateStrings(entry.endDate, currentGroup.endDate) > 0) {
         // Only update endDate if the group isn't already marked as ongoing
         currentGroup.endDate = entry.endDate;
       }
@@ -106,7 +113,7 @@ function groupExperienceEntries(
 
 /**
  * Builds a render-ready model from CvModel + template metadata + user display settings.
- * Pure function — no side effects, no mutations of the input.
+ * Pure function, no side effects, no mutations of the input.
  *
  * Application order:
  *   1. Template capabilities (e.g. no photo in Basic)
@@ -140,15 +147,11 @@ export function buildRenderModel(
   // Experience: respect visibility, group by companyGroupId, then slice groups, then truncate bullets
   let experience: RenderModel["experience"] = [];
   if (vis.experience) {
-    const maxGroups = policy.maxExperienceItems != null
-      ? Math.min(settings.maxExperience, policy.maxExperienceItems)
-      : settings.maxExperience;
-
     const visibleEntries = cv.experience.filter((exp) => !exp.hidden);
 
     // Group consecutive entries by companyGroupId (or auto-group by consecutive same company)
     const groups = groupExperienceEntries(visibleEntries, settings, policy.maxBulletChars);
-    experience = groups.slice(0, maxGroups);
+    experience = groups.slice(0, settings.maxExperience);
   }
 
   // Education: respect visibility, then slice

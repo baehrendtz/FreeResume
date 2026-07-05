@@ -45,9 +45,8 @@ export async function extractText(file: File): Promise<PdfPage[]> {
         if (!("str" in item)) continue;
         const textItem = item as TextItem;
         const fontName = textItem.fontName || "";
-        const bold =
-          fontName.toLowerCase().includes("bold") ||
-          fontName.toLowerCase().includes("semibold");
+        // "bold" also matches "semibold"
+        const bold = fontName.toLowerCase().includes("bold");
 
         items.push({
           text: textItem.str,

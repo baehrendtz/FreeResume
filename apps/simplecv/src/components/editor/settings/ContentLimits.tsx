@@ -3,15 +3,11 @@
 import { NumericStepper } from "@/components/ui/numeric-stepper";
 import { SettingsSection } from "./SettingsSection";
 import type { DisplaySettings } from "@/lib/model/DisplaySettings";
+import { CONTENT_LIMIT_RANGES } from "@/lib/constants";
 
-const LIMIT_FIELDS = [
-  { key: "maxExperience" as const, min: 1, max: 50, step: 1 },
-  { key: "maxEducation" as const, min: 1, max: 10, step: 1 },
-  { key: "maxSkills" as const, min: 1, max: 30, step: 1 },
-  { key: "maxBulletsPerJob" as const, min: 0, max: 10, step: 1 },
-  { key: "summaryMaxChars" as const, min: 50, max: 1000, step: 50 },
-  { key: "maxExtras" as const, min: 1, max: 20, step: 1 },
-] as const;
+const LIMIT_FIELDS = (
+  Object.keys(CONTENT_LIMIT_RANGES) as (keyof typeof CONTENT_LIMIT_RANGES)[]
+).map((key) => ({ key, ...CONTENT_LIMIT_RANGES[key] }));
 
 interface ContentLimitsProps {
   labels: {

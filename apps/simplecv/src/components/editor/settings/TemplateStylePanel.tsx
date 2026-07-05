@@ -108,7 +108,7 @@ export function TemplateStylePanel({
         />
       )}
 
-      {/* Photo shape — 3 toggle buttons */}
+      {/* Photo shape, 3 toggle buttons */}
       {supportsPhoto && (
         <div className="flex items-center justify-between py-0.5">
           <Label className="text-sm">

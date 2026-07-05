@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { getCvProficiencyLabels, getCvExtrasCategoryLabels, type CvLanguage } from "@/lib/cvLocale";
 
@@ -5,6 +6,10 @@ export function useEditorLabels() {
   const t = useTranslations();
   const locale = useLocale();
   const cvLang: CvLanguage = locale === "sv" ? "sv" : "en";
+
+  // Memoized so label object identities stay stable across the frequent
+  // re-renders of the page (every debounced keystroke updates cv state).
+  return useMemo(() => {
   const proficiency = getCvProficiencyLabels(cvLang);
   const extrasCats = getCvExtrasCategoryLabels(cvLang);
 
@@ -24,6 +29,10 @@ export function useEditorLabels() {
       theme: t("editor.groups.theme"),
       content: t("editor.groups.content"),
       settings: t("editor.groups.settings"),
+    },
+    sidebar: {
+      expand: t("editor.sidebar.expand"),
+      collapse: t("editor.sidebar.collapse"),
     },
     basics: {
       name: t("editor.basics.name"),
@@ -89,6 +98,7 @@ export function useEditorLabels() {
       label: t("editor.skills.label"),
       placeholder: t("editor.skills.placeholder"),
       add: t("editor.skills.add"),
+      remove: t("editor.skills.remove"),
       emptyState: t("editor.skills.emptyState"),
       duplicateWarning: t("editor.skills.duplicateWarning"),
     },
@@ -96,6 +106,7 @@ export function useEditorLabels() {
       label: t("editor.languages.label"),
       placeholder: t("editor.languages.placeholder"),
       add: t("editor.languages.add"),
+      remove: t("editor.languages.remove"),
       levelLabel: t("editor.languages.levelLabel"),
       native: proficiency.native,
       full_professional: proficiency.full_professional,
@@ -109,6 +120,7 @@ export function useEditorLabels() {
       label: t("editor.extras.label"),
       placeholder: t("editor.extras.placeholder"),
       add: t("editor.extras.add"),
+      remove: t("editor.extras.remove"),
       addCategory: t("editor.extras.addCategory"),
       removeCategory: t("editor.extras.removeCategory"),
       emptyState: t("editor.extras.emptyState"),
@@ -139,6 +151,10 @@ export function useEditorLabels() {
       skills: t("editor.visibility.skills"),
       languages: t("editor.visibility.languages"),
       extras: t("editor.visibility.extras"),
+      pageTargetTitle: t("editor.visibility.pageTargetTitle"),
+      pageTargetDescription: t("editor.visibility.pageTargetDescription"),
+      pageTarget1: t("editor.visibility.pageTarget1"),
+      pageTarget2: t("editor.visibility.pageTarget2"),
       contentLimitsTitle: t("editor.visibility.contentLimitsTitle"),
       contentLimitsDescription: t("editor.visibility.contentLimitsDescription"),
       maxExperience: t("editor.visibility.maxExperience"),
@@ -196,7 +212,7 @@ export function useEditorLabels() {
     uploadDropzone: t("upload.dropzone"),
     uploadProcessing: t("upload.processing"),
     uploadError: t("upload.error"),
-    uploadTitle: t("upload.title"),
+    uploadInvalidFileType: t("upload.invalidFileType"),
     successTitle: t("onboarding.success.title"),
     successScratchTitle: t("onboarding.success.scratchTitle"),
     successScratchDescription: t("onboarding.success.scratchDescription"),
@@ -213,6 +229,7 @@ export function useEditorLabels() {
     dropzone: t("upload.dropzone"),
     processing: t("upload.processing"),
     error: t("upload.error"),
+    invalidFileType: t("upload.invalidFileType"),
     cancel: t("actions.cancel"),
   };
 
@@ -223,4 +240,5 @@ export function useEditorLabels() {
   };
 
   return { editor, header, helpLabels, onboarding, importDialog, footer };
+  }, [t, cvLang]);
 }

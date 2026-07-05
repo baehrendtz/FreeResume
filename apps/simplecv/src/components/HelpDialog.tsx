@@ -29,7 +29,7 @@ interface HelpDialogProps {
 export function HelpDialog({ open, onOpenChange, labels }: HelpDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>{labels.title}</DialogTitle>
           <DialogDescription>{labels.intro}</DialogDescription>

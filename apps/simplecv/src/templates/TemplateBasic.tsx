@@ -104,7 +104,7 @@ export default function TemplateBasic({ cv, styleSettings }: TemplateProps) {
       )}
 
       {/* Extras */}
-      {cv.extras?.length > 0 && (
+      {cv.extras.length > 0 && (
         <section className="mb-2.5">
           <SectionTitle className="tracking-[0.12em] mb-1.5" style={{ color: accent, borderColor: accent }}>{labels.extras}</SectionTitle>
           <ExtrasList

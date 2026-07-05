@@ -6,38 +6,34 @@ import type { LayoutMetrics } from "@/lib/fitting/types";
 import type { TemplateStyleValues } from "@/lib/model/TemplateStyleSettings";
 import { templates } from "@/templates/templateRegistry";
 import { TemplateErrorBoundary } from "@/components/TemplateErrorBoundary";
-
+import type { PageTarget } from "@/lib/model/DisplaySettings";
+import { A4_WIDTH_PX, A4_HEIGHT_PX } from "@/lib/constants";
 
 interface MeasureViewProps {
   templateId: string;
   renderModel: RenderModel;
   onMeasure: (metrics: LayoutMetrics) => void;
   styleSettings?: TemplateStyleValues;
+  pageTarget?: PageTarget;
 }
 
-export function MeasureView({ templateId, renderModel, onMeasure, styleSettings }: MeasureViewProps) {
+export function MeasureView({ templateId, renderModel, onMeasure, styleSettings, pageTarget = 1 }: MeasureViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const pageRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const measure = useCallback(() => {
     const container = containerRef.current;
-    const page = pageRef.current;
-    if (!container || !page) return;
+    if (!container) return;
 
     const contentHeightPx = container.getBoundingClientRect().height;
-    const pageHeightPx = page.getBoundingClientRect().height;
-    const overflowPx = Math.max(0, contentHeightPx - pageHeightPx);
-    const estimatedPages = pageHeightPx > 0 ? Math.ceil(contentHeightPx / pageHeightPx) : 1;
+    const targetHeightPx = A4_HEIGHT_PX * pageTarget;
+    const estimatedPages = Math.max(1, Math.ceil(contentHeightPx / A4_HEIGHT_PX));
 
     onMeasure({
-      fits: contentHeightPx <= pageHeightPx,
-      contentHeightPx,
-      pageHeightPx,
-      overflowPx,
+      fits: contentHeightPx <= targetHeightPx,
       estimatedPages,
     });
-  }, [onMeasure]);
+  }, [onMeasure, pageTarget]);
 
   const debouncedMeasure = useCallback(() => {
     if (timerRef.current) clearTimeout(timerRef.current);
@@ -75,15 +71,12 @@ export function MeasureView({ templateId, renderModel, onMeasure, styleSettings 
         position: "absolute",
         left: "-9999px",
         top: 0,
-        width: "210mm",
+        width: A4_WIDTH_PX,
         visibility: "hidden",
         overflow: "hidden",
         pointerEvents: "none",
       }}
     >
-      {/* Reference element for A4 page height */}
-      <div ref={pageRef} style={{ height: "297mm", width: 0, position: "absolute" }} />
-
       {/* Actual template content to measure */}
       <div ref={containerRef}>
         <TemplateErrorBoundary>

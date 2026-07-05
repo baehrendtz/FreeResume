@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useEffect, useState } from "react";
+import { useMounted } from "@/hooks/useMounted";
 
 
 function getThemeCookie(): string | null {
@@ -10,7 +11,10 @@ function getThemeCookie(): string | null {
 }
 
 function setThemeCookie(v: string) {
-  document.cookie = `theme=${v};domain=.freeresume.eu;path=/;max-age=31536000;SameSite=Lax`; // 1 year
+  // The domain attribute is only valid on the production domain, a mismatched
+  // domain makes the browser silently reject the cookie (e.g. on localhost).
+  const domain = location.hostname.endsWith("freeresume.eu") ? ";domain=.freeresume.eu" : "";
+  document.cookie = `theme=${v}${domain};path=/;max-age=31536000;SameSite=Lax`; // 1 year
 }
 
 function getInitialTheme(): "light" | "dark" {
@@ -20,14 +24,9 @@ function getInitialTheme(): "light" | "dark" {
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 
-// SSR-safe hydration guard: detects client-side mount via useSyncExternalStore
-const subscribe = () => () => {};
-const getSnapshot = () => true;
-const getServerSnapshot = () => false;
-
 export function useTheme() {
   const [theme, setTheme] = useState<"light" | "dark">(getInitialTheme);
-  const mounted = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const mounted = useMounted();
 
   useEffect(() => {
     if (!mounted) return;

@@ -47,6 +47,7 @@ interface LanguageFormProps {
     label: string;
     placeholder: string;
     add: string;
+    remove: string;
     levelLabel: string;
     native: string;
     full_professional: string;
@@ -66,12 +67,6 @@ export function LanguageForm({ labels }: LanguageFormProps) {
   const uiLocale = useLocale();
 
   const levelLabel = (l: LanguageProficiency) => labels[l];
-
-  const getDisplayName = (idOrText: string) => {
-    const entry = LANGUAGE_CATALOG.find((e) => e.id === idOrText);
-    if (entry) return uiLocale === "sv" ? entry.sv : entry.en;
-    return idOrText;
-  };
 
   return (
     <Controller
@@ -109,7 +104,7 @@ export function LanguageForm({ labels }: LanguageFormProps) {
         return (
           <div className="space-y-4">
             <Label className="text-xs">{labels.label}</Label>
-            <div className="flex gap-2 items-center">
+            <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
               <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
                 <PopoverTrigger asChild>
                   <Button
@@ -121,7 +116,7 @@ export function LanguageForm({ labels }: LanguageFormProps) {
                   >
                     <span className="truncate">
                       {selectedValue
-                        ? getDisplayName(selectedValue)
+                        ? resolveLanguageName(selectedValue, uiLocale)
                         : labels.placeholder}
                     </span>
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -173,7 +168,7 @@ export function LanguageForm({ labels }: LanguageFormProps) {
                 value={level}
                 onValueChange={(v) => setLevel(v as LanguageProficiency)}
               >
-                <SelectTrigger className="shrink-0 w-full sm:w-[200px]">
+                <SelectTrigger className="w-full sm:shrink-0 sm:w-[200px]">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -209,7 +204,7 @@ export function LanguageForm({ labels }: LanguageFormProps) {
                       updateLevel(i, v as LanguageProficiency)
                     }
                   >
-                    <SelectTrigger size="sm" className="h-7 text-xs shrink-0 w-full sm:w-[200px]">
+                    <SelectTrigger size="sm" className="h-7 text-xs shrink-0 w-36 sm:w-[200px]">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -223,8 +218,8 @@ export function LanguageForm({ labels }: LanguageFormProps) {
                   <button
                     type="button"
                     onClick={() => removeItem(i)}
-                    className="text-muted-foreground hover:text-destructive focus-visible:text-destructive focus-visible:outline-none shrink-0 p-0.5"
-                    aria-label="Remove language"
+                    className="text-muted-foreground hover:text-destructive focus-visible:text-destructive focus-visible:outline-none shrink-0 p-2 -m-1"
+                    aria-label={`${labels.remove} ${resolveLanguageName(item.name, uiLocale)}`}
                   >
                     <X className="h-3.5 w-3.5" />
                   </button>

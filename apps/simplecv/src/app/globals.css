@@ -119,6 +119,9 @@
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
+/* Bottom padding matching the device safe area (iPhone home indicator) */
+.safe-area-pb { padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px)); }
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

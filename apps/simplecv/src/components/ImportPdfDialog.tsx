@@ -24,6 +24,7 @@ interface ImportPdfDialogProps {
     dropzone: string;
     processing: string;
     error: string;
+    invalidFileType: string;
     cancel: string;
   };
 }
@@ -64,6 +65,7 @@ export function ImportPdfDialog({
           uploadLabel={labels.title}
           dropzoneLabel={labels.dropzone}
           processingLabel={labels.processing}
+          invalidFileTypeLabel={labels.invalidFileType}
         />
 
         <DialogFooter>

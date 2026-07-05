@@ -7,7 +7,11 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import type { CvModel } from "@/lib/model/CvModel";
 import { trackPhotoUpload } from "@/lib/analytics/gtag";
-import { MAX_PHOTO_FILE_SIZE } from "@/lib/constants";
+import { readPhotoAsDataUrl } from "@/lib/photo";
+import { MAX_PHOTO_FILE_SIZE, MAX_PHOTO_DIMENSION_PX } from "@/lib/constants";
+
+/** The string fields on CvModel that the basics form edits. */
+type BasicsFieldName = "name" | "headline" | "email" | "phone" | "location" | "linkedIn" | "website";
 
 interface BasicsFormProps {
   labels: {
@@ -46,15 +50,14 @@ export function BasicsForm({ labels }: BasicsFormProps) {
       }
 
       setPhotoError(null);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setValue("photo", reader.result as string, { shouldDirty: true });
-        trackPhotoUpload();
-      };
-      reader.onerror = () => {
-        setPhotoError(labels.photoReadError);
-      };
-      reader.readAsDataURL(file);
+      readPhotoAsDataUrl(file, MAX_PHOTO_DIMENSION_PX)
+        .then((dataUrl) => {
+          setValue("photo", dataUrl, { shouldDirty: true });
+          trackPhotoUpload();
+        })
+        .catch(() => {
+          setPhotoError(labels.photoReadError);
+        });
 
       // Reset so the same file can be re-selected
       e.target.value = "";
@@ -78,7 +81,7 @@ export function BasicsForm({ labels }: BasicsFormProps) {
     { name: "website" as const, label: labels.website },
   ];
 
-  const renderFieldGroup = (fields: { name: keyof CvModel; label: string }[]) => (
+  const renderFieldGroup = (fields: { name: BasicsFieldName; label: string }[]) => (
     <div className="space-y-3">
       {fields.map((field) => (
         <div key={field.name} className="space-y-1">

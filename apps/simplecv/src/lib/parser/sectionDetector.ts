@@ -8,8 +8,7 @@ export type SectionType =
   | "extras"
   | "unknown";
 
-const SECTION_MAP: Record<string, SectionType> = {
-  // English
+const EN_SECTIONS: Record<string, SectionType> = {
   summary: "summary",
   about: "summary",
   "about me": "summary",
@@ -39,7 +38,9 @@ const SECTION_MAP: Record<string, SectionType> = {
   courses: "extras",
   projects: "extras",
   patents: "extras",
-  // Swedish
+};
+
+const SV_SECTIONS: Record<string, SectionType> = {
   sammanfattning: "summary",
   om: "summary",
   "om mig": "summary",
@@ -62,6 +63,8 @@ const SECTION_MAP: Record<string, SectionType> = {
   publikationer: "extras",
   "ideellt arbete": "extras",
 };
+
+const SECTION_MAP: Record<string, SectionType> = { ...EN_SECTIONS, ...SV_SECTIONS };
 
 const EXTRAS_CATEGORY_MAP: Record<string, string> = {
   certifications: "certifications",
@@ -104,17 +107,8 @@ export function detectExtrasCategory(text: string): string {
   return "other";
 }
 
-/** Swedish-only section headers (keys that only appear in Swedish PDFs). */
-const SWEDISH_SECTIONS = new Set([
-  "sammanfattning", "om", "om mig", "profil",
-  "erfarenhet", "arbetslivserfarenhet", "anställning",
-  "utbildning",
-  "kunskaper", "kompetenser", "främsta kompetenser", "färdigheter",
-  "språk",
-  "kontakta", "kontakt",
-  "certifieringar", "licenser och certifieringar", "licenser & certifieringar",
-  "utmärkelser", "publikationer", "ideellt arbete",
-]);
+/** Swedish-only section headers, derived from SV_SECTIONS so the two can't drift. */
+const SWEDISH_SECTIONS = new Set(Object.keys(SV_SECTIONS));
 
 /**
  * Detect whether a section header is Swedish, English, or ambiguous.
@@ -134,9 +128,11 @@ export function detectSection(text: string): SectionType {
   const exact = SECTION_MAP[normalized];
   if (exact) return exact;
 
-  // 2. Keyword fallback for compound/variant section headers
-  if (normalized.length < 40) {
-    if (/certif|honor|award|publicat/.test(normalized)) return "extras";
+  // 2. Keyword fallback for compound/variant section headers.
+  // Anchored to the line start and digit-free so ordinary content lines
+  // ("Won team award 2023") can't be misread as a new section header.
+  if (normalized.length < 40 && !/\d/.test(normalized)) {
+    if (/^(licens|certif|honor|award|publicat|publikat|utmärk)/.test(normalized)) return "extras";
   }
 
   return "unknown";

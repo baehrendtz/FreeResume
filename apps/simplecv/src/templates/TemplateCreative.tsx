@@ -14,6 +14,7 @@ import {
   SkillsList,
   LanguagesList,
   ExtrasList,
+  CvFooter,
 } from "./templateHelpers";
 
 interface TemplateProps {
@@ -38,7 +39,7 @@ export default function TemplateCreative({ cv, styleSettings }: TemplateProps) {
       {/* Top accent gradient bar */}
       <div style={{ height: 3, background: GRADIENT_BAR }} />
 
-      {/* Header — gradient dark strip */}
+      {/* Header, gradient dark strip */}
       <header className="px-7 pt-5 pb-3" style={{ background: HEADER_BG }}>
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
@@ -86,7 +87,7 @@ export default function TemplateCreative({ cv, styleSettings }: TemplateProps) {
 
       {/* Two-column body */}
       <div className="flex flex-1 relative">
-        {/* Sidebar background — absolute div for html2canvas compatibility */}
+        {/* Sidebar background, absolute div for html2canvas compatibility */}
         <div className="absolute left-0 top-0 bottom-0 w-[28%]" style={{ backgroundColor: SIDEBAR_BG }} />
 
         {/* Left sidebar */}
@@ -127,7 +128,7 @@ export default function TemplateCreative({ cv, styleSettings }: TemplateProps) {
             </div>
           )}
 
-          {cv.extras?.length > 0 && (
+          {cv.extras.length > 0 && (
             <div style={{ borderLeft: "2px solid #f59e0b", paddingLeft: 8 }}>
               <SectionTitle className="font-mono text-[7pt] tracking-[0.15em] text-gray-500 border-0 pb-0 mb-1.5">
                 <span className="flex items-center gap-1">
@@ -235,12 +236,11 @@ export default function TemplateCreative({ cv, styleSettings }: TemplateProps) {
       </div>
 
       {/* Footer with gradient accent bar */}
-      <footer className="mt-auto font-mono px-7">
-        <div style={{ height: 6, background: GRADIENT_BAR }} />
-        <div className="flex justify-between pt-1.5 pb-2 text-[8pt] text-gray-500">
-          <span className="font-medium">{cv.name || cvLabels.yourName}</span>
-        </div>
-      </footer>
+      <CvFooter
+        name={cv.name || cvLabels.yourName}
+        className="font-mono px-7"
+        accentBarStyle={{ background: GRADIENT_BAR }}
+      />
     </div>
   );
 }

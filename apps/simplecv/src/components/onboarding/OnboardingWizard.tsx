@@ -26,7 +26,7 @@ interface OnboardingWizardProps {
     uploadDropzone: string;
     uploadProcessing: string;
     uploadError: string;
-    uploadTitle: string;
+    uploadInvalidFileType: string;
     successTitle: string;
     successScratchTitle: string;
     successScratchDescription: string;
@@ -58,8 +58,9 @@ export function OnboardingWizard({
   onComplete,
 }: OnboardingWizardProps) {
   const [step, setStep] = useState<OnboardingStep>("choose");
-  const { dragOver, inputRef, handleDrop, handleDragOver, handleDragLeave, error: dropError } = usePdfDrop({
+  const { dragOver, inputRef, handleDrop, handleChange, handleDragOver, handleDragLeave, error: dropError } = usePdfDrop({
     onFileSelected,
+    invalidFileTypeMessage: labels.uploadInvalidFileType,
   });
 
   // Auto-advance to success when PDF processing finishes (but not on error)
@@ -114,10 +115,19 @@ export function OnboardingWizard({
                     ? "border-blue-500 bg-blue-50/50 dark:bg-blue-950/20"
                     : "border-border hover:border-blue-400 hover:bg-muted/30"
                 }`}
+                role="button"
+                tabIndex={processing ? -1 : 0}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
                 onClick={() => !processing && inputRef.current?.click()}
+                onKeyDown={(e) => {
+                  if ((e.key === "Enter" || e.key === " ") && !processing) {
+                    e.preventDefault();
+                    inputRef.current?.click();
+                  }
+                }}
+                aria-label={labels.importTitle}
               >
                 <div className={`rounded-full p-3 transition-colors ${
                   dragOver ? "bg-blue-100 dark:bg-blue-900/30" : "bg-blue-50 dark:bg-blue-950/30"
@@ -146,10 +156,7 @@ export function OnboardingWizard({
                 type="file"
                 accept=".pdf"
                 className="hidden"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file && file.type === "application/pdf") onFileSelected(file);
-                }}
+                onChange={handleChange}
               />
 
               {/* Collapsible LinkedIn guide */}

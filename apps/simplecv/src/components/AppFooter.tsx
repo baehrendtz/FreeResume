@@ -1,16 +1,19 @@
 "use client";
 
+import { cn } from "@/lib/utils";
+
 interface AppFooterProps {
   labels: {
     copyright: string;
     openSource: string;
     cookieSettings: string;
   };
+  className?: string;
 }
 
-export function AppFooter({ labels }: AppFooterProps) {
+export function AppFooter({ labels, className }: AppFooterProps) {
   return (
-    <footer className="print:hidden border-t border-border/40 bg-muted/30">
+    <footer className={cn("print:hidden border-t border-border/40 bg-muted/30", className)}>
       <div className="container mx-auto px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-muted-foreground">
         <span>{labels.copyright}</span>
         <div className="flex items-center gap-4">

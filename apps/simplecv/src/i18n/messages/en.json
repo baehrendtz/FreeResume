@@ -1,16 +1,9 @@
 {
-  "app": {
-    "title": "Free Resume",
-    "subtitle": "Create your CV in minutes"
-  },
   "upload": {
-    "title": "Upload your LinkedIn PDF",
-    "description": "Export your LinkedIn profile as PDF and upload it here to get started",
     "dropzone": "Drag and drop your PDF here, or click to browse",
     "invalidFileType": "Please select a PDF file",
     "processing": "Processing PDF...",
-    "error": "Could not parse this PDF. Please make sure it is a LinkedIn profile export.",
-    "startFromScratch": "Or start from scratch"
+    "error": "Could not parse this PDF. Please make sure it is a LinkedIn profile export."
   },
   "editor": {
     "tabs": {
@@ -28,6 +21,10 @@
       "theme": "Template",
       "content": "Content",
       "settings": "Settings"
+    },
+    "sidebar": {
+      "expand": "Expand menu",
+      "collapse": "Collapse menu"
     },
     "basics": {
       "name": "Full Name",
@@ -93,6 +90,7 @@
       "label": "Skills",
       "placeholder": "Type a skill and press Enter",
       "add": "Add",
+      "remove": "Remove",
       "emptyState": "No skills added yet. Type a skill and press Enter.",
       "duplicateWarning": "This skill is already added."
     },
@@ -100,6 +98,7 @@
       "label": "Languages",
       "placeholder": "Select a language...",
       "add": "Add",
+      "remove": "Remove",
       "levelLabel": "Proficiency",
       "noResults": "No language found.",
       "emptyState": "No languages added yet. Select a language above."
@@ -108,6 +107,7 @@
       "label": "Extras",
       "placeholder": "Type an item and press Enter",
       "add": "Add",
+      "remove": "Remove",
       "addCategory": "Add category",
       "removeCategory": "Remove category",
       "emptyState": "No extras added yet. Add a category to get started."
@@ -137,8 +137,12 @@
       "skills": "Skills",
       "languages": "Languages",
       "extras": "Extras",
+      "pageTargetTitle": "Page Length",
+      "pageTargetDescription": "Choose how many pages your CV should be",
+      "pageTarget1": "1 page",
+      "pageTarget2": "2 pages",
       "contentLimitsTitle": "Content Limits",
-      "contentLimitsDescription": "Control how much content is shown to fit one page",
+      "contentLimitsDescription": "Control how much content is shown",
       "maxExperience": "Max experience entries",
       "maxEducation": "Max education entries",
       "maxSkills": "Max skills",
@@ -153,37 +157,23 @@
       "cvLanguageEn": "English",
       "cvLanguageSv": "Svenska",
       "template": "Template",
-      "fitsOnePage": "Content fits on one page",
       "overflows": "Content overflows (~{pages} pages)",
-      "autoFit": "Auto-fit to one page",
-      "fitting": "Fitting..."
+      "autoFit": "Auto-fit",
+      "fitting": "Fitting...",
+      "trimmedJobs": "{shown} of {total} jobs shown",
+      "trimmedEducation": "{shown} of {total} education entries shown",
+      "trimmedSkills": "{shown} of {total} skills shown",
+      "trimmedExtras": "{shown} of {total} extras shown",
+      "summaryTruncated": "Summary truncated"
     }
   },
   "preview": {
     "title": "CV Preview",
-    "trimWarning": "Content trimmed to fit: {details}. Adjust in Settings.",
-    "fullscreen": "Fullscreen preview"
-  },
-  "template": {
-    "title": "Template",
-    "basic": "Basic"
+    "fullscreen": "Fullscreen preview",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out"
   },
   "onboarding": {
-    "title": "Create your CV",
-    "description": "Choose how you'd like to get started",
-    "uploadTitle": "Upload LinkedIn PDF",
-    "uploadDescription": "Import your profile to auto-fill your CV",
-    "scratchTitle": "Start from Scratch",
-    "scratchDescription": "Begin with a blank CV",
-    "welcome": {
-      "title": "Welcome to Free Resume",
-      "subtitle": "Create a professional CV in minutes",
-      "valuePropImport": "Import from LinkedIn PDF",
-      "valuePropTemplates": "Multiple professional templates",
-      "valuePropPdf": "Download as PDF",
-      "getStarted": "Get started",
-      "skipLink": "Skip — start with a blank CV"
-    },
     "choose": {
       "title": "Create your professional CV",
       "subtitle": "Import your LinkedIn profile or start from scratch",
@@ -197,18 +187,12 @@
       "title": "How to get your LinkedIn PDF",
       "step1": "Go to your LinkedIn profile",
       "step2": "Click 'More' > 'Save to PDF'",
-      "step3": "Upload the file here",
-      "next": "Next: Upload PDF",
-      "back": "Back",
-      "skip": "Skip"
-    },
-    "upload": {
-      "scratchLink": "Or start from scratch"
+      "step3": "Upload the file here"
     },
     "success": {
       "title": "Your CV is ready to edit!",
       "scratchTitle": "Your blank CV is ready",
-      "scratchDescription": "Let's start with the basics — your name and contact details.",
+      "scratchDescription": "Let's start with the basics: your name and contact details.",
       "cta": "Start editing",
       "experience": "experiences",
       "education": "education",
@@ -218,22 +202,15 @@
   },
   "actions": {
     "downloadPdf": "Download PDF",
+    "downloadError": "Could not generate the PDF. Try again, or use a device with more memory.",
     "generating": "Generating...",
-    "preview": "Preview",
-    "backToUpload": "Back to Upload",
     "importPdf": "Import PDF",
     "importWarning": "This will replace your current CV data",
     "moreActions": "More actions",
     "cancel": "Cancel"
   },
   "theme": {
-    "light": "Light",
-    "dark": "Dark",
     "toggle": "Toggle theme"
-  },
-  "language": {
-    "en": "English",
-    "sv": "Svenska"
   },
   "help": {
     "trigger": "Help",
@@ -242,7 +219,7 @@
     "howItWorksTitle": "How it works",
     "step1": "Upload your LinkedIn PDF (or start from scratch)",
     "step2": "Edit content, choose a template, and customize",
-    "step3": "Download as PDF — done!",
+    "step3": "Download as PDF, done!",
     "downloadTitle": "Download your CV",
     "downloadText": "Click the \"Download PDF\" button in the top menu. Your CV is generated directly in the browser.",
     "dataTitle": "Your data",

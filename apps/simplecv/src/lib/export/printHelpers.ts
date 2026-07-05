@@ -3,7 +3,6 @@ import type { DisplaySettings } from "@/lib/model/DisplaySettings";
 import type { PerTemplateStyleOverrides } from "@/lib/model/TemplateStyleSettings";
 import { A4_WIDTH_PX } from "@/lib/constants";
 
-const STORAGE_KEY = "freeresume-print-data";
 const SESSION_KEY = "freeresume-session";
 
 interface SessionData {
@@ -17,7 +16,7 @@ export function saveSession(data: SessionData): void {
   try {
     sessionStorage.setItem(SESSION_KEY, JSON.stringify(data));
   } catch {
-    // sessionStorage full or unavailable — ignore
+    // sessionStorage full or unavailable, ignore
   }
 }
 
@@ -29,37 +28,6 @@ export function loadSession(): SessionData | null {
   } catch {
     return null;
   }
-}
-
-export function clearSession(): void {
-  try {
-    sessionStorage.removeItem(SESSION_KEY);
-  } catch {
-    // ignore
-  }
-}
-
-export function saveCvForPrint(cv: CvModel): void {
-  try {
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(cv));
-  } catch {
-    // sessionStorage full or unavailable — ignore
-  }
-}
-
-export function loadCvForPrint(): CvModel | null {
-  try {
-    const raw = sessionStorage.getItem(STORAGE_KEY);
-    if (!raw) return null;
-    return JSON.parse(raw) as CvModel;
-  } catch (err) {
-    console.error("Failed to load print data:", err);
-    return null;
-  }
-}
-
-export function triggerPrint(locale: string): void {
-  window.open(`/${locale}/print`, "_blank");
 }
 
 /**
@@ -79,11 +47,15 @@ export async function downloadPdf(name: string): Promise<void> {
   const A4_W = 210;
   const A4_H = 297;
 
-  // Temporarily remove CSS scale transform so html2canvas captures at full size
+  // Temporarily remove CSS scale transform so html2canvas captures at full size.
+  // Also force visibility: in multi-page mode the capture source is an off-screen
+  // copy rendered with visibility hidden, which html2canvas would paint as blank.
   const savedTransform = el.style.transform;
   const savedWidth = el.style.width;
+  const savedVisibility = el.style.visibility;
   el.style.transform = "none";
   el.style.width = `${A4_WIDTH_PX}px`;
+  el.style.visibility = "visible";
 
   try {
     // Lower scale on mobile to avoid memory issues
@@ -94,37 +66,33 @@ export async function downloadPdf(name: string): Promise<void> {
       backgroundColor: "#ffffff",
     });
 
-    const imgData = canvas.toDataURL("image/jpeg", 0.92);
     const imgW = canvas.width;
     const imgH = canvas.height;
-
-    // Fit to exactly one A4 page — scale down if content is taller than A4
     const scaleToWidth = A4_W / imgW;
-    const heightAtFullWidth = imgH * scaleToWidth;
+    const pageHeightPx = imgW * (A4_H / A4_W); // A4 height in canvas pixels
+    const totalPages = Math.max(1, Math.ceil(imgH / pageHeightPx));
 
-    let pdfW: number;
-    let pdfH: number;
+    const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
 
-    if (heightAtFullWidth <= A4_H) {
-      // Content fits within A4 height — use full width
-      pdfW = A4_W;
-      pdfH = heightAtFullWidth;
-    } else {
-      // Content is taller than A4 — scale to fit height, center horizontally
-      const scaleToHeight = A4_H / imgH;
-      pdfW = imgW * scaleToHeight;
-      pdfH = A4_H;
+    for (let page = 0; page < totalPages; page++) {
+      if (page > 0) pdf.addPage();
+
+      // Slice a page-sized chunk from the canvas
+      const sliceY = page * pageHeightPx;
+      const sliceH = Math.min(pageHeightPx, imgH - sliceY);
+
+      const pageCanvas = document.createElement("canvas");
+      pageCanvas.width = imgW;
+      pageCanvas.height = Math.ceil(sliceH);
+      const ctx = pageCanvas.getContext("2d")!;
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
+      ctx.drawImage(canvas, 0, -sliceY);
+
+      const pageImgData = pageCanvas.toDataURL("image/jpeg", 0.92);
+      const pdfH = sliceH * scaleToWidth;
+      pdf.addImage(pageImgData, "JPEG", 0, 0, A4_W, pdfH, undefined, "FAST");
     }
-
-    const pdf = new jsPDF({
-      orientation: "portrait",
-      unit: "mm",
-      format: "a4",
-    });
-
-    // Center the image horizontally on the page
-    const xOffset = (A4_W - pdfW) / 2;
-    pdf.addImage(imgData, "JPEG", xOffset, 0, pdfW, pdfH, undefined, "FAST");
 
     const filename = name
       ? `${name.replace(/\s+/g, "_")}_CV.pdf`
@@ -133,5 +101,6 @@ export async function downloadPdf(name: string): Promise<void> {
   } finally {
     el.style.transform = savedTransform;
     el.style.width = savedWidth;
+    el.style.visibility = savedVisibility;
   }
 }

@@ -49,7 +49,7 @@ export function LanguageSwitcher({ locale }: LanguageSwitcherProps) {
     <button
       type="button"
       onClick={switchLocale}
-      className="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+      className="p-2.5 md:p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
       aria-label={locale === "sv" ? "Switch to English" : "Byt till svenska"}
     >
       {locale === "sv" ? <BritishFlag clipId={clipId} /> : <SwedishFlag />}

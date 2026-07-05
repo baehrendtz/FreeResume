@@ -19,18 +19,29 @@ export function fitToTemplate(
 
   const vis = cv.sectionsVisibility;
 
+  // Every reduction below must actually change rendered content, a no-op
+  // "reduction" burns one of MAX_FIT_ITERATIONS without shrinking anything,
+  // and enough of them makes auto-fit give up before doing real work.
+
   // --- Phase 1: Trim reductions (ordered) ---
 
-  // 1. Reduce bullets per job
-  if (settings.maxBulletsPerJob > 1) {
+  // 1. Reduce bullets per job, only if some visible entry renders that many bullets
+  const hasBulletsAtLimit =
+    vis.experience &&
+    cv.experience.some((e) => !e.hidden && e.bullets.length >= settings.maxBulletsPerJob);
+  if (settings.maxBulletsPerJob > 1 && hasBulletsAtLimit) {
     return {
       displaySettings: { ...settings, maxBulletsPerJob: settings.maxBulletsPerJob - 1 },
       visibilityOverrides: {},
     };
   }
 
-  // 2. Reduce summary length
-  if (settings.summaryMaxChars > 100 && vis.summary && cv.summary.length > 0) {
+  // 2. Reduce summary length, only if the new limit actually truncates more
+  if (
+    settings.summaryMaxChars > 100 &&
+    vis.summary &&
+    cv.summary.length > settings.summaryMaxChars - 100
+  ) {
     return {
       displaySettings: {
         ...settings,
@@ -40,8 +51,8 @@ export function fitToTemplate(
     };
   }
 
-  // 3. Reduce skills count
-  if (settings.maxSkills > 4 && vis.skills && cv.skills.length > 4) {
+  // 3. Reduce skills count, only if more skills than the new limit exist
+  if (settings.maxSkills > 4 && vis.skills && cv.skills.length > Math.max(4, settings.maxSkills - 3)) {
     return {
       displaySettings: {
         ...settings,
@@ -51,23 +62,28 @@ export function fitToTemplate(
     };
   }
 
-  // 4. Reduce education count
+  // 4. Reduce education count, only when the current limit is actually in use
   const visibleEducationCount = cv.education.filter((e) => !e.hidden).length;
-  if (settings.maxEducation > 1 && vis.education && visibleEducationCount > 1) {
+  if (settings.maxEducation > 1 && vis.education && visibleEducationCount >= settings.maxEducation) {
     return {
       displaySettings: { ...settings, maxEducation: settings.maxEducation - 1 },
       visibilityOverrides: {},
     };
   }
 
-  // 5. Reduce experience count (count consecutive groups, not unique IDs or raw entries)
+  // 5. Reduce experience count (count consecutive groups, matching buildRenderModel's
+  // grouping where entries without an ID each form their own group)
   const visible = cv.experience.filter((e) => !e.hidden);
   let visibleGroupCount = 0;
-  let lastGroupId: string | undefined;
+  let lastGroupId: string | null = null;
   for (const e of visible) {
-    if (e.companyGroupId !== lastGroupId) { visibleGroupCount++; lastGroupId = e.companyGroupId; }
+    const groupId = e.companyGroupId ?? null;
+    if (groupId === null || groupId !== lastGroupId) {
+      visibleGroupCount++;
+    }
+    lastGroupId = groupId;
   }
-  if (settings.maxExperience > 2 && vis.experience && visibleGroupCount > 2) {
+  if (settings.maxExperience > 2 && vis.experience && visibleGroupCount >= settings.maxExperience) {
     return {
       displaySettings: { ...settings, maxExperience: settings.maxExperience - 1 },
       visibilityOverrides: {},
@@ -75,15 +91,18 @@ export function fitToTemplate(
   }
 
   // 6. Remove last bullet per job (less destructive than hiding sections)
-  if (settings.maxBulletsPerJob > 0) {
+  const hasRenderedBullets =
+    vis.experience && cv.experience.some((e) => !e.hidden && e.bullets.length > 0);
+  if (settings.maxBulletsPerJob > 0 && hasRenderedBullets) {
     return {
       displaySettings: { ...settings, maxBulletsPerJob: 0 },
       visibilityOverrides: {},
     };
   }
 
-  // 7. Reduce extras count
-  if (settings.maxExtras > 1 && vis.extras) {
+  // 7. Reduce extras count, only if more items than the new limit exist
+  const totalExtrasItems = cv.extras.reduce((sum, g) => sum + g.items.length, 0);
+  if (settings.maxExtras > 1 && vis.extras && totalExtrasItems > Math.max(1, settings.maxExtras - 3)) {
     return {
       displaySettings: { ...settings, maxExtras: Math.max(1, settings.maxExtras - 3) },
       visibilityOverrides: {},
@@ -91,6 +110,15 @@ export function fitToTemplate(
   }
 
   // --- Phase 2: Hide sections by ascending priority ---
+
+  const sectionHasContent: Record<keyof TemplateMeta["policy"]["priorities"], boolean> = {
+    summary: cv.summary.length > 0,
+    experience: cv.experience.some((e) => !e.hidden),
+    education: cv.education.some((e) => !e.hidden),
+    skills: cv.skills.length > 0,
+    languages: cv.languages.length > 0,
+    extras: totalExtrasItems > 0,
+  };
 
   const priorities = meta.policy.priorities;
   const sortedSections = (
@@ -101,7 +129,8 @@ export function fitToTemplate(
   for (const [section] of sortedSections) {
     // Never fully hide experience
     if (section === "experience") continue;
-    if (vis[section]) {
+    // Hiding an empty section frees no space
+    if (vis[section] && sectionHasContent[section]) {
       return {
         displaySettings: settings,
         visibilityOverrides: { [section]: false },
@@ -112,7 +141,7 @@ export function fitToTemplate(
   // --- Phase 3: Last-resort reductions ---
 
   // 8. Minimize experience to 1
-  if (settings.maxExperience > 1) {
+  if (settings.maxExperience > 1 && visibleGroupCount > 1) {
     return {
       displaySettings: { ...settings, maxExperience: 1 },
       visibilityOverrides: {},

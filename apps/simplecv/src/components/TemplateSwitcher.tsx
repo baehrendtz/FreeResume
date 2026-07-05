@@ -18,21 +18,21 @@ interface TemplateSwitcherProps {
 
 export function TemplateSwitcher({ activeId, onSelect }: TemplateSwitcherProps) {
   return (
-    <div className="flex items-center rounded-full bg-muted p-0.5">
+    <div className="flex items-center rounded-full bg-muted p-0.5 max-w-full overflow-x-auto scrollbar-hide">
       {Object.entries(templates).map(([id, entry]) => (
         <button
           key={id}
           type="button"
           onClick={() => onSelect(id)}
           className={cn(
-            "flex items-center gap-1.5 px-3 py-1 text-sm rounded-full transition-all",
+            "flex items-center gap-1.5 shrink-0 whitespace-nowrap px-3 py-1.5 md:py-1 text-sm rounded-full transition-all",
             id === activeId
               ? "bg-background text-foreground shadow-sm font-medium"
               : "text-muted-foreground hover:text-foreground",
           )}
         >
           {TEMPLATE_ICONS[id]}
-          {entry.name}
+          {entry.meta.name}
         </button>
       ))}
     </div>

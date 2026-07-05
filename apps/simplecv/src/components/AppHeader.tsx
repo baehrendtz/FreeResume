@@ -88,7 +88,7 @@ export function AppHeader({
         <img src="/logo.png" alt={title} className="h-9 w-auto" />
 
         <div className="flex items-center gap-2">
-          {/* Desktop action buttons — hidden during onboarding */}
+          {/* Desktop action buttons, hidden during onboarding */}
           {showActions && actions.map((action) => (
             <Button
               key={action.id}
@@ -120,7 +120,7 @@ export function AppHeader({
           {/* Mobile menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8 md:hidden" aria-label={labels.moreActions}>
+              <Button variant="ghost" size="icon" className="h-10 w-10 md:hidden" aria-label={labels.moreActions}>
                 <MoreVertical className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>

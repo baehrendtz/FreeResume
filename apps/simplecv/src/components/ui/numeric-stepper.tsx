@@ -59,7 +59,7 @@ export function NumericStepper({
                 onChange(val);
               }
             }}
-            className="w-16 text-center rounded-md border border-input bg-background px-2 h-8 text-sm [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            className="w-16 text-center rounded-md border border-input bg-background px-2 h-8 text-base md:text-sm [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           />
         ) : (
           <span className="text-sm tabular-nums w-14 text-center font-medium">

@@ -1,16 +1,9 @@
 {
-  "app": {
-    "title": "Free Resume",
-    "subtitle": "Skapa ditt CV på några minuter"
-  },
   "upload": {
-    "title": "Ladda upp din LinkedIn-PDF",
-    "description": "Exportera din LinkedIn-profil som PDF och ladda upp den här för att komma igång",
     "dropzone": "Dra och släpp din PDF här, eller klicka för att bläddra",
     "invalidFileType": "Välj en PDF-fil",
     "processing": "Bearbetar PDF...",
-    "error": "Kunde inte tolka denna PDF. Kontrollera att det är en LinkedIn-profilsexport.",
-    "startFromScratch": "Eller börja från grunden"
+    "error": "Kunde inte tolka denna PDF. Kontrollera att det är en LinkedIn-profilsexport."
   },
   "editor": {
     "tabs": {
@@ -28,6 +21,10 @@
       "theme": "Mall",
       "content": "Innehåll",
       "settings": "Inställningar"
+    },
+    "sidebar": {
+      "expand": "Expandera menyn",
+      "collapse": "Fäll ihop menyn"
     },
     "basics": {
       "name": "Fullständigt namn",
@@ -93,6 +90,7 @@
       "label": "Kompetenser",
       "placeholder": "Skriv en kompetens och tryck Enter",
       "add": "Lägg till",
+      "remove": "Ta bort",
       "emptyState": "Inga kompetenser ännu. Skriv en kompetens och tryck Enter.",
       "duplicateWarning": "Denna kompetens finns redan."
     },
@@ -100,6 +98,7 @@
       "label": "Språk",
       "placeholder": "Välj ett språk...",
       "add": "Lägg till",
+      "remove": "Ta bort",
       "levelLabel": "Nivå",
       "noResults": "Inget språk hittades.",
       "emptyState": "Inga språk ännu. Välj ett språk ovan."
@@ -108,6 +107,7 @@
       "label": "Övrigt",
       "placeholder": "Skriv en rad och tryck Enter",
       "add": "Lägg till",
+      "remove": "Ta bort",
       "addCategory": "Lägg till kategori",
       "removeCategory": "Ta bort kategori",
       "emptyState": "Inget övrigt tillagt ännu. Lägg till en kategori."
@@ -137,8 +137,12 @@
       "skills": "Kompetenser",
       "languages": "Språk",
       "extras": "Övrigt",
+      "pageTargetTitle": "Sidlängd",
+      "pageTargetDescription": "Välj hur många sidor ditt CV ska vara",
+      "pageTarget1": "1 sida",
+      "pageTarget2": "2 sidor",
       "contentLimitsTitle": "Innehållsbegränsningar",
-      "contentLimitsDescription": "Styr hur mycket innehåll som visas för att passa en sida",
+      "contentLimitsDescription": "Styr hur mycket innehåll som visas",
       "maxExperience": "Max antal erfarenheter",
       "maxEducation": "Max antal utbildningar",
       "maxSkills": "Max antal kompetenser",
@@ -153,37 +157,23 @@
       "cvLanguageEn": "English",
       "cvLanguageSv": "Svenska",
       "template": "Mall",
-      "fitsOnePage": "Innehållet passar på en sida",
       "overflows": "Innehållet svämmar över (~{pages} sidor)",
-      "autoFit": "Autopassa till en sida",
-      "fitting": "Passar in..."
+      "autoFit": "Autopassa",
+      "fitting": "Passar in...",
+      "trimmedJobs": "{shown} av {total} jobb visas",
+      "trimmedEducation": "{shown} av {total} utbildningar visas",
+      "trimmedSkills": "{shown} av {total} kompetenser visas",
+      "trimmedExtras": "{shown} av {total} övriga poster visas",
+      "summaryTruncated": "Sammanfattningen är förkortad"
     }
   },
   "preview": {
     "title": "CV-förhandsgranskning",
-    "trimWarning": "Innehåll trimmat för att passa: {details}. Justera under Inställningar.",
-    "fullscreen": "Helskärmsvy"
-  },
-  "template": {
-    "title": "Mall",
-    "basic": "Basic"
+    "fullscreen": "Helskärmsvy",
+    "zoomIn": "Zooma in",
+    "zoomOut": "Zooma ut"
   },
   "onboarding": {
-    "title": "Skapa ditt CV",
-    "description": "Välj hur du vill komma igång",
-    "uploadTitle": "Ladda upp LinkedIn-PDF",
-    "uploadDescription": "Importera din profil för att fylla i ditt CV automatiskt",
-    "scratchTitle": "Börja från grunden",
-    "scratchDescription": "Börja med ett tomt CV",
-    "welcome": {
-      "title": "Välkommen till Free Resume",
-      "subtitle": "Skapa ett professionellt CV på några minuter",
-      "valuePropImport": "Importera från LinkedIn-PDF",
-      "valuePropTemplates": "Flera professionella mallar",
-      "valuePropPdf": "Ladda ner som PDF",
-      "getStarted": "Kom igång",
-      "skipLink": "Hoppa över — börja med tomt CV"
-    },
     "choose": {
       "title": "Skapa ditt professionella CV",
       "subtitle": "Importera din LinkedIn-profil eller börja från grunden",
@@ -197,18 +187,12 @@
       "title": "Så här får du din LinkedIn-PDF",
       "step1": "Gå till din LinkedIn-profil",
       "step2": "Klicka 'Mer' > 'Spara som PDF'",
-      "step3": "Ladda upp filen här",
-      "next": "Nästa: Ladda upp PDF",
-      "back": "Tillbaka",
-      "skip": "Hoppa över"
-    },
-    "upload": {
-      "scratchLink": "Eller börja från grunden"
+      "step3": "Ladda upp filen här"
     },
     "success": {
       "title": "Ditt CV är redo att redigera!",
       "scratchTitle": "Ditt tomma CV är redo",
-      "scratchDescription": "Låt oss börja med grunduppgifterna — ditt namn och kontaktuppgifter.",
+      "scratchDescription": "Låt oss börja med grunduppgifterna: ditt namn och kontaktuppgifter.",
       "cta": "Börja redigera",
       "experience": "erfarenheter",
       "education": "utbildningar",
@@ -218,22 +202,15 @@
   },
   "actions": {
     "downloadPdf": "Ladda ner PDF",
+    "downloadError": "Kunde inte generera PDF:en. Försök igen, eller använd en enhet med mer minne.",
     "generating": "Genererar...",
-    "preview": "Förhandsgranska",
-    "backToUpload": "Tillbaka till uppladdning",
     "importPdf": "Importera PDF",
     "importWarning": "Detta ersätter ditt nuvarande CV",
     "moreActions": "Fler åtgärder",
     "cancel": "Avbryt"
   },
   "theme": {
-    "light": "Ljust",
-    "dark": "Mörkt",
     "toggle": "Byt tema"
-  },
-  "language": {
-    "en": "English",
-    "sv": "Svenska"
   },
   "help": {
     "trigger": "Hjälp",
@@ -242,7 +219,7 @@
     "howItWorksTitle": "Så fungerar det",
     "step1": "Ladda upp din LinkedIn-PDF (eller börja från grunden)",
     "step2": "Redigera innehåll, välj mall och anpassa",
-    "step3": "Ladda ner som PDF — klart!",
+    "step3": "Ladda ner som PDF, klart!",
     "downloadTitle": "Ladda ner ditt CV",
     "downloadText": "Klicka på \"Ladda ner PDF\"-knappen i övre menyn. CV:t genereras direkt i webbläsaren.",
     "dataTitle": "Din data",

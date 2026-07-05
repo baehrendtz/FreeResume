@@ -9,17 +9,14 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { X, Trash2, Plus } from "lucide-react";
 import type { CvModel, ExtrasGroup } from "@/lib/model/CvModel";
-
-const ALL_CATEGORIES = [
-  "certifications", "honors", "publications", "volunteering",
-  "organizations", "courses", "projects", "patents", "other",
-];
+import { EXTRAS_CATEGORIES } from "@/lib/cvLocale";
 
 interface ExtrasFormProps {
   labels: {
     label: string;
     placeholder: string;
     add: string;
+    remove: string;
     addCategory: string;
     removeCategory: string;
     emptyState: string;
@@ -39,7 +36,7 @@ export function ExtrasForm({ labels, categoryNames }: ExtrasFormProps) {
       render={({ field }) => {
         const groups: ExtrasGroup[] = field.value ?? [];
         const usedCategories = groups.map((g) => g.category);
-        const availableCategories = ALL_CATEGORIES.filter(
+        const availableCategories = EXTRAS_CATEGORIES.filter(
           (c) => !usedCategories.includes(c)
         );
 
@@ -109,7 +106,8 @@ export function ExtrasForm({ labels, categoryNames }: ExtrasFormProps) {
                       <button
                         type="button"
                         onClick={() => removeItem(gi, ii)}
-                        className="hover:text-destructive focus-visible:text-destructive focus-visible:outline-none"
+                        className="hover:text-destructive focus-visible:text-destructive focus-visible:outline-none p-1.5 -m-1"
+                        aria-label={`${labels.remove} ${item}`}
                       >
                         <X className="h-3 w-3" />
                       </button>
@@ -127,6 +125,7 @@ export function ExtrasForm({ labels, categoryNames }: ExtrasFormProps) {
                       }))
                     }
                     placeholder={labels.placeholder}
+                    aria-label={`${categoryNames[group.category] ?? group.category}: ${labels.label}`}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault();

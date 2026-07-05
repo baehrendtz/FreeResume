@@ -4,19 +4,20 @@ import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { createEmptyCvModel } from "@/lib/model/CvModel";
-import { computeTrimInfo } from "@/lib/model/DisplaySettings";
 import { CvPreview } from "@/components/CvPreview";
 import { MeasureView } from "@/components/MeasureView";
+import { TrimWarning } from "@/components/TrimWarning";
 import { CvEditor } from "@/components/editor/CvEditor";
 import { AppHeader } from "@/components/AppHeader";
 import { AppFooter } from "@/components/AppFooter";
 import { OnboardingWizard } from "@/components/onboarding/OnboardingWizard";
 import { ImportPdfDialog } from "@/components/ImportPdfDialog";
 import { trackTemplateSwitch, trackFullscreenPreview } from "@/lib/analytics/gtag";
-import { AlertTriangle, Download, Loader2, Maximize2 } from "lucide-react";
+import { Download, Loader2, Maximize2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FullscreenPreviewDialog } from "@/components/FullscreenPreviewDialog";
 import { useEditorLabels } from "@/hooks/useEditorLabels";
+import { useMounted } from "@/hooks/useMounted";
 import { useCvState } from "@/hooks/useCvState";
 import { useAutoFit } from "@/hooks/useAutoFit";
 import { usePdfImport } from "@/hooks/usePdfImport";
@@ -44,8 +45,13 @@ export default function MainPage() {
     hadSavedSession,
   } = useCvState(!showOnboarding);
 
+  // The static export always prerenders the onboarding view, so the first
+  // client render must match it, only after mount may a restored session
+  // switch straight to the editor (avoids a hydration mismatch).
+  const mounted = useMounted();
+
   // Hide onboarding when a saved session was restored
-  const effectiveShowOnboarding = showOnboarding && !hadSavedSession;
+  const effectiveShowOnboarding = !mounted || (showOnboarding && !hadSavedSession);
 
   // --- Auto-fit ---
   const { metrics, setMetrics, isFitting, handleAutoFit } = useAutoFit(
@@ -63,7 +69,7 @@ export default function MainPage() {
   const { processing, error: pdfError, clearError: clearPdfError, handleFileSelected } = usePdfImport(handleImported);
 
   // --- PDF export ---
-  const { downloading, handleDownloadPdf } = usePdfExport(cv.name, templateId);
+  const { downloading, exportFailed, handleDownloadPdf } = usePdfExport(cv.name, templateId);
 
   // --- Onboarding callbacks ---
   const handleStartFromScratch = useCallback(() => {
@@ -102,7 +108,21 @@ export default function MainPage() {
             onComplete={handleOnboardingComplete}
           />
         ) : (
-          <div className="max-w-screen-2xl mx-auto px-6 py-8 pb-20 lg:pb-8 flex flex-col lg:h-full">
+          <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 py-6 sm:py-8 pb-24 lg:pb-8 flex flex-col lg:h-full">
+            {exportFailed && (
+              <div className="print:hidden mb-2 rounded-md bg-destructive/10 border border-destructive/20 px-3 py-2 text-xs text-destructive">
+                {t("actions.downloadError")}
+              </div>
+            )}
+            {/* Rendered above the grid so the warning (and auto-fit) is
+                visible on mobile, where the preview column is off-screen */}
+            <TrimWarning
+              cv={cv}
+              renderModel={renderModel}
+              metrics={metrics}
+              isFitting={isFitting}
+              onAutoFit={handleAutoFit}
+            />
             <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-6 lg:min-h-0 lg:flex-1">
               <div className="print:hidden lg:overflow-y-auto lg:min-h-0 min-w-0">
                 <CvEditor
@@ -110,7 +130,7 @@ export default function MainPage() {
                   onUpdate={setCv}
                   settings={{
                     displaySettings, onDisplaySettingsChange: setDisplaySettings,
-                    styleOverrides, styleSettings: styleSettings!,
+                    styleOverrides, styleSettings,
                     onStyleOverridesChange: setStyleOverrides,
                   }}
                   templateId={templateId}
@@ -121,61 +141,6 @@ export default function MainPage() {
 
               {/* Desktop: visible. Mobile: off-screen but in DOM for html2canvas + MeasureView */}
               <div className="max-lg:fixed max-lg:-left-[200vw] max-lg:w-[794px] lg:overflow-y-auto lg:min-h-0 min-w-0">
-                {(() => {
-                  const trim = computeTrimInfo(cv, renderModel);
-                  const parts: string[] = [];
-                  if (trim.experienceHidden > 0) {
-                    const totalRenderRoles = renderModel.experience.reduce((s, g) => s + g.roles.length, 0);
-                    parts.push(`${totalRenderRoles} of ${cv.experience.filter(e => !e.hidden).length} jobs`);
-                  }
-                  if (trim.educationHidden > 0)
-                    parts.push(`${renderModel.education.length} of ${cv.education.filter(e => !e.hidden).length} education`);
-                  if (trim.skillsHidden > 0)
-                    parts.push(`${renderModel.skills.length} of ${cv.skills.length} skills`);
-                  if (trim.extrasHidden > 0) {
-                    const totalCv = cv.extras.reduce((s, g) => s + g.items.length, 0);
-                    const totalRender = renderModel.extras.reduce((s, g) => s + g.items.length, 0);
-                    parts.push(`${totalRender} of ${totalCv} extras`);
-                  }
-                  if (trim.summaryTruncated)
-                    parts.push("summary truncated");
-                  if (metrics && !metrics.fits)
-                    parts.push(t("editor.visibility.overflows", { pages: String(metrics.estimatedPages) }));
-                  if (parts.length === 0) return null;
-                  return (
-                    <div className="print:hidden mb-2 rounded-md bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 px-3 py-2 text-xs text-amber-700 dark:text-amber-400">
-                      <div className="flex items-start gap-2">
-                        <AlertTriangle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
-                        <div className="flex-1">
-                          {parts.length === 1 ? (
-                            <span>{parts[0]}</span>
-                          ) : (
-                            <ul className="list-disc list-inside space-y-0.5">
-                              {parts.map((p, i) => <li key={i}>{p}</li>)}
-                            </ul>
-                          )}
-                        </div>
-                        {metrics && !metrics.fits && (
-                          <button
-                            type="button"
-                            onClick={handleAutoFit}
-                            disabled={isFitting}
-                            className="shrink-0 inline-flex items-center gap-1 rounded-md bg-amber-100 dark:bg-amber-900/50 px-2.5 py-1 text-xs font-medium text-amber-900 dark:text-amber-300 hover:bg-amber-200 dark:hover:bg-amber-900/70 transition-colors disabled:opacity-50"
-                          >
-                            {isFitting ? (
-                              <>
-                                <Loader2 className="h-3 w-3 animate-spin" />
-                                {t("editor.visibility.fitting")}
-                              </>
-                            ) : (
-                              t("editor.visibility.autoFit")
-                            )}
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })()}
                 <div className="relative">
                   <Button
                     variant="outline"
@@ -187,9 +152,9 @@ export default function MainPage() {
                   >
                     <Maximize2 className="h-3.5 w-3.5" />
                   </Button>
-                  <CvPreview renderModel={renderModel} templateId={templateId} styleSettings={styleSettings} />
+                  <CvPreview renderModel={renderModel} templateId={templateId} styleSettings={styleSettings} pageTarget={displaySettings.pageTarget} exportSource />
                 </div>
-                <MeasureView templateId={templateId} renderModel={renderModel} onMeasure={setMetrics} styleSettings={styleSettings} />
+                <MeasureView templateId={templateId} renderModel={renderModel} onMeasure={setMetrics} styleSettings={styleSettings} pageTarget={displaySettings.pageTarget} />
               </div>
             </div>
           </div>
@@ -211,7 +176,8 @@ export default function MainPage() {
         </div>
       )}
 
-      <AppFooter labels={footer} />
+      {/* Extra bottom padding on mobile so the fixed action bar doesn't cover the footer links */}
+      <AppFooter labels={footer} className={effectiveShowOnboarding ? undefined : "pb-20 lg:pb-0"} />
 
       <ImportPdfDialog
         open={showImport}
@@ -228,6 +194,7 @@ export default function MainPage() {
         renderModel={renderModel}
         templateId={templateId}
         styleSettings={styleSettings}
+        pageTarget={displaySettings.pageTarget}
       />
     </div>
   );
