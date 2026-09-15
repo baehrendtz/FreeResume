@@ -49,7 +49,7 @@ Uses `next-intl` with URL-based locale routing (`/[locale]/...`). Messages in `s
 
 ### Editor
 
-Form state is managed via `react-hook-form` with `zodResolver(cvModelSchema)`. The editor uses a wizard sidebar (`WizardSidebar`) with step-based navigation. Each section (Experience, Education, Skills, etc.) has its own form component. Changes propagate to the parent via `watch()` subscription with 150ms debounce.
+Form state is managed via `react-hook-form` with `zodResolver(cvModelSchema)`. The editor uses a wizard sidebar (`WizardSidebar`) with step-based navigation. Step order lives in `src/lib/wizard/steps.ts` (`STEP_GROUPS`, `STEP_ORDER`): content first, then template, then optional settings. `activeStep` is owned by `page.tsx` so the fit banner can jump to settings. Each step shows "Step X of Y", a hint (`editor.hints.*`) and previous/next buttons; the template and settings steps end with a download button. Each section (Experience, Education, Skills, etc.) has its own form component. Changes propagate to the parent via `watch()` subscription with 150ms debounce.
 
 ### Session persistence
 

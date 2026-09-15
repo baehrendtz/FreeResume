@@ -18,9 +18,9 @@
       "visibility": "Settings"
     },
     "groups": {
-      "theme": "Template",
       "content": "Content",
-      "settings": "Settings"
+      "theme": "Design",
+      "settings": "Optional"
     },
     "sidebar": {
       "expand": "Expand menu",
@@ -39,11 +39,20 @@
       "photoUpload": "Upload Photo",
       "photoRemove": "Remove",
       "photoTooLarge": "Photo must be under 2MB",
-      "photoReadError": "Could not read photo file"
+      "photoReadError": "Could not read photo file",
+      "placeholders": {
+        "name": "e.g. Anna Andersson",
+        "headline": "e.g. IT Project Manager",
+        "email": "anna.andersson@example.com",
+        "phone": "+46 70 123 45 67",
+        "location": "e.g. Stockholm, Sweden",
+        "linkedIn": "linkedin.com/in/annaandersson",
+        "website": "annaandersson.com"
+      }
     },
     "summary": {
       "label": "Professional Summary",
-      "placeholder": "Write a brief summary of your professional background..."
+      "placeholder": "e.g. Project manager with 8 years of experience in IT. I help teams collaborate and deliver on time, and I'm looking for my next challenge."
     },
     "experience": {
       "title": "Job Title",
@@ -58,15 +67,21 @@
       "bulletsHint": "One bullet point per line. Empty lines are ignored.",
       "add": "Add Experience",
       "remove": "Remove",
-      "hide": "Hide",
-      "show": "Show",
+      "hide": "Hide in CV",
+      "show": "Show in CV",
       "at": " at ",
       "emptyState": "No experience entries yet. Click below to add one.",
       "confirm": "Confirm?",
       "moveUp": "Move up",
       "moveDown": "Move down",
       "groupWith": "Group with previous",
-      "ungroupFrom": "Separate from group"
+      "ungroupFrom": "Separate from group",
+      "untitled": "New job",
+      "titlePlaceholder": "e.g. Sales Manager",
+      "companyPlaceholder": "e.g. Acme Inc.",
+      "locationPlaceholder": "e.g. London",
+      "descriptionPlaceholder": "A short line about the role and your responsibilities (optional)",
+      "bulletsPlaceholder": "Increased sales by 20% in one year\nLed a team of 5 people"
     },
     "education": {
       "institution": "Institution",
@@ -79,12 +94,16 @@
       "description": "Description",
       "add": "Add Education",
       "remove": "Remove",
-      "hide": "Hide",
-      "show": "Show",
+      "hide": "Hide in CV",
+      "show": "Show in CV",
       "emptyState": "No education entries yet. Click below to add one.",
       "confirm": "Confirm?",
       "moveUp": "Move up",
-      "moveDown": "Move down"
+      "moveDown": "Move down",
+      "untitled": "New education",
+      "institutionPlaceholder": "e.g. Stockholm University",
+      "degreePlaceholder": "e.g. Bachelor's degree",
+      "fieldPlaceholder": "e.g. Economics"
     },
     "skills": {
       "label": "Skills",
@@ -157,14 +176,37 @@
       "cvLanguageEn": "English",
       "cvLanguageSv": "Svenska",
       "template": "Template",
-      "overflows": "Content overflows (~{pages} pages)",
-      "autoFit": "Auto-fit",
-      "fitting": "Fitting...",
       "trimmedJobs": "{shown} of {total} jobs shown",
       "trimmedEducation": "{shown} of {total} education entries shown",
       "trimmedSkills": "{shown} of {total} skills shown",
       "trimmedExtras": "{shown} of {total} extras shown",
       "summaryTruncated": "Summary truncated"
+    },
+    "nav": {
+      "stepOf": "Step {current} of {total}",
+      "previous": "Back",
+      "next": "Next: {step}",
+      "moreSettings": "More settings",
+      "finishHint": "All done! Check the preview and download your CV."
+    },
+    "hints": {
+      "basics": "Start with your name and how employers can reach you. The headline is a short line about who you are, such as your job title.",
+      "summary": "Write 2-3 sentences about who you are, what you're good at and what you're looking for. It's the first thing a recruiter reads.",
+      "experience": "Add your jobs, most recent first. Aim for 2-4 bullet points about what you achieved, ideally with numbers. Click a job to edit it.",
+      "education": "Add your education, most recent first. Degree and school are usually enough.",
+      "skills": "Type one skill at a time and press Enter. Pick the ones most relevant to the job you're applying for.",
+      "languages": "Pick a language and your level. Include your native language and any languages you can use at work.",
+      "extras": "Optional. Add certifications, a driving licence, volunteering or anything else that strengthens your CV.",
+      "template": "Pick the design you like best. Your content moves over automatically and you can switch at any time.",
+      "visibility": "Optional. Choose which sections to show, how long the CV may be and which language the headings use."
+    },
+    "fit": {
+      "overflowTitle": "Your CV doesn't fit, it runs to about {pages} pages.",
+      "trimmedTitle": "Not everything fits, so some content is hidden in the CV.",
+      "autoFit": "Shorten automatically",
+      "fitting": "Shortening...",
+      "useTwoPages": "Use 2 pages",
+      "editLimits": "Choose what to show"
     }
   },
   "preview": {
@@ -184,15 +226,13 @@
       "howToGetPdf": "How do I get my LinkedIn PDF?"
     },
     "guide": {
-      "title": "How to get your LinkedIn PDF",
-      "step1": "Go to your LinkedIn profile",
-      "step2": "Click 'More' > 'Save to PDF'",
-      "step3": "Upload the file here"
+      "step1": "Open your LinkedIn profile in a desktop browser",
+      "step2": "Click the \"Resources\" (or \"More\") button below your name",
+      "step3": "Choose \"Save to PDF\" and upload the file here",
+      "openLinkedIn": "Open my profile"
     },
     "success": {
       "title": "Your CV is ready to edit!",
-      "scratchTitle": "Your blank CV is ready",
-      "scratchDescription": "Let's start with the basics: your name and contact details.",
       "cta": "Start editing",
       "experience": "experiences",
       "education": "education",

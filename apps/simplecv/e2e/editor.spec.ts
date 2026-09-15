@@ -166,4 +166,21 @@ test.describe("Editor", () => {
     await expect(editor.getByText("Professional", { exact: true })).toBeVisible();
     await expect(editor.getByText("Creative", { exact: true })).toBeVisible();
   });
+  test("step navigation walks forward and ends with a download button", async ({
+    page,
+    isMobile,
+  }) => {
+    test.skip(!!isMobile, "Sidebar tabs only visible on desktop");
+    await page.goto("/en");
+    await waitForEditor(page);
+
+    const editor = page.locator("form");
+    await expect(editor.getByText("Step 1 of 9")).toBeVisible();
+    await editor.getByRole("button", { name: "Next: Summary" }).click();
+    await expect(editor.getByText("Step 2 of 9")).toBeVisible();
+
+    await page.locator("nav").first().getByRole("button", { name: "Template" }).click();
+    await expect(editor.getByRole("button", { name: "Download PDF" })).toBeVisible();
+    await expect(editor.getByRole("button", { name: "More settings" })).toBeVisible();
+  });
 });

@@ -22,14 +22,9 @@ test.describe("Onboarding", () => {
       name: /Start from scratch/,
     });
     await scratchBtn.click();
-    // Success step should appear
-    await expect(
-      page.getByText("Your blank CV is ready")
-    ).toBeVisible({ timeout: 10_000 });
-    // Click the CTA to enter editor
-    await page.getByRole("button", { name: "Start editing" }).click();
-    // Editor should be visible with the CV preview
+    // A blank CV has nothing to review, so the editor opens directly
     await waitForEditor(page);
+    await expect(page.getByLabel("Full Name")).toBeVisible();
   });
 
   test("skips onboarding when session already exists", async ({ page }) => {
@@ -43,21 +38,21 @@ test.describe("Onboarding", () => {
     ).not.toBeVisible();
   });
 
-  test("LinkedIn guide accordion toggles open and closed", async ({
+  test("LinkedIn guide is open by default and can be collapsed", async ({
     page,
   }) => {
     await page.goto("/en");
     const trigger = page.getByText("How do I get my LinkedIn PDF?");
-    await expect(trigger).toBeVisible();
-
-    // Click to open
-    await trigger.click();
-    await expect(page.getByText("Go to your LinkedIn profile")).toBeVisible();
+    const firstStep = page.getByText("Open your LinkedIn profile in a desktop browser");
+    await expect(firstStep).toBeVisible();
+    await expect(page.getByRole("link", { name: "Open my profile" })).toBeVisible();
 
     // Click to close
     await trigger.click();
-    await expect(
-      page.getByText("Go to your LinkedIn profile")
-    ).not.toBeVisible();
+    await expect(firstStep).not.toBeVisible();
+
+    // Click to open again
+    await trigger.click();
+    await expect(firstStep).toBeVisible();
   });
 });

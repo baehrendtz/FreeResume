@@ -28,6 +28,10 @@ interface EducationLabels {
   confirm: string;
   moveUp: string;
   moveDown: string;
+  untitled: string;
+  institutionPlaceholder: string;
+  degreePlaceholder: string;
+  fieldPlaceholder: string;
 }
 
 interface EducationFormProps {
@@ -51,12 +55,16 @@ function EducationEntry({ index, total, labels, onMove, onRemove }: EducationEnt
 
   const institution = useWatch({ control, name: `education.${index}.institution` });
   const degree = useWatch({ control, name: `education.${index}.degree` });
+  const startDate = useWatch({ control, name: `education.${index}.startDate` });
+  const endDate = useWatch({ control, name: `education.${index}.endDate` });
   const isHidden = useWatch({ control, name: `education.${index}.hidden` }) ?? false;
   const summary = [institution, degree].filter(Boolean).join(" - ");
 
   return (
     <EntryCard
       summary={summary}
+      subtitle={[startDate, endDate].filter(Boolean).join(" - ")}
+      defaultOpen={!summary}
       hidden={isHidden}
       onToggleHidden={() => setValue(`education.${index}.hidden`, !isHidden)}
       onRemove={() => onRemove(index)}
@@ -68,6 +76,7 @@ function EducationEntry({ index, total, labels, onMove, onRemove }: EducationEnt
         show: labels.show,
         remove: labels.remove,
         confirm: labels.confirm,
+        untitled: labels.untitled,
         moveUp: labels.moveUp,
         moveDown: labels.moveDown,
       }}
@@ -75,15 +84,15 @@ function EducationEntry({ index, total, labels, onMove, onRemove }: EducationEnt
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div className="space-y-1 sm:col-span-2">
           <Label className="text-xs">{labels.institution}</Label>
-          <Input {...register(`education.${index}.institution`)} />
+          <Input {...register(`education.${index}.institution`)} placeholder={labels.institutionPlaceholder} />
         </div>
         <div className="space-y-1">
           <Label className="text-xs">{labels.degree}</Label>
-          <Input {...register(`education.${index}.degree`)} />
+          <Input {...register(`education.${index}.degree`)} placeholder={labels.degreePlaceholder} />
         </div>
         <div className="space-y-1">
           <Label className="text-xs">{labels.field}</Label>
-          <Input {...register(`education.${index}.field`)} />
+          <Input {...register(`education.${index}.field`)} placeholder={labels.fieldPlaceholder} />
         </div>
         <div className="space-y-1 sm:col-span-2 grid grid-cols-2 gap-3">
           <div className="space-y-1">

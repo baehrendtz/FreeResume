@@ -14,11 +14,8 @@ const DEFAULT_TEMPLATE_ID = "basic";
 
 interface OnboardingSuccessProps {
   cv: CvModel;
-  isFromScratch: boolean;
   labels: {
     successTitle: string;
-    successScratchTitle: string;
-    successScratchDescription: string;
     successCta: string;
     successExperience: string;
     successEducation: string;
@@ -29,20 +26,19 @@ interface OnboardingSuccessProps {
   onBack?: () => void;
 }
 
-export function OnboardingSuccess({ cv, isFromScratch, labels, onComplete, onBack }: OnboardingSuccessProps) {
+/** Shown after a LinkedIn import: what was found plus a preview of the result. */
+export function OnboardingSuccess({ cv, labels, onComplete, onBack }: OnboardingSuccessProps) {
   const [showPreview, setShowPreview] = useState(false);
 
   useEffect(() => {
-    if (isFromScratch) return;
     const timer = setTimeout(() => setShowPreview(true), ONBOARDING_PREVIEW_DELAY_MS);
     return () => clearTimeout(timer);
-  }, [isFromScratch]);
+  }, []);
 
-  const previewRenderModel = useMemo(() => {
-    if (isFromScratch) return null;
-    const meta = getTemplateMeta(DEFAULT_TEMPLATE_ID);
-    return buildRenderModel(cv, meta, defaultDisplaySettings);
-  }, [cv, isFromScratch]);
+  const previewRenderModel = useMemo(
+    () => buildRenderModel(cv, getTemplateMeta(DEFAULT_TEMPLATE_ID), defaultDisplaySettings),
+    [cv],
+  );
 
   const stats = [
     { count: cv.experience.length, label: labels.successExperience },
@@ -60,14 +56,8 @@ export function OnboardingSuccess({ cv, isFromScratch, labels, onComplete, onBac
           </div>
 
           <div className="space-y-2">
-            <h2 className="text-xl font-semibold">
-              {isFromScratch ? labels.successScratchTitle : labels.successTitle}
-            </h2>
-            {isFromScratch ? (
-              <p className="text-sm text-muted-foreground max-w-sm">
-                {labels.successScratchDescription}
-              </p>
-            ) : stats.length > 0 ? (
+            <h2 className="text-xl font-semibold">{labels.successTitle}</h2>
+            {stats.length > 0 && (
               <div className="flex justify-center gap-4 text-sm text-muted-foreground">
                 {stats.map((s) => (
                   <span key={s.label} className="flex items-center gap-1">
@@ -75,25 +65,23 @@ export function OnboardingSuccess({ cv, isFromScratch, labels, onComplete, onBac
                   </span>
                 ))}
               </div>
-            ) : null}
+            )}
           </div>
         </div>
 
         {/* Right: imported-CV preview (auto-scales to its container width) */}
-        {previewRenderModel && (
-          <div
-            className={`overflow-hidden rounded-lg shadow-lg transition-all duration-700 ease-out w-full max-w-[280px] md:max-w-sm ${
-              showPreview
-                ? "opacity-100 translate-x-0"
-                : "opacity-0 translate-x-8"
-            }`}
-          >
-            <CvPreview
-              templateId={DEFAULT_TEMPLATE_ID}
-              renderModel={previewRenderModel}
-            />
-          </div>
-        )}
+        <div
+          className={`overflow-hidden rounded-lg shadow-lg transition-all duration-700 ease-out w-full max-w-[280px] md:max-w-sm ${
+            showPreview
+              ? "opacity-100 translate-x-0"
+              : "opacity-0 translate-x-8"
+          }`}
+        >
+          <CvPreview
+            templateId={DEFAULT_TEMPLATE_ID}
+            renderModel={previewRenderModel}
+          />
+        </div>
       </div>
 
       <Button size="lg" onClick={onComplete} className="mt-2">

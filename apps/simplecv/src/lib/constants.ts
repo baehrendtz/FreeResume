@@ -32,6 +32,9 @@ export const CONFIRMATION_TIMEOUT_MS = 3000;
 export const DUPLICATE_WARNING_TIMEOUT_MS = 2000;
 export const ONBOARDING_PREVIEW_DELAY_MS = 800;
 
+/** Space kept above a wizard step when scrolling it into view below the sticky app header (px). */
+export const STICKY_HEADER_OFFSET_PX = 72;
+
 /** Longest side of an uploaded photo after downscaling (px). Keeps base64
  *  payloads small enough to fit sessionStorage alongside the rest of the CV. */
 export const MAX_PHOTO_DIMENSION_PX = 512;

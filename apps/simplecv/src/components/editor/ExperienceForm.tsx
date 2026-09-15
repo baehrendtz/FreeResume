@@ -33,6 +33,12 @@ interface ExperienceLabels {
   moveDown: string;
   groupWith: string;
   ungroupFrom: string;
+  untitled: string;
+  titlePlaceholder: string;
+  companyPlaceholder: string;
+  locationPlaceholder: string;
+  descriptionPlaceholder: string;
+  bulletsPlaceholder: string;
 }
 
 interface ExperienceFormProps {
@@ -66,6 +72,8 @@ function ExperienceEntry({
 
   const title = useWatch({ control, name: `experience.${index}.title` });
   const company = useWatch({ control, name: `experience.${index}.company` });
+  const startDate = useWatch({ control, name: `experience.${index}.startDate` });
+  const endDate = useWatch({ control, name: `experience.${index}.endDate` });
   const isHidden = useWatch({ control, name: `experience.${index}.hidden` }) ?? false;
   const currentGroupId = useWatch({ control, name: `experience.${index}.companyGroupId` });
   // Hooks can't be conditional, watch index 0 for the first entry and ignore the value
@@ -88,6 +96,8 @@ function ExperienceEntry({
       )}
       <EntryCard
         summary={summary}
+        subtitle={[startDate, endDate].filter(Boolean).join(" - ")}
+        defaultOpen={!summary}
         hidden={isHidden}
         onToggleHidden={() => setValue(`experience.${index}.hidden`, !isHidden)}
         onRemove={() => onRemove(index)}
@@ -99,6 +109,7 @@ function ExperienceEntry({
           show: labels.show,
           remove: labels.remove,
           confirm: labels.confirm,
+          untitled: labels.untitled,
           moveUp: labels.moveUp,
           moveDown: labels.moveDown,
         }}
@@ -106,15 +117,15 @@ function ExperienceEntry({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="space-y-1">
             <Label className="text-xs">{labels.title}</Label>
-            <Input {...register(`experience.${index}.title`)} />
+            <Input {...register(`experience.${index}.title`)} placeholder={labels.titlePlaceholder} />
           </div>
           <div className="space-y-1">
             <Label className="text-xs">{labels.company}</Label>
-            <Input {...register(`experience.${index}.company`)} />
+            <Input {...register(`experience.${index}.company`)} placeholder={labels.companyPlaceholder} />
           </div>
           <div className="space-y-1">
             <Label className="text-xs">{labels.location}</Label>
-            <Input {...register(`experience.${index}.location`)} />
+            <Input {...register(`experience.${index}.location`)} placeholder={labels.locationPlaceholder} />
           </div>
           {index > 0 && (
             <div className="sm:col-span-2 flex items-center gap-2">
@@ -163,7 +174,7 @@ function ExperienceEntry({
 
         <div className="space-y-1">
           <Label className="text-xs">{labels.description}</Label>
-          <Textarea rows={2} {...register(`experience.${index}.description`)} />
+          <Textarea rows={2} {...register(`experience.${index}.description`)} placeholder={labels.descriptionPlaceholder} />
         </div>
 
         <div className="space-y-1">
@@ -174,6 +185,7 @@ function ExperienceEntry({
             render={({ field: bulletField }) => (
               <Textarea
                 rows={4}
+                placeholder={labels.bulletsPlaceholder}
                 value={(bulletField.value ?? []).join("\n")}
                 onChange={(e) => {
                   const lines = e.target.value.split("\n");

@@ -28,6 +28,7 @@ interface BasicsFormProps {
     photoRemove: string;
     photoTooLarge: string;
     photoReadError: string;
+    placeholders: Record<BasicsFieldName, string>;
   };
 }
 
@@ -88,7 +89,7 @@ export function BasicsForm({ labels }: BasicsFormProps) {
           <Label htmlFor={field.name} className="text-xs">
             {field.label}
           </Label>
-          <Input id={field.name} {...register(field.name)} />
+          <Input id={field.name} placeholder={labels.placeholders[field.name]} {...register(field.name)} />
           {errors[field.name] && (
             <p className="text-xs text-destructive">
               {field.name === "name" ? labels.nameRequired : String(errors[field.name]?.message ?? "")}

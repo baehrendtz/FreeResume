@@ -21,8 +21,6 @@ export interface StepGroup {
 }
 
 export const WIZARD_STEPS: WizardStep[] = [
-  { id: "visibility", icon: Settings },
-  { id: "template", icon: Palette },
   { id: "basics", icon: User },
   { id: "summary", icon: FileText },
   { id: "experience", icon: Briefcase },
@@ -30,10 +28,17 @@ export const WIZARD_STEPS: WizardStep[] = [
   { id: "skills", icon: Wrench },
   { id: "languages", icon: Globe },
   { id: "extras", icon: Award },
+  { id: "template", icon: Palette },
+  { id: "visibility", icon: Settings },
 ];
 
+/** Groups in the order the user walks through them: fill in the content,
+ *  pick a design, then optional fine-tuning. */
 export const STEP_GROUPS: StepGroup[] = [
-  { id: "settings", steps: ["visibility"] },
-  { id: "theme", steps: ["template"] },
   { id: "content", steps: ["basics", "summary", "experience", "education", "skills", "languages", "extras"] },
+  { id: "theme", steps: ["template"] },
+  { id: "settings", steps: ["visibility"] },
 ];
+
+/** Flat step order used by the previous/next navigation. */
+export const STEP_ORDER = STEP_GROUPS.flatMap((g) => g.steps);

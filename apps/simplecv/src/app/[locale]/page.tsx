@@ -4,6 +4,8 @@ import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { createEmptyCvModel } from "@/lib/model/CvModel";
+import { twoPageDisplayDefaults } from "@/lib/model/DisplaySettings";
+import type { CvLanguage } from "@/lib/cvLocale";
 import { CvPreview } from "@/components/CvPreview";
 import { MeasureView } from "@/components/MeasureView";
 import { TrimWarning } from "@/components/TrimWarning";
@@ -30,9 +32,9 @@ export default function MainPage() {
 
   // --- UI state ---
   const [showOnboarding, setShowOnboarding] = useState(true);
-  const [isFromScratch, setIsFromScratch] = useState(false);
   const [showImport, setShowImport] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const [activeStep, setActiveStep] = useState("basics");
 
   // --- Core CV state ---
   const {
@@ -58,11 +60,14 @@ export default function MainPage() {
     cv, setCv, templateMeta, displaySettings, setDisplaySettings,
   );
 
+  const handleUseTwoPages = useCallback(() => {
+    setDisplaySettings((prev) => ({ ...prev, ...twoPageDisplayDefaults }));
+  }, [setDisplaySettings]);
+
   // --- PDF import ---
   const handleImported = useCallback((result: import("@/lib/parser/linkedinParser").ParseResult) => {
     setCv(result.cv);
     setDisplaySettings((prev) => ({ ...prev, cvLanguage: result.detectedLanguage }));
-    setIsFromScratch(false);
     setShowImport(false);
   }, [setCv, setDisplaySettings]);
 
@@ -74,8 +79,10 @@ export default function MainPage() {
   // --- Onboarding callbacks ---
   const handleStartFromScratch = useCallback(() => {
     setCv(createEmptyCvModel());
-    setIsFromScratch(true);
-  }, [setCv]);
+    // No PDF to detect the language from, so match the CV headings to the app language
+    const cvLanguage: CvLanguage = locale === "sv" ? "sv" : "en";
+    setDisplaySettings((prev) => ({ ...prev, cvLanguage }));
+  }, [setCv, setDisplaySettings, locale]);
 
   const handleOnboardingComplete = useCallback(() => {
     setShowOnboarding(false);
@@ -102,7 +109,6 @@ export default function MainPage() {
             pdfError={pdfError}
             onClearError={clearPdfError}
             cv={cv}
-            isFromScratch={isFromScratch}
             onFileSelected={handleFileSelected}
             onStartFromScratch={handleStartFromScratch}
             onComplete={handleOnboardingComplete}
@@ -121,7 +127,10 @@ export default function MainPage() {
               renderModel={renderModel}
               metrics={metrics}
               isFitting={isFitting}
+              pageTarget={displaySettings.pageTarget}
               onAutoFit={handleAutoFit}
+              onUseTwoPages={handleUseTwoPages}
+              onEditLimits={() => setActiveStep("visibility")}
             />
             <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-6 lg:min-h-0 lg:flex-1">
               <div className="print:hidden lg:overflow-y-auto lg:min-h-0 min-w-0">
@@ -135,6 +144,10 @@ export default function MainPage() {
                   }}
                   templateId={templateId}
                   onTemplateSelect={(id: string) => { setTemplateId(id); trackTemplateSwitch(id); }}
+                  activeStep={activeStep}
+                  onStepChange={setActiveStep}
+                  onDownload={handleDownloadPdf}
+                  downloading={downloading}
                   labels={editor}
                 />
               </div>

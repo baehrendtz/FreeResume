@@ -18,9 +18,9 @@
       "visibility": "Inställningar"
     },
     "groups": {
-      "theme": "Mall",
       "content": "Innehåll",
-      "settings": "Inställningar"
+      "theme": "Utseende",
+      "settings": "Valfritt"
     },
     "sidebar": {
       "expand": "Expandera menyn",
@@ -39,11 +39,20 @@
       "photoUpload": "Ladda upp foto",
       "photoRemove": "Ta bort",
       "photoTooLarge": "Fotot måste vara under 2MB",
-      "photoReadError": "Kunde inte läsa fotofilen"
+      "photoReadError": "Kunde inte läsa fotofilen",
+      "placeholders": {
+        "name": "t.ex. Anna Andersson",
+        "headline": "t.ex. Projektledare inom IT",
+        "email": "anna.andersson@exempel.se",
+        "phone": "070-123 45 67",
+        "location": "t.ex. Stockholm, Sverige",
+        "linkedIn": "linkedin.com/in/annaandersson",
+        "website": "annaandersson.se"
+      }
     },
     "summary": {
       "label": "Professionell sammanfattning",
-      "placeholder": "Skriv en kort sammanfattning av din professionella bakgrund..."
+      "placeholder": "t.ex. Projektledare med 8 års erfarenhet inom IT. Jag hjälper team att samarbeta och leverera i tid och söker nu min nästa utmaning."
     },
     "experience": {
       "title": "Jobbtitel",
@@ -58,15 +67,21 @@
       "bulletsHint": "En punkt per rad. Tomma rader ignoreras.",
       "add": "Lägg till erfarenhet",
       "remove": "Ta bort",
-      "hide": "Dölj",
-      "show": "Visa",
+      "hide": "Dölj i CV",
+      "show": "Visa i CV",
       "at": " på ",
       "emptyState": "Inga erfarenheter ännu. Klicka nedan för att lägga till.",
       "confirm": "Bekräfta?",
       "moveUp": "Flytta upp",
       "moveDown": "Flytta ner",
       "groupWith": "Gruppera med föregående",
-      "ungroupFrom": "Separera från grupp"
+      "ungroupFrom": "Separera från grupp",
+      "untitled": "Nytt jobb",
+      "titlePlaceholder": "t.ex. Säljare",
+      "companyPlaceholder": "t.ex. Företaget AB",
+      "locationPlaceholder": "t.ex. Göteborg",
+      "descriptionPlaceholder": "Kort om rollen och ditt ansvar (valfritt)",
+      "bulletsPlaceholder": "Ökade försäljningen med 20 % på ett år\nLedde ett team på 5 personer"
     },
     "education": {
       "institution": "Lärosäte",
@@ -79,12 +94,16 @@
       "description": "Beskrivning",
       "add": "Lägg till utbildning",
       "remove": "Ta bort",
-      "hide": "Dölj",
-      "show": "Visa",
+      "hide": "Dölj i CV",
+      "show": "Visa i CV",
       "emptyState": "Inga utbildningar ännu. Klicka nedan för att lägga till.",
       "confirm": "Bekräfta?",
       "moveUp": "Flytta upp",
-      "moveDown": "Flytta ner"
+      "moveDown": "Flytta ner",
+      "untitled": "Ny utbildning",
+      "institutionPlaceholder": "t.ex. Stockholms universitet",
+      "degreePlaceholder": "t.ex. Kandidatexamen",
+      "fieldPlaceholder": "t.ex. Ekonomi"
     },
     "skills": {
       "label": "Kompetenser",
@@ -157,14 +176,37 @@
       "cvLanguageEn": "English",
       "cvLanguageSv": "Svenska",
       "template": "Mall",
-      "overflows": "Innehållet svämmar över (~{pages} sidor)",
-      "autoFit": "Autopassa",
-      "fitting": "Passar in...",
       "trimmedJobs": "{shown} av {total} jobb visas",
       "trimmedEducation": "{shown} av {total} utbildningar visas",
       "trimmedSkills": "{shown} av {total} kompetenser visas",
       "trimmedExtras": "{shown} av {total} övriga poster visas",
       "summaryTruncated": "Sammanfattningen är förkortad"
+    },
+    "nav": {
+      "stepOf": "Steg {current} av {total}",
+      "previous": "Tillbaka",
+      "next": "Nästa: {step}",
+      "moreSettings": "Fler inställningar",
+      "finishHint": "Klart! Kontrollera förhandsgranskningen och ladda ner ditt CV."
+    },
+    "hints": {
+      "basics": "Börja med ditt namn och hur arbetsgivare kan nå dig. Rubriken är en kort rad om vem du är, till exempel din yrkesroll.",
+      "summary": "Skriv 2-3 meningar om vem du är, vad du är bra på och vad du söker. Det är det första en rekryterare läser.",
+      "experience": "Lägg till dina jobb, det senaste först. Skriv gärna 2-4 punkter om vad du åstadkom, helst med siffror. Klicka på ett jobb för att redigera det.",
+      "education": "Lägg till din utbildning, den senaste först. Examen och lärosäte räcker oftast.",
+      "skills": "Skriv en kompetens i taget och tryck Enter. Välj de som är mest relevanta för jobbet du söker.",
+      "languages": "Välj språk och nivå. Ta med ditt modersmål och de språk du kan använda i jobbet.",
+      "extras": "Valfritt. Lägg till certifikat, körkort, ideellt arbete eller annat som stärker ditt CV.",
+      "template": "Välj den mall du gillar bäst. Innehållet flyttas med automatiskt och du kan byta när som helst.",
+      "visibility": "Valfritt. Välj vilka sektioner som visas, hur långt CV:t får bli och vilket språk rubrikerna ska ha."
+    },
+    "fit": {
+      "overflowTitle": "Ditt CV får inte plats, det blir ungefär {pages} sidor.",
+      "trimmedTitle": "Allt får inte plats, så en del visas inte i CV:t.",
+      "autoFit": "Korta ner automatiskt",
+      "fitting": "Kortar ner...",
+      "useTwoPages": "Använd 2 sidor",
+      "editLimits": "Välj vad som visas"
     }
   },
   "preview": {
@@ -184,15 +226,13 @@
       "howToGetPdf": "Hur får jag min LinkedIn-PDF?"
     },
     "guide": {
-      "title": "Så här får du din LinkedIn-PDF",
-      "step1": "Gå till din LinkedIn-profil",
-      "step2": "Klicka 'Mer' > 'Spara som PDF'",
-      "step3": "Ladda upp filen här"
+      "step1": "Öppna din LinkedIn-profil i datorns webbläsare",
+      "step2": "Klicka på knappen \"Resurser\" (eller \"Mer\") under ditt namn",
+      "step3": "Välj \"Spara som PDF\" och ladda upp filen här",
+      "openLinkedIn": "Öppna min profil"
     },
     "success": {
       "title": "Ditt CV är redo att redigera!",
-      "scratchTitle": "Ditt tomma CV är redo",
-      "scratchDescription": "Låt oss börja med grunduppgifterna: ditt namn och kontaktuppgifter.",
       "cta": "Börja redigera",
       "experience": "erfarenheter",
       "education": "utbildningar",

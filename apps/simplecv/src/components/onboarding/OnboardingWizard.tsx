@@ -19,17 +19,15 @@ interface OnboardingWizardProps {
     scratchTitle: string;
     scratchDescription: string;
     howToGetPdf: string;
-    guideTitle: string;
     guideStep1: string;
     guideStep2: string;
     guideStep3: string;
+    openLinkedIn: string;
     uploadDropzone: string;
     uploadProcessing: string;
     uploadError: string;
     uploadInvalidFileType: string;
     successTitle: string;
-    successScratchTitle: string;
-    successScratchDescription: string;
     successCta: string;
     successExperience: string;
     successEducation: string;
@@ -40,7 +38,6 @@ interface OnboardingWizardProps {
   pdfError: string | null;
   onClearError: () => void;
   cv: CvModel;
-  isFromScratch: boolean;
   onFileSelected: (file: File) => void;
   onStartFromScratch: () => void;
   onComplete: () => void;
@@ -52,7 +49,6 @@ export function OnboardingWizard({
   pdfError,
   onClearError,
   cv,
-  isFromScratch,
   onFileSelected,
   onStartFromScratch,
   onComplete,
@@ -76,24 +72,25 @@ export function OnboardingWizard({
     });
   }, [processing, step, pdfError]);
 
+  // A blank CV has nothing to review, so go straight to the editor
   const handleScratch = useCallback(() => {
     trackOnboardingSkip("choose");
     onClearError();
     onStartFromScratch();
-    setStep("success");
-    trackOnboardingStep("success");
-  }, [onStartFromScratch, onClearError]);
+    trackOnboardingComplete("scratch");
+    onComplete();
+  }, [onStartFromScratch, onClearError, onComplete]);
 
   const handleComplete = useCallback(() => {
-    trackOnboardingComplete(isFromScratch ? "scratch" : "upload");
+    trackOnboardingComplete("upload");
     onComplete();
-  }, [isFromScratch, onComplete]);
+  }, [onComplete]);
 
   const stepIndex = step === "choose" ? 0 : 1;
 
   return (
     <div className={`flex flex-col items-center gap-8 py-12 px-4 w-full mx-auto transition-[max-width] duration-500 ${
-      step === "success" && !isFromScratch ? "max-w-5xl" : "max-w-3xl"
+      step === "success" ? "max-w-5xl" : "max-w-3xl"
     }`}>
       {step === "choose" && (
         <>
@@ -159,15 +156,15 @@ export function OnboardingWizard({
                 onChange={handleChange}
               />
 
-              {/* Collapsible LinkedIn guide */}
+              {/* Step-by-step LinkedIn guide */}
               <div className="p-3">
                 <LinkedInGuide
                   labels={{
-                    guideTitle: labels.guideTitle,
                     guideStep1: labels.guideStep1,
                     guideStep2: labels.guideStep2,
                     guideStep3: labels.guideStep3,
                     howToGetPdf: labels.howToGetPdf,
+                    openLinkedIn: labels.openLinkedIn,
                   }}
                 />
               </div>
@@ -201,7 +198,6 @@ export function OnboardingWizard({
       {step === "success" && (
         <OnboardingSuccess
           cv={cv}
-          isFromScratch={isFromScratch}
           labels={labels}
           onComplete={handleComplete}
           onBack={() => setStep("choose")}
