@@ -253,32 +253,6 @@ export function useEditorLabels() {
     footer: t("help.footer"),
   };
 
-  const onboarding = {
-    chooseTitle: t("onboarding.choose.title"),
-    chooseSubtitle: t("onboarding.choose.subtitle"),
-    importTitle: t("onboarding.choose.importTitle"),
-    importDescription: t("onboarding.choose.importDescription"),
-    scratchTitle: t("onboarding.choose.scratchTitle"),
-    scratchDescription: t("onboarding.choose.scratchDescription"),
-    howToGetPdf: t("onboarding.choose.howToGetPdf"),
-    guideStep1: t("onboarding.guide.step1"),
-    guideStep2: t("onboarding.guide.step2"),
-    guideStep3: t("onboarding.guide.step3"),
-    openLinkedIn: t("onboarding.guide.openLinkedIn"),
-    openSaved: t("onboarding.choose.openSaved"),
-    fileError: t("upload.fileError"),
-    uploadDropzone: t("upload.dropzone"),
-    uploadProcessing: t("upload.processing"),
-    uploadError: t("upload.error"),
-    uploadInvalidFileType: t("upload.invalidFileType"),
-    successTitle: t("onboarding.success.title"),
-    successCta: t("onboarding.success.cta"),
-    successExperience: t("onboarding.success.experience"),
-    successEducation: t("onboarding.success.education"),
-    successSkills: t("onboarding.success.skills"),
-    successBack: t("onboarding.success.back"),
-  };
-
   const importDialog = {
     title: t("actions.importPdf"),
     warning: t("actions.importWarning"),
@@ -296,6 +270,6 @@ export function useEditorLabels() {
     cookieSettings: t("consent.settings"),
   };
 
-  return { editor, header, helpLabels, onboarding, importDialog, footer };
+  return { editor, header, helpLabels, importDialog, footer };
   }, [t, cvLang]);
 }

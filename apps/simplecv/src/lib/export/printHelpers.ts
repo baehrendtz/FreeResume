@@ -2,7 +2,14 @@ import type { jsPDF } from "jspdf";
 import type { CvModel } from "@/lib/model/CvModel";
 import type { DisplaySettings } from "@/lib/model/DisplaySettings";
 import type { PerTemplateStyleOverrides } from "@/lib/model/TemplateStyleSettings";
-import { A4_WIDTH_PX, A4_WIDTH_MM, A4_HEIGHT_MM, PX_TO_PT, SAME_LINE_TOLERANCE_PX } from "@/lib/constants";
+import {
+  A4_WIDTH_PX,
+  A4_WIDTH_MM,
+  A4_HEIGHT_MM,
+  PX_TO_PT,
+  SAME_LINE_TOLERANCE_PX,
+  TEMPLATE_LOAD_TIMEOUT_MS,
+} from "@/lib/constants";
 
 const SESSION_KEY = "freeresume-session";
 /** Set when the user opted in to keeping their CV between visits. */
@@ -66,6 +73,15 @@ export function buildFileName(name: string, extension: string): string {
   return name ? `${name.replace(/\s+/g, "_")}_CV.${extension}` : `cv.${extension}`;
 }
 
+/** Wait until the lazily loaded template has rendered, so the capture never shows the loading fallback. */
+async function waitForTemplate(el: HTMLElement): Promise<void> {
+  const deadline = performance.now() + TEMPLATE_LOAD_TIMEOUT_MS;
+  while (el.querySelector("[data-template-loading]")) {
+    if (performance.now() > deadline) throw new Error("CV template did not finish loading");
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+  }
+}
+
 /**
  * Write the CV's text as an invisible layer over the page images. The PDF
  * looks identical, but its text can be selected, searched and read by
@@ -124,6 +140,7 @@ function addInvisibleTextLayer(pdf: jsPDF, el: HTMLElement, totalPages: number):
 export async function downloadPdf(name: string): Promise<void> {
   const el = document.getElementById("cv-preview");
   if (!el) return;
+  await waitForTemplate(el);
 
   const [{ default: html2canvas }, { jsPDF }] = await Promise.all([
     import("html2canvas-pro"),

@@ -64,5 +64,5 @@ export function usePdfDrop({ onFileSelected, invalidFileTypeMessage }: UsePdfDro
     setDragOver(false);
   }, []);
 
-  return { dragOver, inputRef, handleDrop, handleChange, handleDragOver, handleDragLeave, error };
+  return { dragOver, inputRef, handleFile, handleDrop, handleChange, handleDragOver, handleDragLeave, error };
 }

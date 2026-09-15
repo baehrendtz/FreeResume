@@ -8,6 +8,10 @@ import type { CvModel } from "@/lib/model/CvModel";
 import type { RenderModel, LayoutMetrics } from "@/lib/fitting/types";
 import { computeTrimInfo, type PageTarget, type TrimCount } from "@/lib/model/DisplaySettings";
 
+function capitalize(text: string): string {
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
 interface TrimWarningProps {
   cv: CvModel;
   renderModel: RenderModel;
@@ -70,7 +74,7 @@ export function TrimWarning({
                 ? t("editor.fit.overflowTitle", { pages: String(metrics.estimatedPages) })
                 : t("editor.fit.trimmedTitle")}
             </p>
-            {details.length > 0 && <p className="text-xs opacity-90">{details.join(" · ")}</p>}
+            {details.length > 0 && <p className="text-xs opacity-90">{capitalize(details.join(", "))}</p>}
           </div>
         </div>
         <div className="flex flex-wrap gap-2 pl-6 sm:pl-0 sm:shrink-0">

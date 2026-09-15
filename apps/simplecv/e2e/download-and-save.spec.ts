@@ -53,8 +53,8 @@ test.describe("Download and save", () => {
     const freshPage = await fresh.newPage();
     await freshPage.goto("/en");
     await freshPage.locator('input[type="file"]').setInputFiles(filePath);
-    await expect(freshPage.getByText("Your CV is ready to edit!")).toBeVisible({ timeout: 15_000 });
-    await freshPage.getByRole("button", { name: "Start editing" }).click();
+    await expect(freshPage.getByRole("heading", { name: "Your CV is ready" })).toBeVisible({ timeout: 15_000 });
+    await freshPage.getByRole("button", { name: "Edit content" }).click();
     await expect(freshPage.getByLabel("Full Name")).toHaveValue("Test Person");
     await fresh.close();
   });

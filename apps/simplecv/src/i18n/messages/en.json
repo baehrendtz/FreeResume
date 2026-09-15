@@ -184,7 +184,7 @@
       "trimmedEducation": "{shown} of {total} education entries shown",
       "trimmedSkills": "{shown} of {total} skills shown",
       "trimmedExtras": "{shown} of {total} extras shown",
-      "summaryTruncated": "Summary truncated"
+      "summaryTruncated": "summary shortened"
     },
     "nav": {
       "stepOf": "Step {current} of {total}",
@@ -230,32 +230,6 @@
     "zoomIn": "Zoom in",
     "zoomOut": "Zoom out",
     "show": "Preview"
-  },
-  "onboarding": {
-    "choose": {
-      "title": "Create your professional CV",
-      "subtitle": "Import your LinkedIn profile or start from scratch",
-      "importTitle": "Import from LinkedIn",
-      "importDescription": "Upload your LinkedIn PDF to auto-fill your CV",
-      "scratchTitle": "Start from scratch",
-      "scratchDescription": "Begin with a blank CV and fill in your details",
-      "howToGetPdf": "How do I get my LinkedIn PDF?",
-      "openSaved": "Saved a CV before? Open your CV file"
-    },
-    "guide": {
-      "step1": "Open your LinkedIn profile in a desktop browser",
-      "step2": "Click the \"Resources\" (or \"More\") button below your name",
-      "step3": "Choose \"Save to PDF\" and upload the file here",
-      "openLinkedIn": "Open my profile"
-    },
-    "success": {
-      "title": "Your CV is ready to edit!",
-      "cta": "Start editing",
-      "experience": "experiences",
-      "education": "education",
-      "skills": "skills",
-      "back": "Upload a different file"
-    }
   },
   "actions": {
     "downloadPdf": "Download PDF",
@@ -327,5 +301,50 @@
       "name": "Creative",
       "description": "Colourful with a sidebar"
     }
+  },
+  "start": {
+    "title": "Turn your LinkedIn profile into a polished CV in a minute",
+    "trust": "Free, no account needed. Your PDF is read in your browser and never uploaded to a server.",
+    "mobileNotice": "LinkedIn can only save your profile as a PDF in a desktop browser, not in the mobile app. If the file is already on your phone, choose it below.",
+    "step1Title": "Open your LinkedIn profile on a computer",
+    "step1Action": "Open my profile",
+    "step2Title": "Click Resources and choose Save to PDF",
+    "step2Hint": "The button is below your name. On some accounts it's called More.",
+    "mock": {
+      "openTo": "Open to",
+      "addSection": "Add profile section",
+      "resources": "Resources",
+      "sendProfile": "Send profile in a message",
+      "savePdf": "Save to PDF"
+    },
+    "troubleTitle": "Can't find the button?",
+    "trouble1": "Look for More instead of Resources.",
+    "trouble2": "Use LinkedIn in a browser on a computer, not in the app.",
+    "trouble3": "If the button is missing, temporarily switching LinkedIn's language to English can help.",
+    "trouble4": "If it still doesn't work, you can start from scratch further down.",
+    "step3Title": "Upload the PDF here",
+    "dropTitle": "Drag your LinkedIn PDF here",
+    "dropTitleTouch": "Tap to choose your LinkedIn PDF",
+    "welcomeBack": "Welcome back! Drag in the PDF you just saved.",
+    "dropHint": "The file is usually called Profile.pdf and is in your Downloads folder. PDF only, max 10 MB.",
+    "dropButton": "Choose PDF file",
+    "dropOverlay": "Drop the file to create your CV",
+    "reading": "Reading the PDF",
+    "parsing": "Finding jobs, education and skills",
+    "pdfError": "This PDF couldn't be read as a LinkedIn profile. Save it with Resources and Save to PDF on your profile (step 2) and try again.",
+    "noLinkedIn": "No LinkedIn account?",
+    "scratch": "Start from scratch",
+    "openSaved": "Open a saved CV file",
+    "sampleCaption": "What your CV can look like"
+  },
+  "result": {
+    "title": "Your CV is ready",
+    "importedSummary": "Imported from your LinkedIn profile: {jobs, plural, one {# job} other {# jobs}}, {education, plural, one {# education entry} other {# education entries}} and {skills, plural, one {# skill} other {# skills}}.",
+    "fileSummary": "Your saved CV is open.",
+    "reviewHint": "Read through the text before you send your CV, the import may need small fixes.",
+    "edit": "Edit content",
+    "templateTitle": "Choose a template",
+    "colorTitle": "Color",
+    "editHint": "In Edit content you can change the text, add a photo and choose what to show."
   }
 }

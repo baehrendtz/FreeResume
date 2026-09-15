@@ -88,12 +88,11 @@ export function AppHeader({
 
   return (
     <header className="print:hidden border-b bg-background/80 backdrop-blur-sm sticky top-0 z-10">
-      <div className="h-1 bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600" />
-      <div className="container mx-auto px-4 py-2.5 flex items-center justify-between">
+      <div className="mx-auto flex max-w-screen-2xl items-center justify-between px-4 py-2.5 sm:px-6">
         <img src="/logo.png" alt={title} className="h-9 w-auto" />
 
         <div className="flex items-center gap-2">
-          {/* Desktop action buttons, hidden during onboarding */}
+          {/* Desktop action buttons, hidden on the start screen */}
           {showActions && actions.map((action) => (
             <Button
               key={action.id}

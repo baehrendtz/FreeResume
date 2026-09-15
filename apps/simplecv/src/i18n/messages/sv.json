@@ -184,7 +184,7 @@
       "trimmedEducation": "{shown} av {total} utbildningar visas",
       "trimmedSkills": "{shown} av {total} kompetenser visas",
       "trimmedExtras": "{shown} av {total} övriga poster visas",
-      "summaryTruncated": "Sammanfattningen är förkortad"
+      "summaryTruncated": "sammanfattningen är förkortad"
     },
     "nav": {
       "stepOf": "Steg {current} av {total}",
@@ -230,32 +230,6 @@
     "zoomIn": "Zooma in",
     "zoomOut": "Zooma ut",
     "show": "Förhandsgranska"
-  },
-  "onboarding": {
-    "choose": {
-      "title": "Skapa ditt professionella CV",
-      "subtitle": "Importera din LinkedIn-profil eller börja från grunden",
-      "importTitle": "Importera från LinkedIn",
-      "importDescription": "Ladda upp din LinkedIn-PDF för att fylla i ditt CV automatiskt",
-      "scratchTitle": "Börja från grunden",
-      "scratchDescription": "Börja med ett tomt CV och fyll i dina uppgifter",
-      "howToGetPdf": "Hur får jag min LinkedIn-PDF?",
-      "openSaved": "Har du sparat ett CV tidigare? Öppna CV-filen"
-    },
-    "guide": {
-      "step1": "Öppna din LinkedIn-profil i datorns webbläsare",
-      "step2": "Klicka på knappen \"Resurser\" (eller \"Mer\") under ditt namn",
-      "step3": "Välj \"Spara som PDF\" och ladda upp filen här",
-      "openLinkedIn": "Öppna min profil"
-    },
-    "success": {
-      "title": "Ditt CV är redo att redigera!",
-      "cta": "Börja redigera",
-      "experience": "erfarenheter",
-      "education": "utbildningar",
-      "skills": "kompetenser",
-      "back": "Ladda upp en annan fil"
-    }
   },
   "actions": {
     "downloadPdf": "Ladda ner PDF",
@@ -327,5 +301,50 @@
       "name": "Kreativ",
       "description": "Färgstark med sidofält"
     }
+  },
+  "start": {
+    "title": "Från LinkedIn-profil till snyggt CV på en minut",
+    "trust": "Gratis och utan konto. PDF:en läses direkt i din webbläsare och laddas aldrig upp till någon server.",
+    "mobileNotice": "LinkedIn kan bara spara profilen som PDF i webbläsaren på en dator, inte i mobilappen. Har du redan filen i telefonen kan du välja den nedan.",
+    "step1Title": "Öppna din LinkedIn-profil på en dator",
+    "step1Action": "Öppna min profil",
+    "step2Title": "Klicka på Resurser och välj Spara som PDF",
+    "step2Hint": "Knappen sitter under ditt namn. På vissa konton heter den Mer.",
+    "mock": {
+      "openTo": "Tillgänglig för",
+      "addSection": "Lägg till profilavsnitt",
+      "resources": "Resurser",
+      "sendProfile": "Skicka profil i ett meddelande",
+      "savePdf": "Spara som PDF"
+    },
+    "troubleTitle": "Hittar du inte knappen?",
+    "trouble1": "Leta efter Mer i stället för Resurser.",
+    "trouble2": "Använd LinkedIn i en webbläsare på datorn, inte i appen.",
+    "trouble3": "Saknas knappen kan det hjälpa att tillfälligt byta LinkedIns språk till engelska.",
+    "trouble4": "Går det ändå inte kan du börja från grunden längre ner.",
+    "step3Title": "Ladda upp PDF:en här",
+    "dropTitle": "Dra hit din LinkedIn-PDF",
+    "dropTitleTouch": "Tryck för att välja din LinkedIn-PDF",
+    "welcomeBack": "Välkommen tillbaka! Dra hit PDF:en du just sparade.",
+    "dropHint": "Filen heter oftast Profile.pdf och ligger i Hämtade filer. Endast PDF, max 10 MB.",
+    "dropButton": "Välj PDF-fil",
+    "dropOverlay": "Släpp filen för att skapa ditt CV",
+    "reading": "Läser PDF:en",
+    "parsing": "Hämtar jobb, utbildning och kompetenser",
+    "pdfError": "PDF:en kunde inte läsas som en LinkedIn-profil. Spara den med Resurser och Spara som PDF på din profil (steg 2) och försök igen.",
+    "noLinkedIn": "Inget LinkedIn-konto?",
+    "scratch": "Börja från grunden",
+    "openSaved": "Öppna sparad CV-fil",
+    "sampleCaption": "Så här kan ditt CV se ut"
+  },
+  "result": {
+    "title": "Ditt CV är klart",
+    "importedSummary": "Från din LinkedIn-profil hämtades {jobs} jobb, {education, plural, one {# utbildning} other {# utbildningar}} och {skills, plural, one {# kompetens} other {# kompetenser}}.",
+    "fileSummary": "Ditt sparade CV är öppnat.",
+    "reviewHint": "Läs igenom texterna innan du skickar CV:t, importen kan behöva små justeringar.",
+    "edit": "Redigera innehåll",
+    "templateTitle": "Välj mall",
+    "colorTitle": "Färg",
+    "editHint": "Under Redigera innehåll kan du ändra texter, lägga till ett foto och välja vad som ska synas."
   }
 }

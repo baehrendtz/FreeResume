@@ -30,7 +30,6 @@ export const PREVIEW_ZOOM = { min: 0.25, max: 3.0, step: 0.25 } as const;
 export const FORM_DEBOUNCE_MS = 150;
 export const CONFIRMATION_TIMEOUT_MS = 3000;
 export const DUPLICATE_WARNING_TIMEOUT_MS = 2000;
-export const ONBOARDING_PREVIEW_DELAY_MS = 800;
 
 /** Space kept above a wizard step when scrolling it into view below the sticky app header (px). */
 export const STICKY_HEADER_OFFSET_PX = 72;
@@ -44,6 +43,8 @@ export const A4_WIDTH_MM = 210;
 export const A4_HEIGHT_MM = 297;
 /** CSS px to PDF points (96 DPI to 72 DPI). */
 export const PX_TO_PT = 0.75;
+/** Longest wait for a lazily loaded template before PDF export gives up (ms). */
+export const TEMPLATE_LOAD_TIMEOUT_MS = 10_000;
 /** Words whose tops differ by less than this belong to the same text line (px). */
 export const SAME_LINE_TOLERANCE_PX = 2;
 

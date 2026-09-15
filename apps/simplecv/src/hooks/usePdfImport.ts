@@ -14,14 +14,19 @@ export type ImportResult =
 
 export type ImportError = "pdf_parse_failed" | "cv_file_invalid";
 
+/** What the import is doing right now, shown as progress steps. */
+export type ImportPhase = "reading" | "parsing";
+
 export function usePdfImport(onImported: (result: ImportResult) => void) {
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState<ImportError | null>(null);
+  const [phase, setPhase] = useState<ImportPhase | null>(null);
 
   const handleFileSelected = useCallback(
     async (file: File) => {
       const cvFile = isCvFile(file);
       setProcessing(true);
+      setPhase("reading");
       setError(null);
       try {
         if (cvFile) {
@@ -30,6 +35,7 @@ export function usePdfImport(onImported: (result: ImportResult) => void) {
         } else {
           const { extractText } = await import("@/lib/pdf/extractText");
           const pages = await extractText(file);
+          setPhase("parsing");
           const { parseLinkedInPdf } = await import("@/lib/parser/linkedinParser");
           const result = parseLinkedInPdf(pages);
           onImported({ source: "pdf", cv: result.cv, detectedLanguage: result.detectedLanguage });
@@ -42,6 +48,7 @@ export function usePdfImport(onImported: (result: ImportResult) => void) {
         setError(cvFile ? "cv_file_invalid" : "pdf_parse_failed");
       } finally {
         setProcessing(false);
+        setPhase(null);
       }
     },
     [onImported],
@@ -49,5 +56,5 @@ export function usePdfImport(onImported: (result: ImportResult) => void) {
 
   const clearError = useCallback(() => setError(null), []);
 
-  return { processing, error, clearError, handleFileSelected };
+  return { processing, phase, error, clearError, handleFileSelected };
 }

@@ -91,7 +91,7 @@ export function WizardSidebar({
               )}
 
               {!collapsed && (
-                <div className="px-3 pt-1 pb-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                <div className="px-3 pt-1 pb-1 text-xs font-medium text-muted-foreground">
                   {groupLabels[group.id]}
                 </div>
               )}
