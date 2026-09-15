@@ -1,9 +1,10 @@
 {
   "upload": {
-    "dropzone": "Dra och släpp din PDF här, eller klicka för att bläddra",
-    "invalidFileType": "Välj en PDF-fil",
+    "dropzone": "Dra och släpp din LinkedIn-PDF eller sparade CV-fil här, eller klicka för att bläddra",
+    "invalidFileType": "Välj en PDF eller en sparad CV-fil (.json)",
     "processing": "Bearbetar PDF...",
-    "error": "Kunde inte tolka denna PDF. Kontrollera att det är en LinkedIn-profilsexport."
+    "error": "Kunde inte tolka denna PDF. Kontrollera att det är en LinkedIn-profilsexport.",
+    "fileError": "Kunde inte öppna CV-filen. Kontrollera att den är sparad från Free Resume."
   },
   "editor": {
     "tabs": {
@@ -61,10 +62,9 @@
       "startDate": "Startdatum",
       "endDate": "Slutdatum",
       "datePlaceholder": "t.ex. Jan 2020",
-      "endDatePlaceholder": "t.ex. Pågående",
       "description": "Beskrivning",
-      "bullets": "Punkter (en per rad)",
-      "bulletsHint": "En punkt per rad. Tomma rader ignoreras.",
+      "bullets": "Punkter",
+      "bulletsHint": "Tryck Enter för en ny punkt. Dra i handtaget för att ändra ordning.",
       "add": "Lägg till erfarenhet",
       "remove": "Ta bort",
       "hide": "Dölj i CV",
@@ -81,7 +81,11 @@
       "companyPlaceholder": "t.ex. Företaget AB",
       "locationPlaceholder": "t.ex. Göteborg",
       "descriptionPlaceholder": "Kort om rollen och ditt ansvar (valfritt)",
-      "bulletsPlaceholder": "Ökade försäljningen med 20 % på ett år\nLedde ett team på 5 personer"
+      "bulletsPlaceholder": "t.ex. Ökade försäljningen med 20 % på ett år",
+      "excluded": "Får inte plats i CV:t",
+      "addBullet": "Lägg till punkt",
+      "removeBullet": "Ta bort punkt",
+      "dragBullet": "Dra för att flytta"
     },
     "education": {
       "institution": "Lärosäte",
@@ -90,7 +94,6 @@
       "startDate": "Startdatum",
       "endDate": "Slutdatum",
       "datePlaceholder": "t.ex. Jan 2020",
-      "endDatePlaceholder": "t.ex. Pågående",
       "description": "Beskrivning",
       "add": "Lägg till utbildning",
       "remove": "Ta bort",
@@ -103,7 +106,8 @@
       "untitled": "Ny utbildning",
       "institutionPlaceholder": "t.ex. Stockholms universitet",
       "degreePlaceholder": "t.ex. Kandidatexamen",
-      "fieldPlaceholder": "t.ex. Ekonomi"
+      "fieldPlaceholder": "t.ex. Ekonomi",
+      "excluded": "Får inte plats i CV:t"
     },
     "skills": {
       "label": "Kompetenser",
@@ -207,13 +211,25 @@
       "fitting": "Kortar ner...",
       "useTwoPages": "Använd 2 sidor",
       "editLimits": "Välj vad som visas"
+    },
+    "storage": {
+      "title": "Spara mellan besök",
+      "description": "Som standard försvinner ditt CV när du stänger fliken.",
+      "remember": "Kom ihåg mitt CV i den här webbläsaren",
+      "rememberHint": "Stäng av på delade datorer. Du kan också spara en kopia med knappen \"Spara CV-fil\"."
+    },
+    "dates": {
+      "month": "Månad",
+      "year": "År",
+      "ongoing": "Pågående"
     }
   },
   "preview": {
     "title": "CV-förhandsgranskning",
     "fullscreen": "Helskärmsvy",
     "zoomIn": "Zooma in",
-    "zoomOut": "Zooma ut"
+    "zoomOut": "Zooma ut",
+    "show": "Förhandsgranska"
   },
   "onboarding": {
     "choose": {
@@ -223,7 +239,8 @@
       "importDescription": "Ladda upp din LinkedIn-PDF för att fylla i ditt CV automatiskt",
       "scratchTitle": "Börja från grunden",
       "scratchDescription": "Börja med ett tomt CV och fyll i dina uppgifter",
-      "howToGetPdf": "Hur får jag min LinkedIn-PDF?"
+      "howToGetPdf": "Hur får jag min LinkedIn-PDF?",
+      "openSaved": "Har du sparat ett CV tidigare? Öppna CV-filen"
     },
     "guide": {
       "step1": "Öppna din LinkedIn-profil i datorns webbläsare",
@@ -247,7 +264,8 @@
     "importPdf": "Importera PDF",
     "importWarning": "Detta ersätter ditt nuvarande CV",
     "moreActions": "Fler åtgärder",
-    "cancel": "Avbryt"
+    "cancel": "Avbryt",
+    "saveFile": "Spara CV-fil"
   },
   "theme": {
     "toggle": "Byt tema"
@@ -263,7 +281,7 @@
     "downloadTitle": "Ladda ner ditt CV",
     "downloadText": "Klicka på \"Ladda ner PDF\"-knappen i övre menyn. CV:t genereras direkt i webbläsaren.",
     "dataTitle": "Din data",
-    "dataText": "All CV-data sparas lokalt i din webbläsare (sessionStorage). Om du accepterar analyticscookies skickas anonym användningsdata till Google Analytics för att hjälpa oss förbättra tjänsten. Ingen personlig information delas.",
+    "dataText": "Ditt CV finns bara i din webbläsare och försvinner när du stänger fliken. Vill du fortsätta senare kan du spara en CV-fil eller slå på \"Kom ihåg mitt CV\" under Inställningar. Om du accepterar analyscookies skickas anonym användningsdata till Google Analytics. Ingen personlig information delas.",
     "footer": "Free Resume är gratis och open source."
   },
   "consent": {
@@ -275,5 +293,39 @@
   "footer": {
     "copyright": "© {year} Free Resume",
     "openSource": "Gratis och öppen källkod"
+  },
+  "checklist": {
+    "title": "Innan du laddar ner",
+    "description": "Några saker kan göra ditt CV starkare. Åtgärda dem eller ladda ner ändå.",
+    "fix": "Åtgärda",
+    "downloadAnyway": "Ladda ner ändå",
+    "issues": {
+      "missingName": "Ditt namn saknas",
+      "missingEmail": "E-postadress saknas",
+      "invalidEmail": "E-postadressen ser inte ut att stämma",
+      "missingPhone": "Telefonnummer saknas",
+      "longHeadline": "Rubriken är lång, försök hålla den under {max} tecken",
+      "missingSummary": "Sammanfattning saknas",
+      "noExperience": "Ingen erfarenhet är tillagd",
+      "jobsWithoutDetails": "{count} jobb saknar beskrivning och punkter"
+    }
+  },
+  "templates": {
+    "basic": {
+      "name": "Klassisk",
+      "description": "En kolumn, ren och tidlös"
+    },
+    "professional": {
+      "name": "Professionell",
+      "description": "Mörkt sidhuvud och sidofält"
+    },
+    "basic2": {
+      "name": "Modern",
+      "description": "Sidofält med stort foto"
+    },
+    "creative": {
+      "name": "Kreativ",
+      "description": "Färgstark med sidofält"
+    }
   }
 }

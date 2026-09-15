@@ -23,6 +23,8 @@ interface OnboardingWizardProps {
     guideStep2: string;
     guideStep3: string;
     openLinkedIn: string;
+    openSaved: string;
+    fileError: string;
     uploadDropzone: string;
     uploadProcessing: string;
     uploadError: string;
@@ -151,7 +153,7 @@ export function OnboardingWizard({
               <input
                 ref={inputRef}
                 type="file"
-                accept=".pdf"
+                accept=".pdf,.json"
                 className="hidden"
                 onChange={handleChange}
               />
@@ -187,9 +189,18 @@ export function OnboardingWizard({
             </button>
           </div>
 
+          <button
+            type="button"
+            onClick={() => inputRef.current?.click()}
+            disabled={processing}
+            className="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline disabled:opacity-50"
+          >
+            {labels.openSaved}
+          </button>
+
           {(dropError || pdfError) && (
             <p className="text-sm text-destructive text-center">
-              {pdfError ? labels.uploadError : dropError}
+              {pdfError === "cv_file_invalid" ? labels.fileError : pdfError ? labels.uploadError : dropError}
             </p>
           )}
         </>

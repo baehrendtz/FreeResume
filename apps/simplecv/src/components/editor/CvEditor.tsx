@@ -22,6 +22,7 @@ import { LocationFormatting } from "./settings/LocationFormatting";
 import { CvLanguageSetting } from "./settings/CvLanguageSetting";
 import { PageTargetSetting } from "./settings/PageTargetSetting";
 import { TemplateStylePanel } from "./settings/TemplateStylePanel";
+import { RememberSetting } from "./settings/RememberSetting";
 import { WIZARD_STEPS, STEP_ORDER } from "@/lib/wizard/steps";
 import { trackWizardStep, trackSkillAdd, trackSkillRemove } from "@/lib/analytics/gtag";
 import type { PerTemplateStyleOverrides, TemplateStyleValues } from "@/lib/model/TemplateStyleSettings";
@@ -193,6 +194,7 @@ export function CvEditor({
             )}
             {activeStep === "visibility" && (
               <div className="space-y-4">
+                <RememberSetting labels={labels.storage} />
                 <CvLanguageSetting labels={labels.visibility} displaySettings={displaySettings} onDisplaySettingsChange={onDisplaySettingsChange} />
                 <SectionToggles labels={labels.visibility} />
                 <PageTargetSetting labels={labels.visibility} displaySettings={displaySettings} onDisplaySettingsChange={onDisplaySettingsChange} />
@@ -208,8 +210,8 @@ export function CvEditor({
                 maxChars={displaySettings.summaryMaxChars}
               />
             )}
-            {activeStep === "experience" && <ExperienceForm labels={labels.experience} />}
-            {activeStep === "education" && <EducationForm labels={labels.education} />}
+            {activeStep === "experience" && <ExperienceForm labels={labels.experience} maxEntries={displaySettings.maxExperience} />}
+            {activeStep === "education" && <EducationForm labels={labels.education} maxEntries={displaySettings.maxEducation} />}
             {activeStep === "skills" && (
               <ListForm labels={labels.skills} onAdd={trackSkillAdd} onRemove={trackSkillRemove} />
             )}

@@ -12,6 +12,8 @@ interface EntryCardProps {
   summary: string;
   /** Secondary line under the summary, e.g. the date range. */
   subtitle?: string;
+  /** Short warning under the summary, e.g. that the entry doesn't fit in the CV. */
+  note?: string;
   /** Whether the fields start expanded. Filled-in entries start collapsed so
    *  long imported lists stay easy to scan. */
   defaultOpen: boolean;
@@ -36,6 +38,7 @@ interface EntryCardProps {
 export function EntryCard({
   summary,
   subtitle,
+  note,
   defaultOpen,
   hidden,
   onToggleHidden,
@@ -89,6 +92,9 @@ export function EntryCard({
             </span>
             {subtitle && (
               <span className="block truncate text-xs text-muted-foreground">{subtitle}</span>
+            )}
+            {note && (
+              <span className="block truncate text-xs font-medium text-amber-600 dark:text-amber-400">{note}</span>
             )}
           </span>
         </button>

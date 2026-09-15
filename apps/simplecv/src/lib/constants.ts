@@ -38,3 +38,22 @@ export const STICKY_HEADER_OFFSET_PX = 72;
 /** Longest side of an uploaded photo after downscaling (px). Keeps base64
  *  payloads small enough to fit sessionStorage alongside the rest of the CV. */
 export const MAX_PHOTO_DIMENSION_PX = 512;
+
+// --- PDF export ---
+export const A4_WIDTH_MM = 210;
+export const A4_HEIGHT_MM = 297;
+/** CSS px to PDF points (96 DPI to 72 DPI). */
+export const PX_TO_PT = 0.75;
+/** Words whose tops differ by less than this belong to the same text line (px). */
+export const SAME_LINE_TOLERANCE_PX = 2;
+
+// --- Editor ---
+/** Headlines longer than this get a tip before download. */
+export const HEADLINE_MAX_CHARS = 100;
+/** Earliest year offered by the date pickers. */
+export const YEAR_PICKER_MIN = 1950;
+
+/** Quick-pick swatches for accent colors, dark enough to read as headings. */
+export const ACCENT_COLOR_PRESETS = ["#0d9488", "#2563eb", "#1e3a5f", "#334155", "#15803d", "#9f1239", "#7c3aed", "#c2410c"] as const;
+/** Quick-pick swatches for light sidebar backgrounds. */
+export const SIDEBAR_COLOR_PRESETS = ["#f1f5f9", "#dce4ed", "#e0f2fe", "#ecfdf5", "#fef3c7", "#f5f3ff", "#fdf2f8", "#f8fafc"] as const;

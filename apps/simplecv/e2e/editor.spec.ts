@@ -147,7 +147,7 @@ test.describe("Editor", () => {
 
     await page.locator("nav").first().getByRole("button", { name: "Template" }).click();
     const editor = page.locator("form");
-    await expect(editor.getByText("Basic", { exact: true })).toBeVisible();
+    await expect(editor.getByText("Classic", { exact: true })).toBeVisible();
     await expect(editor.getByText("Professional", { exact: true })).toBeVisible();
     await expect(editor.getByText("Creative", { exact: true })).toBeVisible();
   });
@@ -162,7 +162,7 @@ test.describe("Editor", () => {
 
     await page.getByRole("button", { name: "Template" }).click();
     const editor = page.locator("form");
-    await expect(editor.getByText("Basic", { exact: true })).toBeVisible();
+    await expect(editor.getByText("Classic", { exact: true })).toBeVisible();
     await expect(editor.getByText("Professional", { exact: true })).toBeVisible();
     await expect(editor.getByText("Creative", { exact: true })).toBeVisible();
   });

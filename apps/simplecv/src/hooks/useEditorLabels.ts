@@ -12,6 +12,11 @@ export function useEditorLabels() {
   return useMemo(() => {
   const proficiency = getCvProficiencyLabels(cvLang);
   const extrasCats = getCvExtrasCategoryLabels(cvLang);
+  const dates = {
+    month: t("editor.dates.month"),
+    year: t("editor.dates.year"),
+    ongoing: t("editor.dates.ongoing"),
+  };
 
   const editor = {
     tabs: {
@@ -29,6 +34,12 @@ export function useEditorLabels() {
       theme: t("editor.groups.theme"),
       content: t("editor.groups.content"),
       settings: t("editor.groups.settings"),
+    },
+    storage: {
+      title: t("editor.storage.title"),
+      description: t("editor.storage.description"),
+      remember: t("editor.storage.remember"),
+      rememberHint: t("editor.storage.rememberHint"),
     },
     sidebar: {
       expand: t("editor.sidebar.expand"),
@@ -89,7 +100,6 @@ export function useEditorLabels() {
       startDate: t("editor.experience.startDate"),
       endDate: t("editor.experience.endDate"),
       datePlaceholder: t("editor.experience.datePlaceholder"),
-      endDatePlaceholder: t("editor.experience.endDatePlaceholder"),
       description: t("editor.experience.description"),
       bullets: t("editor.experience.bullets"),
       bulletsHint: t("editor.experience.bulletsHint"),
@@ -110,6 +120,11 @@ export function useEditorLabels() {
       locationPlaceholder: t("editor.experience.locationPlaceholder"),
       descriptionPlaceholder: t("editor.experience.descriptionPlaceholder"),
       bulletsPlaceholder: t("editor.experience.bulletsPlaceholder"),
+      addBullet: t("editor.experience.addBullet"),
+      removeBullet: t("editor.experience.removeBullet"),
+      dragBullet: t("editor.experience.dragBullet"),
+      excluded: t("editor.experience.excluded"),
+      dates,
     },
     education: {
       institution: t("editor.education.institution"),
@@ -118,7 +133,6 @@ export function useEditorLabels() {
       startDate: t("editor.education.startDate"),
       endDate: t("editor.education.endDate"),
       datePlaceholder: t("editor.education.datePlaceholder"),
-      endDatePlaceholder: t("editor.education.endDatePlaceholder"),
       description: t("editor.education.description"),
       add: t("editor.education.add"),
       remove: t("editor.education.remove"),
@@ -132,6 +146,8 @@ export function useEditorLabels() {
       institutionPlaceholder: t("editor.education.institutionPlaceholder"),
       degreePlaceholder: t("editor.education.degreePlaceholder"),
       fieldPlaceholder: t("editor.education.fieldPlaceholder"),
+      excluded: t("editor.education.excluded"),
+      dates,
     },
     skills: {
       label: t("editor.skills.label"),
@@ -215,6 +231,7 @@ export function useEditorLabels() {
 
   const header = {
     importPdf: t("actions.importPdf"),
+    saveFile: t("actions.saveFile"),
     downloadPdf: t("actions.downloadPdf"),
     generating: t("actions.generating"),
     moreActions: t("actions.moreActions"),
@@ -248,6 +265,8 @@ export function useEditorLabels() {
     guideStep2: t("onboarding.guide.step2"),
     guideStep3: t("onboarding.guide.step3"),
     openLinkedIn: t("onboarding.guide.openLinkedIn"),
+    openSaved: t("onboarding.choose.openSaved"),
+    fileError: t("upload.fileError"),
     uploadDropzone: t("upload.dropzone"),
     uploadProcessing: t("upload.processing"),
     uploadError: t("upload.error"),
@@ -266,6 +285,7 @@ export function useEditorLabels() {
     dropzone: t("upload.dropzone"),
     processing: t("upload.processing"),
     error: t("upload.error"),
+    fileError: t("upload.fileError"),
     invalidFileType: t("upload.invalidFileType"),
     cancel: t("actions.cancel"),
   };

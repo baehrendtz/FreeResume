@@ -19,6 +19,8 @@ export function useAutoFit(
   const [isFitting, setIsFitting] = useState(false);
   const fittingIterRef = useRef(0);
   const isFittingRef = useRef(false);
+  // Set right after an import, the next measurement then shortens the new content if it overflows
+  const autoFitPendingRef = useRef(false);
 
   const cvRef = useRef(cv);
   const settingsRef = useRef(displaySettings);
@@ -48,10 +50,26 @@ export function useAutoFit(
     [setCv, setDisplaySettings],
   );
 
+  const startFitting = useCallback(
+    (current: LayoutMetrics) => {
+      fittingIterRef.current = 0;
+      setIsFitting(true);
+      isFittingRef.current = true;
+      applyFitResult(fitToTemplate(cvRef.current, templateMeta, settingsRef.current, current));
+    },
+    [templateMeta, applyFitResult],
+  );
+
   // Wrap setMetrics to also handle fitting continuation in the callback
   const setMetrics = useCallback(
     (newMetrics: LayoutMetrics) => {
       setMetricsRaw(newMetrics);
+
+      if (autoFitPendingRef.current && !isFittingRef.current) {
+        autoFitPendingRef.current = false;
+        if (!newMetrics.fits) startFitting(newMetrics);
+        return;
+      }
 
       if (!isFittingRef.current) return;
 
@@ -71,19 +89,19 @@ export function useAutoFit(
       const result = fitToTemplate(cvRef.current, templateMeta, settingsRef.current, newMetrics);
       applyFitResult(result);
     },
-    [templateMeta, applyFitResult],
+    [templateMeta, applyFitResult, startFitting],
   );
 
   const handleAutoFit = useCallback(() => {
     if (!metrics || metrics.fits) return;
     trackAutoFit();
-    fittingIterRef.current = 0;
-    setIsFitting(true);
-    isFittingRef.current = true;
+    startFitting(metrics);
+  }, [metrics, startFitting]);
 
-    const result = fitToTemplate(cvRef.current, templateMeta, settingsRef.current, metrics);
-    applyFitResult(result);
-  }, [metrics, templateMeta, applyFitResult]);
+  /** Auto-fit as soon as the next layout measurement arrives. */
+  const requestAutoFit = useCallback(() => {
+    autoFitPendingRef.current = true;
+  }, []);
 
-  return { metrics, setMetrics, isFitting, handleAutoFit };
+  return { metrics, setMetrics, isFitting, handleAutoFit, requestAutoFit };
 }

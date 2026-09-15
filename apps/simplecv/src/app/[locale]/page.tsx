@@ -4,8 +4,10 @@ import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { createEmptyCvModel } from "@/lib/model/CvModel";
-import { twoPageDisplayDefaults } from "@/lib/model/DisplaySettings";
+import { defaultDisplaySettings, twoPageDisplayDefaults } from "@/lib/model/DisplaySettings";
 import type { CvLanguage } from "@/lib/cvLocale";
+import { checkCv, type CvIssue } from "@/lib/cvChecks";
+import { downloadCvFile } from "@/lib/export/cvFile";
 import { CvPreview } from "@/components/CvPreview";
 import { MeasureView } from "@/components/MeasureView";
 import { TrimWarning } from "@/components/TrimWarning";
@@ -14,7 +16,13 @@ import { AppHeader } from "@/components/AppHeader";
 import { AppFooter } from "@/components/AppFooter";
 import { OnboardingWizard } from "@/components/onboarding/OnboardingWizard";
 import { ImportPdfDialog } from "@/components/ImportPdfDialog";
-import { trackTemplateSwitch, trackFullscreenPreview } from "@/lib/analytics/gtag";
+import { DownloadChecklistDialog } from "@/components/DownloadChecklistDialog";
+import {
+  trackTemplateSwitch,
+  trackFullscreenPreview,
+  trackCvFileSave,
+  trackDownloadChecklist,
+} from "@/lib/analytics/gtag";
 import { Download, Loader2, Maximize2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FullscreenPreviewDialog } from "@/components/FullscreenPreviewDialog";
@@ -22,7 +30,7 @@ import { useEditorLabels } from "@/hooks/useEditorLabels";
 import { useMounted } from "@/hooks/useMounted";
 import { useCvState } from "@/hooks/useCvState";
 import { useAutoFit } from "@/hooks/useAutoFit";
-import { usePdfImport } from "@/hooks/usePdfImport";
+import { usePdfImport, type ImportResult } from "@/hooks/usePdfImport";
 import { usePdfExport } from "@/hooks/usePdfExport";
 
 export default function MainPage() {
@@ -35,6 +43,7 @@ export default function MainPage() {
   const [showImport, setShowImport] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [activeStep, setActiveStep] = useState("basics");
+  const [checklistIssues, setChecklistIssues] = useState<CvIssue[] | null>(null);
 
   // --- Core CV state ---
   const {
@@ -56,7 +65,7 @@ export default function MainPage() {
   const effectiveShowOnboarding = !mounted || (showOnboarding && !hadSavedSession);
 
   // --- Auto-fit ---
-  const { metrics, setMetrics, isFitting, handleAutoFit } = useAutoFit(
+  const { metrics, setMetrics, isFitting, handleAutoFit, requestAutoFit } = useAutoFit(
     cv, setCv, templateMeta, displaySettings, setDisplaySettings,
   );
 
@@ -64,17 +73,42 @@ export default function MainPage() {
     setDisplaySettings((prev) => ({ ...prev, ...twoPageDisplayDefaults }));
   }, [setDisplaySettings]);
 
-  // --- PDF import ---
-  const handleImported = useCallback((result: import("@/lib/parser/linkedinParser").ParseResult) => {
+  // --- Import (LinkedIn PDF or saved CV file) ---
+  const handleImported = useCallback((result: ImportResult) => {
     setCv(result.cv);
-    setDisplaySettings((prev) => ({ ...prev, cvLanguage: result.detectedLanguage }));
+    if (result.source === "file") {
+      // A saved CV file restores the user's own template and settings as they were
+      setTemplateId(result.templateId);
+      setDisplaySettings({ ...defaultDisplaySettings, ...result.displaySettings });
+      setStyleOverrides(result.styleOverrides ?? {});
+    } else {
+      setDisplaySettings((prev) => ({ ...prev, cvLanguage: result.detectedLanguage }));
+      // LinkedIn profiles are often long, shorten to the page target right away
+      requestAutoFit();
+    }
     setShowImport(false);
-  }, [setCv, setDisplaySettings]);
+  }, [setCv, setTemplateId, setDisplaySettings, setStyleOverrides, requestAutoFit]);
 
   const { processing, error: pdfError, clearError: clearPdfError, handleFileSelected } = usePdfImport(handleImported);
 
-  // --- PDF export ---
+  // --- Export ---
   const { downloading, exportFailed, handleDownloadPdf } = usePdfExport(cv.name, templateId);
+
+  // Run the quality checklist first, download straight away when nothing is missing
+  const requestDownload = useCallback(() => {
+    const issues = checkCv(cv);
+    if (issues.length === 0) {
+      handleDownloadPdf();
+      return;
+    }
+    setChecklistIssues(issues);
+    trackDownloadChecklist(issues.length);
+  }, [cv, handleDownloadPdf]);
+
+  const handleSaveFile = useCallback(() => {
+    downloadCvFile({ cv, templateId, displaySettings, styleOverrides });
+    trackCvFileSave();
+  }, [cv, templateId, displaySettings, styleOverrides]);
 
   // --- Onboarding callbacks ---
   const handleStartFromScratch = useCallback(() => {
@@ -88,13 +122,16 @@ export default function MainPage() {
     setShowOnboarding(false);
   }, []);
 
+  const openPreview = () => { setShowPreview(true); trackFullscreenPreview(); };
+
   return (
     <div className="min-h-screen lg:min-h-0 lg:h-screen lg:overflow-hidden bg-muted/30 flex flex-col">
       <AppHeader
         title="Free Resume"
         locale={locale}
         onImportPdf={() => setShowImport(true)}
-        onDownloadPdf={handleDownloadPdf}
+        onDownloadPdf={requestDownload}
+        onSaveFile={handleSaveFile}
         downloading={downloading}
         showActions={!effectiveShowOnboarding}
         labels={header}
@@ -114,7 +151,7 @@ export default function MainPage() {
             onComplete={handleOnboardingComplete}
           />
         ) : (
-          <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 py-6 sm:py-8 pb-24 lg:pb-8 flex flex-col lg:h-full">
+          <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 py-6 sm:py-8 pb-28 lg:pb-8 flex flex-col lg:h-full">
             {exportFailed && (
               <div className="print:hidden mb-2 rounded-md bg-destructive/10 border border-destructive/20 px-3 py-2 text-xs text-destructive">
                 {t("actions.downloadError")}
@@ -146,7 +183,7 @@ export default function MainPage() {
                   onTemplateSelect={(id: string) => { setTemplateId(id); trackTemplateSwitch(id); }}
                   activeStep={activeStep}
                   onStepChange={setActiveStep}
-                  onDownload={handleDownloadPdf}
+                  onDownload={requestDownload}
                   downloading={downloading}
                   labels={editor}
                 />
@@ -159,7 +196,7 @@ export default function MainPage() {
                     variant="outline"
                     size="icon-sm"
                     className="absolute top-2 right-2 z-10 bg-background/80 backdrop-blur-sm shadow-sm opacity-70 hover:opacity-100 transition-opacity"
-                    onClick={() => { setShowPreview(true); trackFullscreenPreview(); }}
+                    onClick={openPreview}
                     title={t("preview.fullscreen")}
                     aria-label={t("preview.fullscreen")}
                   >
@@ -178,10 +215,19 @@ export default function MainPage() {
       {!effectiveShowOnboarding && (
         <div className="lg:hidden fixed bottom-0 inset-x-0 z-40 p-3 bg-background/95 backdrop-blur-sm border-t safe-area-pb">
           <div className="flex gap-2 max-w-lg mx-auto">
-            <Button variant="outline" className="flex-1" onClick={() => { setShowPreview(true); trackFullscreenPreview(); }}>
-              <Maximize2 className="h-4 w-4 mr-2" /> {t("preview.fullscreen")}
-            </Button>
-            <Button className="flex-1" onClick={handleDownloadPdf} disabled={downloading}>
+            {/* Live thumbnail so changes are visible without leaving the form. A plain
+                button, the shared Button would resize the template's own icons. */}
+            <button
+              type="button"
+              onClick={openPreview}
+              className="flex flex-1 items-center gap-3 rounded-md border bg-background px-2 py-1.5 text-sm font-medium shadow-xs hover:bg-accent"
+            >
+              <span aria-hidden className="pointer-events-none w-8 shrink-0 overflow-hidden rounded-[2px]">
+                <CvPreview renderModel={renderModel} templateId={templateId} styleSettings={styleSettings} />
+              </span>
+              {t("preview.show")}
+            </button>
+            <Button className="flex-1 h-auto" onClick={requestDownload} disabled={downloading}>
               {downloading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Download className="h-4 w-4 mr-2" />}
               {downloading ? t("actions.generating") : t("actions.downloadPdf")}
             </Button>
@@ -190,7 +236,7 @@ export default function MainPage() {
       )}
 
       {/* Extra bottom padding on mobile so the fixed action bar doesn't cover the footer links */}
-      <AppFooter labels={footer} className={effectiveShowOnboarding ? undefined : "pb-20 lg:pb-0"} />
+      <AppFooter labels={footer} className={effectiveShowOnboarding ? undefined : "pb-24 lg:pb-0"} />
 
       <ImportPdfDialog
         open={showImport}
@@ -199,6 +245,13 @@ export default function MainPage() {
         processing={processing}
         error={pdfError}
         labels={importDialog}
+      />
+
+      <DownloadChecklistDialog
+        issues={checklistIssues}
+        onClose={() => setChecklistIssues(null)}
+        onFix={(step) => { setChecklistIssues(null); setActiveStep(step); }}
+        onDownloadAnyway={() => { setChecklistIssues(null); handleDownloadPdf(); }}
       />
 
       <FullscreenPreviewDialog

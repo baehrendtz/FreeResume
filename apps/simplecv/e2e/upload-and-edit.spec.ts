@@ -14,7 +14,7 @@ test.describe("LinkedIn PDF upload and edit flow", () => {
   }) => {
     await page.goto("/sv");
 
-    const fileInput = page.locator('input[type="file"][accept=".pdf"]');
+    const fileInput = page.locator('input[type="file"]');
     await fileInput.setInputFiles(fixturePdf);
 
     await expect(

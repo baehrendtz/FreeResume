@@ -1,9 +1,10 @@
 {
   "upload": {
-    "dropzone": "Drag and drop your PDF here, or click to browse",
-    "invalidFileType": "Please select a PDF file",
+    "dropzone": "Drag and drop your LinkedIn PDF or saved CV file here, or click to browse",
+    "invalidFileType": "Please select a PDF or a saved CV file (.json)",
     "processing": "Processing PDF...",
-    "error": "Could not parse this PDF. Please make sure it is a LinkedIn profile export."
+    "error": "Could not parse this PDF. Please make sure it is a LinkedIn profile export.",
+    "fileError": "Could not open the CV file. Make sure it was saved from Free Resume."
   },
   "editor": {
     "tabs": {
@@ -61,10 +62,9 @@
       "startDate": "Start Date",
       "endDate": "End Date",
       "datePlaceholder": "e.g. Jan 2020",
-      "endDatePlaceholder": "e.g. Present",
       "description": "Description",
-      "bullets": "Bullet points (one per line)",
-      "bulletsHint": "One bullet point per line. Empty lines are ignored.",
+      "bullets": "Bullet points",
+      "bulletsHint": "Press Enter for a new bullet. Drag the handle to reorder.",
       "add": "Add Experience",
       "remove": "Remove",
       "hide": "Hide in CV",
@@ -81,7 +81,11 @@
       "companyPlaceholder": "e.g. Acme Inc.",
       "locationPlaceholder": "e.g. London",
       "descriptionPlaceholder": "A short line about the role and your responsibilities (optional)",
-      "bulletsPlaceholder": "Increased sales by 20% in one year\nLed a team of 5 people"
+      "bulletsPlaceholder": "e.g. Increased sales by 20% in one year",
+      "excluded": "Doesn't fit in the CV",
+      "addBullet": "Add bullet",
+      "removeBullet": "Remove bullet",
+      "dragBullet": "Drag to reorder"
     },
     "education": {
       "institution": "Institution",
@@ -90,7 +94,6 @@
       "startDate": "Start Date",
       "endDate": "End Date",
       "datePlaceholder": "e.g. Jan 2020",
-      "endDatePlaceholder": "e.g. Present",
       "description": "Description",
       "add": "Add Education",
       "remove": "Remove",
@@ -103,7 +106,8 @@
       "untitled": "New education",
       "institutionPlaceholder": "e.g. Stockholm University",
       "degreePlaceholder": "e.g. Bachelor's degree",
-      "fieldPlaceholder": "e.g. Economics"
+      "fieldPlaceholder": "e.g. Economics",
+      "excluded": "Doesn't fit in the CV"
     },
     "skills": {
       "label": "Skills",
@@ -207,13 +211,25 @@
       "fitting": "Shortening...",
       "useTwoPages": "Use 2 pages",
       "editLimits": "Choose what to show"
+    },
+    "storage": {
+      "title": "Save between visits",
+      "description": "By default your CV disappears when you close the tab.",
+      "remember": "Remember my CV in this browser",
+      "rememberHint": "Turn this off on shared computers. You can also keep a copy with \"Save CV file\"."
+    },
+    "dates": {
+      "month": "Month",
+      "year": "Year",
+      "ongoing": "Ongoing"
     }
   },
   "preview": {
     "title": "CV Preview",
     "fullscreen": "Fullscreen preview",
     "zoomIn": "Zoom in",
-    "zoomOut": "Zoom out"
+    "zoomOut": "Zoom out",
+    "show": "Preview"
   },
   "onboarding": {
     "choose": {
@@ -223,7 +239,8 @@
       "importDescription": "Upload your LinkedIn PDF to auto-fill your CV",
       "scratchTitle": "Start from scratch",
       "scratchDescription": "Begin with a blank CV and fill in your details",
-      "howToGetPdf": "How do I get my LinkedIn PDF?"
+      "howToGetPdf": "How do I get my LinkedIn PDF?",
+      "openSaved": "Saved a CV before? Open your CV file"
     },
     "guide": {
       "step1": "Open your LinkedIn profile in a desktop browser",
@@ -247,7 +264,8 @@
     "importPdf": "Import PDF",
     "importWarning": "This will replace your current CV data",
     "moreActions": "More actions",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "saveFile": "Save CV file"
   },
   "theme": {
     "toggle": "Toggle theme"
@@ -263,7 +281,7 @@
     "downloadTitle": "Download your CV",
     "downloadText": "Click the \"Download PDF\" button in the top menu. Your CV is generated directly in the browser.",
     "dataTitle": "Your data",
-    "dataText": "All CV data is stored locally in your browser (sessionStorage). If you accept analytics cookies, anonymous usage data is sent to Google Analytics to help us improve the service. No personal information is shared.",
+    "dataText": "Your CV only lives in your browser and disappears when you close the tab. To continue later, save a CV file or turn on \"Remember my CV\" under Settings. If you accept analytics cookies, anonymous usage data is sent to Google Analytics. No personal information is shared.",
     "footer": "Free Resume is free and open source."
   },
   "consent": {
@@ -275,5 +293,39 @@
   "footer": {
     "copyright": "© {year} Free Resume",
     "openSource": "Free & open source"
+  },
+  "checklist": {
+    "title": "Before you download",
+    "description": "A few things could make your CV stronger. Fix them or download anyway.",
+    "fix": "Fix",
+    "downloadAnyway": "Download anyway",
+    "issues": {
+      "missingName": "Your name is missing",
+      "missingEmail": "Email address is missing",
+      "invalidEmail": "The email address doesn't look right",
+      "missingPhone": "Phone number is missing",
+      "longHeadline": "The headline is long, try to keep it under {max} characters",
+      "missingSummary": "Summary is missing",
+      "noExperience": "No experience added",
+      "jobsWithoutDetails": "{count, plural, one {# job has} other {# jobs have}} no description or bullet points"
+    }
+  },
+  "templates": {
+    "basic": {
+      "name": "Classic",
+      "description": "One column, clean and timeless"
+    },
+    "professional": {
+      "name": "Professional",
+      "description": "Dark header with a sidebar"
+    },
+    "basic2": {
+      "name": "Modern",
+      "description": "Sidebar with a large photo"
+    },
+    "creative": {
+      "name": "Creative",
+      "description": "Colourful with a sidebar"
+    }
   }
 }

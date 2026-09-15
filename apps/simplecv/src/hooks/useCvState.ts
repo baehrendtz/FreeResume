@@ -1,73 +1,13 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { z } from "zod/v4";
-import { type CvModel, createEmptyCvModel, cvModelSchema } from "@/lib/model/CvModel";
+import { type CvModel, createEmptyCvModel } from "@/lib/model/CvModel";
 import { type DisplaySettings, defaultDisplaySettings } from "@/lib/model/DisplaySettings";
 import { type PerTemplateStyleOverrides, resolveStyleSettings } from "@/lib/model/TemplateStyleSettings";
 import { buildRenderModel } from "@/lib/fitting";
 import { getTemplateMeta, getTemplateDefaultStyle } from "@/templates/templateRegistry";
 import { saveSession, loadSession } from "@/lib/export/printHelpers";
-import { findLanguageId } from "@/lib/cvLocale";
-import { assignCompanyGroupIds } from "@/lib/model/groupExperience";
-
-function migrateExtras(cv: CvModel): CvModel {
-  const extras = cv.extras as unknown;
-  if (Array.isArray(extras) && extras.length > 0 && typeof extras[0] === "string") {
-    return { ...cv, extras: [{ category: "other", items: extras as string[] }] };
-  }
-  return cv;
-}
-
-function migrateLanguages(cv: CvModel): CvModel {
-  const languages = cv.languages as unknown;
-  if (Array.isArray(languages) && languages.length > 0 && typeof languages[0] === "string") {
-    return {
-      ...cv,
-      languages: (languages as string[]).map((name) => ({
-        name,
-        level: "professional_working" as const,
-      })),
-    };
-  }
-  return cv;
-}
-
-function migrateCompanyGroups(cv: CvModel): CvModel {
-  if (cv.experience.some((e) => e.companyGroupId)) return cv;
-  return { ...cv, experience: assignCompanyGroupIds(cv.experience) };
-}
-
-function migrateLanguageNames(cv: CvModel): CvModel {
-  const changed = cv.languages.map((lang) => {
-    const id = findLanguageId(lang.name);
-    return id ? { ...lang, name: id } : lang;
-  });
-  return { ...cv, languages: changed };
-}
-
-// Same shape as cvModelSchema but without the min-length requirement on name ,
-// in-progress sessions are legitimately saved before a name has been typed.
-const sessionCvSchema = cvModelSchema.extend({ name: z.string() });
-
-/** Migrate + validate a session CV. Returns null if the data is unusable. */
-function parseSessionCv(raw: CvModel): CvModel | null {
-  const empty = createEmptyCvModel();
-  // Heal missing fields from older sessions before strict validation
-  const healed = {
-    ...empty,
-    ...raw,
-    sectionsVisibility: { ...empty.sectionsVisibility, ...(raw.sectionsVisibility ?? {}) },
-  };
-  const migrated = [migrateExtras, migrateLanguages, migrateLanguageNames, migrateCompanyGroups]
-    .reduce((model, fn) => fn(model), healed);
-  const result = sessionCvSchema.safeParse(migrated);
-  if (!result.success) {
-    console.error("Discarding invalid saved session:", result.error);
-    return null;
-  }
-  return result.data;
-}
+import { parseSessionCv } from "@/lib/model/sessionCv";
 
 function loadInitialState() {
   const session = loadSession();

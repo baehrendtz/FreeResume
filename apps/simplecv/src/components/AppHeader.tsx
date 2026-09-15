@@ -13,6 +13,7 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import {
   Upload,
   FileDown,
+  Save,
   MoreVertical,
   Sun,
   Moon,
@@ -41,10 +42,12 @@ interface AppHeaderProps {
   locale: string;
   onImportPdf: () => void;
   onDownloadPdf: () => void;
+  onSaveFile: () => void;
   downloading: boolean;
   showActions?: boolean;
   labels: {
     importPdf: string;
+    saveFile: string;
     downloadPdf: string;
     generating: string;
     moreActions: string;
@@ -59,6 +62,7 @@ export function AppHeader({
   locale,
   onImportPdf,
   onDownloadPdf,
+  onSaveFile,
   downloading,
   showActions = true,
   labels,
@@ -78,6 +82,7 @@ export function AppHeader({
 
   const actions = [
     { id: "import", label: labels.importPdf, icon: Upload, onClick: onImportPdf, disabled: false },
+    { id: "save", label: labels.saveFile, icon: Save, onClick: onSaveFile, disabled: false },
     { id: "download", label: downloading ? labels.generating : labels.downloadPdf, icon: FileDown, onClick: onDownloadPdf, disabled: downloading },
   ] as const;
 
