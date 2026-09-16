@@ -1,0 +1,100 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Navbar from '../../components/Navbar.astro';
+import Templates from '../../components/Templates.astro';
+import Footer from '../../components/Footer.astro';
+import { appUrl, paths } from '../../links';
+
+const choose = [
+  { name: 'Classic', body: 'Fits most jobs, especially in the public sector, finance and engineering, where the content should speak for itself.' },
+  { name: 'Professional', body: 'Dark header and a sidebar. Good when you have many years behind you and want contact details and skills up front.' },
+  { name: 'Modern', body: 'Sidebar with room for a photo. Pick it when you want a face on the CV and a lighter feel.' },
+  { name: 'Creative', body: 'Colorful with a sidebar, for design, marketing and communication roles where expression counts.' },
+];
+
+const readable = [
+  'One column, so both people and systems read the content in the right order.',
+  'Standard headings such as Experience, Education and Skills.',
+  'Clear dates on every entry, so your timeline is easy to follow.',
+  'Real text in the PDF instead of an image, so the content can be searched.',
+];
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Free Resume", "item": "https://freeresume.eu/en/" },
+    { "@type": "ListItem", "position": 2, "name": "CV templates", "item": "https://freeresume.eu/en/cv-templates/" },
+  ],
+};
+---
+
+<BaseLayout
+  title="Free CV templates that are easy to read"
+  description="Four free CV templates, single column with standard headings. Fill them from your LinkedIn profile and download as PDF, with no account and no paywall."
+  lang="en"
+  altPath="/cv-mallar/"
+>
+  <Navbar lang="en" />
+
+  <main class="pt-28 sm:pt-32">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <nav aria-label="Breadcrumb" class="text-sm text-gray-500 dark:text-gray-400">
+        <a href={paths.en.home} class="hover:underline">Free Resume</a>
+        <span class="mx-2" aria-hidden="true">/</span>
+        <span>CV templates</span>
+      </nav>
+      <h1 class="mt-4 max-w-3xl text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 dark:text-white text-balance">
+        Free CV templates
+      </h1>
+      <p class="mt-4 max-w-3xl text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
+        Four templates built to be read, both by the recruiter skimming them and by the system parsing the text.
+        All of them are free, no account is needed, and you can switch template at any time without rewriting anything.
+      </p>
+    </div>
+
+    <Templates lang="en" detailed />
+
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+      <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Which template should I pick?</h2>
+      <dl class="mt-4 divide-y divide-gray-200 dark:divide-gray-800">
+        {choose.map((item) => (
+          <div class="py-4">
+            <dt class="font-semibold text-gray-900 dark:text-white">{item.name}</dt>
+            <dd class="mt-1 text-gray-600 dark:text-gray-400 leading-relaxed">{item.body}</dd>
+          </div>
+        ))}
+      </dl>
+
+      <h2 class="mt-12 text-2xl font-bold text-gray-900 dark:text-white">What makes a template easy to read?</h2>
+      <ul class="mt-4 space-y-2.5">
+        {readable.map((item) => (
+          <li class="flex gap-2.5 text-gray-600 dark:text-gray-400 leading-relaxed">
+            <svg class="w-5 h-5 shrink-0 text-green-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+            </svg>
+            {item}
+          </li>
+        ))}
+      </ul>
+
+      <div class="mt-12 rounded-2xl bg-gray-50 dark:bg-gray-900 p-6 sm:p-8">
+        <h2 class="text-xl font-bold text-gray-900 dark:text-white">Fill a template with your LinkedIn profile</h2>
+        <p class="mt-2 text-gray-600 dark:text-gray-400">
+          Upload your LinkedIn PDF and jobs, education and skills fill in automatically.
+        </p>
+        <div class="mt-5 flex flex-col sm:flex-row gap-3">
+          <a href={appUrl('en')} class="inline-flex items-center justify-center bg-brand-600 hover:bg-brand-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors">
+            Create your free CV
+          </a>
+          <a href={paths.en.guide} class="inline-flex items-center justify-center px-5 py-3 rounded-lg font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            How to save LinkedIn as PDF
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  <Footer lang="en" />
+</BaseLayout>

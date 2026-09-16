@@ -1,5 +1,6 @@
 ---
 import type { Lang } from '../types';
+import { paths } from '../links';
 
 interface Props {
   lang: Lang;
@@ -9,74 +10,70 @@ const { lang } = Astro.props;
 
 const t = {
   sv: {
-    heading: 'Skapa ditt CV i tre enkla steg',
+    heading: 'Så gör du, tre steg',
+    guideLink: 'Detaljerad guide med bilder',
     steps: [
-      { title: 'Ladda ner', desc: 'Exportera din LinkedIn-profil som PDF.' },
-      { title: 'Ladda upp', desc: 'Dra in PDF:en — all info fylls i automatiskt.' },
-      { title: 'Klar', desc: 'Välj mall, anpassa och ladda ner ditt CV.' },
+      {
+        title: 'Spara din LinkedIn-profil som PDF',
+        desc: 'Öppna profilen i en webbläsare på datorn, klicka på Resurser (eller Mer) under ditt namn och välj Spara som PDF.',
+      },
+      {
+        title: 'Ladda upp PDF:en',
+        desc: 'Dra in filen i Free Resume. Jobb, utbildning, kompetenser och språk fylls i automatiskt.',
+      },
+      {
+        title: 'Ladda ner ditt CV',
+        desc: 'Välj mall, justera texterna om du vill och ladda ner en PDF med sökbar text.',
+      },
     ],
   },
   en: {
-    heading: 'Create your CV in three simple steps',
+    heading: 'How it works, three steps',
+    guideLink: 'Step by step guide with pictures',
     steps: [
-      { title: 'Download', desc: 'Export your LinkedIn profile as a PDF.' },
-      { title: 'Upload', desc: 'Drop the PDF — all info is filled in automatically.' },
-      { title: 'Done', desc: 'Pick a template, customize and download your CV.' },
+      {
+        title: 'Save your LinkedIn profile as a PDF',
+        desc: 'Open your profile in a desktop browser, click Resources (or More) below your name and choose Save to PDF.',
+      },
+      {
+        title: 'Upload the PDF',
+        desc: 'Drop the file into Free Resume. Jobs, education, skills and languages fill in automatically.',
+      },
+      {
+        title: 'Download your CV',
+        desc: 'Pick a template, adjust the text if you want and download a PDF with searchable text.',
+      },
     ],
   },
 }[lang];
-
-const icons = [
-  // Download arrow
-  `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
-  </svg>`,
-  // Upload arrow
-  `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
-  </svg>`,
-  // Check
-  `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-  </svg>`,
-];
-
-const howToJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "HowTo",
-  "name": t.heading,
-  "step": t.steps.map((step, i) => ({
-    "@type": "HowToStep",
-    "position": i + 1,
-    "name": step.title,
-    "text": step.desc,
-  })),
-};
 ---
 
-<section class="py-10 sm:py-14">
+<section class="py-14 sm:py-20">
   <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-    <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white text-center mb-10">
+    <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white text-center">
       {t.heading}
     </h2>
 
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-4 relative">
-      {/* Connecting line — desktop only */}
-      <div class="hidden sm:block absolute top-6 left-[calc(16.67%+12px)] right-[calc(16.67%+12px)] h-px bg-gray-200 dark:bg-gray-700" aria-hidden="true"></div>
-
+    <ol class="mt-10 space-y-8">
       {t.steps.map((step, i) => (
-        <div class="flex sm:flex-col items-start sm:items-center gap-4 sm:gap-3 text-left sm:text-center relative">
-          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-brand-50 dark:bg-brand-950 text-brand-600 dark:text-brand-400 flex items-center justify-center relative z-10">
-            <Fragment set:html={icons[i]} />
-          </div>
+        <li class="flex gap-5">
+          <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-600 text-white font-semibold">
+            {i + 1}
+          </span>
           <div>
-            <h3 class="font-semibold text-gray-900 dark:text-white">{step.title}</h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{step.desc}</p>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{step.title}</h3>
+            <p class="mt-1 text-gray-600 dark:text-gray-400 leading-relaxed">{step.desc}</p>
+            {i === 0 && (
+              <a
+                href={paths[lang].guide}
+                class="mt-2 inline-block text-sm font-semibold text-brand-600 dark:text-brand-400 hover:underline"
+              >
+                {t.guideLink}
+              </a>
+            )}
           </div>
-        </div>
+        </li>
       ))}
-    </div>
+    </ol>
   </div>
-
-  <script type="application/ld+json" set:html={JSON.stringify(howToJsonLd)} />
 </section>

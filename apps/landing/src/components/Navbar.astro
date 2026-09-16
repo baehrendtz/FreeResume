@@ -1,5 +1,6 @@
 ---
 import type { Lang } from '../types';
+import { appUrl, paths } from '../links';
 
 interface Props {
   lang: Lang;
@@ -9,28 +10,42 @@ const { lang } = Astro.props;
 
 const t = {
   sv: {
-    cta: 'Skapa ditt CV',
-    langSwitch: 'English',
+    cta: 'Skapa CV gratis',
+    templates: 'CV-mallar',
+    guide: 'LinkedIn till PDF',
+    langSwitch: 'Switch to English',
     langHref: '/en/',
+    logoAlt: 'Free Resume, gratis CV-verktyg',
   },
   en: {
-    cta: 'Create your CV',
-    langSwitch: 'Svenska',
+    cta: 'Create a free CV',
+    templates: 'CV templates',
+    guide: 'LinkedIn to PDF',
+    langSwitch: 'Byt till svenska',
     langHref: '/',
+    logoAlt: 'Free Resume, free CV builder',
   },
 }[lang];
+
+const p = paths[lang];
 ---
 
 <nav class="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-950/80 backdrop-blur-lg border-b border-gray-100 dark:border-gray-800">
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-    <a href={lang === 'sv' ? '/' : '/en/'} class="flex items-center">
-      <img src="/logo.png" alt="Free Resume — Gratis CV-verktyg" class="h-9" />
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+    <a href={p.home} class="flex items-center shrink-0">
+      <img src="/logo.png" alt={t.logoAlt} width="420" height="124" class="h-9 w-auto" />
     </a>
+
+    <div class="hidden md:flex items-center gap-6 text-sm font-medium text-gray-600 dark:text-gray-300">
+      <a href={p.templates} class="hover:text-gray-900 dark:hover:text-white transition-colors">{t.templates}</a>
+      <a href={p.guide} class="hover:text-gray-900 dark:hover:text-white transition-colors">{t.guide}</a>
+    </div>
+
     <div class="flex items-center gap-3">
       <a
         href={t.langHref}
         class="inline-flex items-center p-2 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-        aria-label={lang === 'sv' ? 'Switch to English' : 'Byt till svenska'}
+        aria-label={t.langSwitch}
       >
         {lang === 'sv' ? (
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" class="w-5 h-auto rounded-sm" aria-hidden="true">
@@ -57,23 +72,18 @@ const t = {
         class="p-2 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
         aria-label="Toggle dark mode"
       >
-        <!-- Sun icon (visible in dark mode) -->
         <svg class="w-5 h-5 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
         </svg>
-        <!-- Moon icon (visible in light mode) -->
         <svg class="w-5 h-5 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
         </svg>
       </button>
       <a
-        href="https://app.freeresume.eu"
-        class="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+        href={appUrl(lang)}
+        class="inline-flex items-center bg-brand-600 hover:bg-brand-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
       >
         {t.cta}
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-        </svg>
       </a>
     </div>
   </div>

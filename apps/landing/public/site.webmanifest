@@ -1,0 +1,13 @@
+{
+  "name": "Free Resume",
+  "short_name": "Free Resume",
+  "description": "Gratis CV-verktyg som gör ett CV av din LinkedIn-profil",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "icons": [
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

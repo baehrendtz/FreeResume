@@ -1,0 +1,96 @@
+---
+import type { Lang } from '../types';
+import { githubUrl } from '../links';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+
+const t = {
+  sv: {
+    heading: 'Gratis på riktigt, och inget lämnar din webbläsare',
+    intro: 'Många CV-verktyg är gratis ända fram till nedladdningen. Här finns ingen betalvägg och inget konto att logga in på.',
+    points: [
+      {
+        title: 'Gratis hela vägen',
+        desc: 'Ingen betalning vid nedladdning, inga vattenstämplar och inga premiumplaner.',
+      },
+      {
+        title: 'Inget konto',
+        desc: 'Du behöver varken e-post, lösenord eller LinkedIn-inloggning för att komma igång.',
+      },
+      {
+        title: 'Din PDF stannar hos dig',
+        desc: 'Filen läses i din webbläsare. Den skickas aldrig till någon server, och vi sparar inget CV.',
+      },
+      {
+        title: 'Öppen källkod',
+        desc: 'Hela koden ligger på GitHub. Du kan granska den, rapportera fel eller köra verktyget lokalt.',
+      },
+    ],
+    github: 'Se koden på GitHub',
+  },
+  en: {
+    heading: 'Genuinely free, and nothing leaves your browser',
+    intro: 'Many CV tools are free right up until the download. Here there is no paywall and no account to sign in to.',
+    points: [
+      {
+        title: 'Free all the way',
+        desc: 'No payment at download, no watermarks and no premium plans.',
+      },
+      {
+        title: 'No account',
+        desc: 'You need no email, no password and no LinkedIn login to get started.',
+      },
+      {
+        title: 'Your PDF stays with you',
+        desc: 'The file is read in your browser. It is never sent to a server, and we store no CVs.',
+      },
+      {
+        title: 'Open source',
+        desc: 'All the code is on GitHub. Review it, report a bug or run the tool locally.',
+      },
+    ],
+    github: 'See the code on GitHub',
+  },
+}[lang];
+
+const icons = [
+  `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 11.25v8.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5v-8.25M12 4.875A2.625 2.625 0 1 0 9.375 7.5H12m0-2.625V7.5m0-2.625A2.625 2.625 0 1 1 14.625 7.5H12m0 0V21m-8.625-9.75h18c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125h-18c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" /></svg>`,
+  `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M22 10.5h-6m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM4 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 10.374 21c-2.331 0-4.512-.645-6.374-1.766Z" /></svg>`,
+  `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" /></svg>`,
+  `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5" /></svg>`,
+];
+---
+
+<section class="py-14 sm:py-20 bg-gray-50 dark:bg-gray-900/50">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-3xl">
+      <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white text-balance">
+        {t.heading}
+      </h2>
+      <p class="mt-4 text-lg text-gray-600 dark:text-gray-300">{t.intro}</p>
+    </div>
+
+    <div class="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-8">
+      {t.points.map((point, i) => (
+        <div class="flex gap-4">
+          <span class="w-10 h-10 shrink-0 rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-brand-600 dark:text-brand-400 flex items-center justify-center">
+            <Fragment set:html={icons[i]} />
+          </span>
+          <div>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{point.title}</h3>
+            <p class="mt-1 text-gray-600 dark:text-gray-400 leading-relaxed">{point.desc}</p>
+            {i === 3 && (
+              <a href={githubUrl} target="_blank" rel="noopener noreferrer" class="mt-1 inline-block text-sm font-semibold text-brand-600 dark:text-brand-400 hover:underline">
+                {t.github}
+              </a>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

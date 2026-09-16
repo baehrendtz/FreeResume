@@ -1,0 +1,91 @@
+---
+import type { Lang } from '../types';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+
+const t = {
+  sv: {
+    heading: 'Vad LinkedIns egen PDF-export saknar',
+    intro: 'LinkedIns PDF är en utskrift av din profil, inte ett CV. Free Resume läser innehållet och bygger om det till ett CV du kan skicka till en arbetsgivare.',
+    leftTitle: 'LinkedIns PDF',
+    rightTitle: 'Ditt CV från Free Resume',
+    left: [
+      'Flera sidor, ofta fyra eller fler',
+      'LinkedIns egen layout och logotyp',
+      'Allt kommer med, även gamla kortjobb',
+      'Ser likadan ut för alla',
+      'Går inte att redigera',
+    ],
+    right: [
+      'En eller två sidor, du väljer',
+      'Ren layout utan logotyper',
+      'Du bestämmer vad som ska visas',
+      'Fyra mallar och egna färger',
+      'Varje text går att ändra',
+    ],
+  },
+  en: {
+    heading: "What LinkedIn's own PDF export leaves out",
+    intro: "LinkedIn's PDF is a printout of your profile, not a CV. Free Resume reads the content and rebuilds it into a CV you can send to an employer.",
+    leftTitle: "LinkedIn's PDF",
+    rightTitle: 'Your CV from Free Resume',
+    left: [
+      'Several pages, often four or more',
+      "LinkedIn's own layout and logo",
+      'Everything is included, even short old jobs',
+      'Looks the same for everyone',
+      'Cannot be edited',
+    ],
+    right: [
+      'One or two pages, your choice',
+      'Clean layout with no logos',
+      'You decide what is shown',
+      'Four templates and your own colors',
+      'Every line can be edited',
+    ],
+  },
+}[lang];
+---
+
+<section class="py-14 sm:py-20">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-3xl">
+      <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white text-balance">{t.heading}</h2>
+      <p class="mt-4 text-lg text-gray-600 dark:text-gray-300">{t.intro}</p>
+    </div>
+
+    <div class="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <div class="rounded-xl border border-gray-200 dark:border-gray-800 p-6">
+        <h3 class="font-semibold text-gray-900 dark:text-white">{t.leftTitle}</h3>
+        <ul class="mt-4 space-y-2.5">
+          {t.left.map((item) => (
+            <li class="flex gap-2.5 text-gray-600 dark:text-gray-400">
+              <svg class="w-5 h-5 shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+              </svg>
+              {item}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="rounded-xl border-2 border-brand-600 dark:border-brand-500 p-6 bg-brand-50/50 dark:bg-brand-950/30">
+        <h3 class="font-semibold text-gray-900 dark:text-white">{t.rightTitle}</h3>
+        <ul class="mt-4 space-y-2.5">
+          {t.right.map((item) => (
+            <li class="flex gap-2.5 text-gray-700 dark:text-gray-300">
+              <svg class="w-5 h-5 shrink-0 text-green-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+              </svg>
+              {item}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
