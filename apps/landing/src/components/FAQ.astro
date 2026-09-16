@@ -1,5 +1,6 @@
 ---
 import type { Lang } from '../types';
+import { paths } from '../links';
 
 interface Props {
   lang: Lang;
@@ -9,52 +10,94 @@ const { lang } = Astro.props;
 
 const t = {
   sv: {
-    heading: 'Vanliga frågor om Free Resume',
+    heading: 'Vanliga frågor',
+    guideLink: 'Läs hela guiden om LinkedIn-exporten',
     items: [
       {
-        q: 'Är Free Resume verkligen gratis?',
-        a: 'Ja, helt gratis. Inga dolda avgifter, inga premium-planer, inga vattenstämplar.',
+        q: 'Hur laddar jag ner min LinkedIn-profil som PDF?',
+        a: 'Öppna din profil i en webbläsare på datorn, klicka på Resurser (eller Mer) under ditt namn och välj Spara som PDF. Filen heter oftast Profile.pdf och hamnar i mappen Hämtade filer. Det går inte att göra i mobilappen.',
+      },
+      {
+        q: 'Är Free Resume gratis, även nedladdningen?',
+        a: 'Ja. Det finns ingen betalvägg, inga vattenstämplar och inga premiumplaner. Du laddar ner ditt CV som PDF utan att betala.',
       },
       {
         q: 'Behöver jag skapa ett konto?',
-        a: 'Nej, du kan börja direkt utan registrering eller e-post.',
+        a: 'Nej. Du behöver varken e-post, lösenord eller LinkedIn-inloggning. Öppna verktyget och börja direkt.',
       },
       {
-        q: 'Hur fungerar LinkedIn-importen?',
-        a: 'Exportera din LinkedIn-profil som PDF och ladda upp den i Free Resume. All information fylls i automatiskt.',
+        q: 'Vad händer med mina uppgifter?',
+        a: 'PDF:en läses i din webbläsare och skickas aldrig till någon server. Ditt CV finns kvar så länge fliken är öppen, och du kan spara en CV-fil på din egen dator om du vill fortsätta senare.',
       },
       {
-        q: 'Är min data säker?',
-        a: 'Ja, ditt CV skapas helt i webbläsaren. Ingen personlig data skickas till våra servrar.',
+        q: 'Kan jag använda min LinkedIn-profil som CV?',
+        a: 'Profilen innehåller rätt information, men LinkedIns PDF är en utskrift av profilen: den är lång, har LinkedIns layout och går inte att redigera. Free Resume bygger om innehållet till ett CV på en eller två sidor.',
       },
       {
-        q: 'Vilka CV-mallar finns?',
-        a: 'Basic, Professional och Creative. Alla är ATS-vänliga och enkla att anpassa.',
+        q: 'Vad är ett ATS-anpassat CV?',
+        a: 'Ett CV som rekryteringssystem kan läsa som text. I praktiken betyder det en kolumn, vanliga rubriker, vanliga typsnitt och en PDF med riktigt textinnehåll i stället för en bild.',
+      },
+      {
+        q: 'Hur långt bak i tiden ska ett CV gå?',
+        a: 'Oftast räcker de senaste tio till femton åren. Ta med det som är relevant för jobbet du söker, och korta ner äldre roller till en rad. I Free Resume kan du dölja enskilda jobb utan att radera dem.',
+      },
+      {
+        q: 'Vilket filformat ska jag skicka till arbetsgivaren?',
+        a: 'PDF är standard, eftersom formatet ser likadant ut hos alla. Skicka Word-fil bara om annonsen uttryckligen ber om det.',
+      },
+      {
+        q: 'Kan jag ändra innehållet efter importen?',
+        a: 'Ja. Du kan redigera varje text, lägga till foto, byta ordning på jobb, dölja poster och välja hur många sidor CV:t ska vara.',
+      },
+      {
+        q: 'Fungerar det i mobilen?',
+        a: 'Du kan redigera och ladda ner ditt CV i mobilen. Däremot kan LinkedIn bara spara profilen som PDF i en webbläsare på datorn, så själva exporten behöver göras där.',
       },
     ],
   },
   en: {
-    heading: 'Frequently asked questions about Free Resume',
+    heading: 'Frequently asked questions',
+    guideLink: 'Read the full guide to the LinkedIn export',
     items: [
       {
-        q: 'Is Free Resume really free?',
-        a: 'Yes, completely free. No hidden fees, no premium plans, no watermarks.',
+        q: 'How do I download my LinkedIn profile as a PDF?',
+        a: 'Open your profile in a desktop browser, click Resources (or More) below your name and choose Save to PDF. The file is usually called Profile.pdf and lands in your Downloads folder. It cannot be done in the mobile app.',
       },
       {
-        q: 'Do I need to create an account?',
-        a: 'No, you can start right away without signing up or providing an email.',
+        q: 'Is Free Resume free, including the download?',
+        a: 'Yes. There is no paywall, no watermark and no premium plan. You download your CV as a PDF without paying.',
       },
       {
-        q: 'How does the LinkedIn import work?',
-        a: 'Export your LinkedIn profile as a PDF and upload it to Free Resume. All information is filled in automatically.',
+        q: 'Do I need an account?',
+        a: 'No. You need no email, no password and no LinkedIn login. Open the tool and start right away.',
       },
       {
-        q: 'Is my data safe?',
-        a: 'Yes, your CV is built entirely in the browser. No personal data is sent to our servers.',
+        q: 'What happens to my data?',
+        a: 'The PDF is read in your browser and never sent to a server. Your CV stays as long as the tab is open, and you can save a CV file on your own computer to continue later.',
       },
       {
-        q: 'What CV templates are available?',
-        a: 'Basic, Professional, and Creative. All are ATS-friendly and easy to customize.',
+        q: 'Can I use my LinkedIn profile as my resume?',
+        a: "The profile holds the right information, but LinkedIn's PDF is a printout: it runs long, carries LinkedIn's layout and cannot be edited. Free Resume rebuilds the content into a one or two page CV.",
+      },
+      {
+        q: 'What is an ATS friendly resume?',
+        a: 'A resume that applicant tracking systems can read as text. In practice that means one column, standard headings, standard fonts and a PDF with real text instead of an image.',
+      },
+      {
+        q: 'How far back should a CV go?',
+        a: 'The last ten to fifteen years is usually enough. Keep what is relevant to the job and shorten older roles to a single line. In Free Resume you can hide individual jobs without deleting them.',
+      },
+      {
+        q: 'Should I send a PDF or a Word file?',
+        a: 'PDF is the standard, because it looks the same for everyone. Send a Word file only when the job ad asks for one.',
+      },
+      {
+        q: 'Can I edit the content after importing?',
+        a: 'Yes. You can edit every line, add a photo, reorder jobs, hide entries and choose how many pages the CV should be.',
+      },
+      {
+        q: 'Does it work on a phone?',
+        a: 'You can edit and download your CV on a phone. LinkedIn can only save your profile as a PDF in a desktop browser, so the export itself has to be done there.',
       },
     ],
   },
@@ -66,15 +109,12 @@ const faqJsonLd = {
   "mainEntity": t.items.map((item) => ({
     "@type": "Question",
     "name": item.q,
-    "acceptedAnswer": {
-      "@type": "Answer",
-      "text": item.a,
-    },
+    "acceptedAnswer": { "@type": "Answer", "text": item.a },
   })),
 };
 ---
 
-<section class="py-14 sm:py-20">
+<section class="py-14 sm:py-20" id="faq">
   <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
     <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white text-center">
       {t.heading}
@@ -85,25 +125,27 @@ const faqJsonLd = {
         <div class="faq-item">
           <button
             type="button"
-            class="faq-trigger flex w-full items-center justify-between py-5 text-left text-base font-medium text-gray-900 dark:text-white hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+            class="faq-trigger flex w-full items-center justify-between gap-4 py-5 text-left text-base font-medium text-gray-900 dark:text-white hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
             aria-expanded="false"
             aria-controls={`faq-panel-${i}`}
           >
             <span>{item.q}</span>
-            <svg class="faq-chevron w-5 h-5 flex-shrink-0 text-gray-400 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <svg class="faq-chevron w-5 h-5 flex-shrink-0 text-gray-400 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
             </svg>
           </button>
-          <div
-            id={`faq-panel-${i}`}
-            class="faq-panel hidden pb-5"
-            role="region"
-          >
-            <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{item.a}</p>
+          <div id={`faq-panel-${i}`} class="faq-panel hidden pb-5" role="region">
+            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">{item.a}</p>
           </div>
         </div>
       ))}
     </div>
+
+    <p class="mt-8 text-center">
+      <a href={paths[lang].guide} class="font-semibold text-brand-600 dark:text-brand-400 hover:underline">
+        {t.guideLink}
+      </a>
+    </p>
   </div>
 
   <script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} />

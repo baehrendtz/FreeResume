@@ -1,5 +1,6 @@
 ---
 import type { Lang } from '../types';
+import { appUrl, paths } from '../links';
 
 interface Props {
   lang: Lang;
@@ -9,18 +10,20 @@ const { lang } = Astro.props;
 
 const t = {
   sv: {
-    headline: 'LinkedIn till CV på sekunder',
-    subtitle: 'Ladda upp din LinkedIn-PDF och få ett professionellt CV direkt. Välj mall, anpassa och ladda ner som PDF.',
-    cta: 'Skapa ditt CV',
-    trust: ['100% gratis', 'Ingen registrering', 'Open source'],
-    imgAlt: 'Free Resume — gratis CV-verktyg som skapar professionella CV från LinkedIn-PDF',
+    headline: 'Gör ett CV av din LinkedIn-profil, gratis',
+    subtitle: 'Ladda upp din LinkedIn-PDF och få ett färdigt CV på en minut. Ingen inloggning, ingen betalvägg, och filen lämnar aldrig din webbläsare.',
+    cta: 'Ladda upp din LinkedIn-PDF',
+    secondary: 'Så sparar du PDF:en',
+    proofs: ['Gratis, även nedladdningen', 'Inget konto', 'Allt sker i din webbläsare'],
+    imgAlt: 'Free Resume visar tre steg: öppna LinkedIn-profilen, välj Spara som PDF och ladda upp filen',
   },
   en: {
-    headline: 'LinkedIn to CV in seconds',
-    subtitle: 'Upload your LinkedIn PDF and get a professional CV instantly. Choose a template, customize and download as PDF.',
-    cta: 'Create your CV',
-    trust: ['100% free', 'No sign-up', 'Open source'],
-    imgAlt: 'Free Resume — free CV builder that creates professional resumes from LinkedIn PDF',
+    headline: 'Turn your LinkedIn profile into a resume, free',
+    subtitle: 'Upload your LinkedIn PDF and get a finished CV in a minute. No sign-up, no paywall, and the file never leaves your browser.',
+    cta: 'Upload your LinkedIn PDF',
+    secondary: 'How to save the PDF',
+    proofs: ['Free, including the download', 'No account', 'Everything runs in your browser'],
+    imgAlt: 'Free Resume showing three steps: open your LinkedIn profile, choose Save to PDF and upload the file',
   },
 }[lang];
 ---
@@ -28,9 +31,8 @@ const t = {
 <section class="pt-28 pb-10 sm:pt-32 sm:pb-14">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-      <!-- Text column -->
       <div class="text-center lg:text-left">
-        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 dark:text-white">
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 dark:text-white text-balance">
           {t.headline}
         </h1>
 
@@ -38,40 +40,44 @@ const t = {
           {t.subtitle}
         </p>
 
-        <div class="mt-8">
+        <div class="mt-8 flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start gap-3">
           <a
-            href="https://app.freeresume.eu"
-            class="inline-flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white font-semibold px-7 py-3.5 rounded-lg transition-colors"
+            href={appUrl(lang)}
+            class="inline-flex items-center justify-center bg-brand-600 hover:bg-brand-700 text-white font-semibold px-7 py-3.5 rounded-lg transition-colors"
           >
             {t.cta}
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-            </svg>
+          </a>
+          <a
+            href={paths[lang].guide}
+            class="inline-flex items-center justify-center px-5 py-3.5 rounded-lg font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+          >
+            {t.secondary}
           </a>
         </div>
 
-        <div class="mt-5 flex flex-wrap items-center justify-center lg:justify-start gap-x-4 gap-y-1 text-sm text-gray-500 dark:text-gray-400">
-          {t.trust.map((item) => (
-            <span class="flex items-center gap-1">
-              <svg class="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <ul class="mt-6 flex flex-wrap items-center justify-center lg:justify-start gap-x-5 gap-y-2 text-sm text-gray-500 dark:text-gray-400">
+          {t.proofs.map((item) => (
+            <li class="flex items-center gap-1.5">
+              <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
               </svg>
               {item}
-            </span>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
 
-      <!-- Screenshot column -->
       <div class="relative">
         <div class="rounded-xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
           <img
             src="/app-screenshot.webp"
             alt={t.imgAlt}
-            width="1200"
-            height="800"
+            width="1440"
+            height="900"
             class="w-full h-auto"
             loading="eager"
+            fetchpriority="high"
+            decoding="async"
           />
         </div>
       </div>

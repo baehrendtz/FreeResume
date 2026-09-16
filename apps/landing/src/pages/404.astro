@@ -1,0 +1,36 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import { appUrl, paths } from '../links';
+---
+
+<BaseLayout
+  title="Sidan finns inte | Free Resume"
+  description="Sidan du letade efter finns inte. Gå till startsidan eller skapa ditt gratis CV från LinkedIn."
+  lang="sv"
+  noindex
+>
+  <Navbar lang="sv" />
+  <main class="pt-32 pb-20">
+    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <p class="text-sm font-semibold text-brand-600 dark:text-brand-400">404</p>
+      <h1 class="mt-2 text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">Sidan finns inte</h1>
+      <p class="mt-4 text-lg text-gray-600 dark:text-gray-300">
+        Länken kan vara gammal eller felstavad. Härifrån kommer du vidare.
+      </p>
+      <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+        <a href={appUrl('sv')} class="inline-flex items-center justify-center bg-brand-600 hover:bg-brand-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors">
+          Skapa ditt CV
+        </a>
+        <a href={paths.sv.home} class="inline-flex items-center justify-center px-5 py-3 rounded-lg font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+          Till startsidan
+        </a>
+      </div>
+      <p class="mt-6 text-sm text-gray-500 dark:text-gray-400">
+        <a href={paths.en.home} class="hover:underline">This page in English</a>
+      </p>
+    </div>
+  </main>
+  <Footer lang="sv" />
+</BaseLayout>

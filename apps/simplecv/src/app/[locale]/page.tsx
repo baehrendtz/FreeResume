@@ -4,15 +4,28 @@ import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { createEmptyCvModel } from "@/lib/model/CvModel";
+import { defaultDisplaySettings, twoPageDisplayDefaults } from "@/lib/model/DisplaySettings";
+import type { CvLanguage } from "@/lib/cvLocale";
+import { checkCv, type CvIssue } from "@/lib/cvChecks";
+import { downloadCvFile } from "@/lib/export/cvFile";
+import { cn } from "@/lib/utils";
 import { CvPreview } from "@/components/CvPreview";
 import { MeasureView } from "@/components/MeasureView";
 import { TrimWarning } from "@/components/TrimWarning";
 import { CvEditor } from "@/components/editor/CvEditor";
 import { AppHeader } from "@/components/AppHeader";
 import { AppFooter } from "@/components/AppFooter";
-import { OnboardingWizard } from "@/components/onboarding/OnboardingWizard";
+import { StartScreen } from "@/components/start/StartScreen";
+import { ResultView } from "@/components/result/ResultView";
 import { ImportPdfDialog } from "@/components/ImportPdfDialog";
-import { trackTemplateSwitch, trackFullscreenPreview } from "@/lib/analytics/gtag";
+import { DownloadChecklistDialog } from "@/components/DownloadChecklistDialog";
+import {
+  trackTemplateSwitch,
+  trackFullscreenPreview,
+  trackCvFileSave,
+  trackDownloadChecklist,
+  trackOnboardingComplete,
+} from "@/lib/analytics/gtag";
 import { Download, Loader2, Maximize2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FullscreenPreviewDialog } from "@/components/FullscreenPreviewDialog";
@@ -20,19 +33,24 @@ import { useEditorLabels } from "@/hooks/useEditorLabels";
 import { useMounted } from "@/hooks/useMounted";
 import { useCvState } from "@/hooks/useCvState";
 import { useAutoFit } from "@/hooks/useAutoFit";
-import { usePdfImport } from "@/hooks/usePdfImport";
+import { usePdfImport, type ImportResult } from "@/hooks/usePdfImport";
 import { usePdfExport } from "@/hooks/usePdfExport";
+
+/** start: how to upload. result: the finished CV right after an import. editor: step-by-step editing. */
+type View = "start" | "result" | "editor";
 
 export default function MainPage() {
   const t = useTranslations();
   const { locale } = useParams<{ locale: string }>();
-  const { editor, header, helpLabels, onboarding, importDialog, footer } = useEditorLabels();
+  const { editor, header, helpLabels, importDialog, footer } = useEditorLabels();
 
   // --- UI state ---
-  const [showOnboarding, setShowOnboarding] = useState(true);
-  const [isFromScratch, setIsFromScratch] = useState(false);
+  const [view, setView] = useState<View>("start");
+  const [importSource, setImportSource] = useState<ImportResult["source"]>("pdf");
   const [showImport, setShowImport] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const [activeStep, setActiveStep] = useState("basics");
+  const [checklistIssues, setChecklistIssues] = useState<CvIssue[] | null>(null);
 
   // --- Core CV state ---
   const {
@@ -43,86 +61,151 @@ export default function MainPage() {
     styleSettings,
     templateMeta, renderModel,
     hadSavedSession,
-  } = useCvState(!showOnboarding);
+  } = useCvState(view !== "start");
 
-  // The static export always prerenders the onboarding view, so the first
-  // client render must match it, only after mount may a restored session
-  // switch straight to the editor (avoids a hydration mismatch).
+  // The static export always prerenders the start screen, so the first client
+  // render must match it. Only after mount may a restored session switch
+  // straight to the editor (avoids a hydration mismatch).
   const mounted = useMounted();
+  const effectiveView: View = !mounted ? "start" : view === "start" && hadSavedSession ? "editor" : view;
 
-  // Hide onboarding when a saved session was restored
-  const effectiveShowOnboarding = !mounted || (showOnboarding && !hadSavedSession);
+  const openEditor = useCallback((step: string) => {
+    setActiveStep(step);
+    setView("editor");
+  }, []);
 
   // --- Auto-fit ---
-  const { metrics, setMetrics, isFitting, handleAutoFit } = useAutoFit(
+  const { metrics, setMetrics, isFitting, handleAutoFit, requestAutoFit } = useAutoFit(
     cv, setCv, templateMeta, displaySettings, setDisplaySettings,
   );
 
-  // --- PDF import ---
-  const handleImported = useCallback((result: import("@/lib/parser/linkedinParser").ParseResult) => {
+  const handleUseTwoPages = useCallback(() => {
+    setDisplaySettings((prev) => ({ ...prev, ...twoPageDisplayDefaults }));
+  }, [setDisplaySettings]);
+
+  // --- Import (LinkedIn PDF or saved CV file) ---
+  const handleImported = useCallback((result: ImportResult) => {
     setCv(result.cv);
-    setDisplaySettings((prev) => ({ ...prev, cvLanguage: result.detectedLanguage }));
-    setIsFromScratch(false);
+    if (result.source === "file") {
+      // A saved CV file restores the user's own template and settings as they were
+      setTemplateId(result.templateId);
+      setDisplaySettings({ ...defaultDisplaySettings, ...result.displaySettings });
+      setStyleOverrides(result.styleOverrides ?? {});
+    } else {
+      setDisplaySettings((prev) => ({ ...prev, cvLanguage: result.detectedLanguage }));
+      // LinkedIn profiles are often long, shorten to the page target right away
+      requestAutoFit();
+      trackOnboardingComplete("upload");
+    }
+    setImportSource(result.source);
     setShowImport(false);
-  }, [setCv, setDisplaySettings]);
+    setView("result");
+  }, [setCv, setTemplateId, setDisplaySettings, setStyleOverrides, requestAutoFit]);
 
-  const { processing, error: pdfError, clearError: clearPdfError, handleFileSelected } = usePdfImport(handleImported);
+  const { processing, phase, error: importError, clearError: clearImportError, handleFileSelected } = usePdfImport(handleImported);
 
-  // --- PDF export ---
+  // --- Export ---
   const { downloading, exportFailed, handleDownloadPdf } = usePdfExport(cv.name, templateId);
 
-  // --- Onboarding callbacks ---
+  // Run the quality checklist first, download straight away when nothing is missing
+  const requestDownload = useCallback(() => {
+    const issues = checkCv(cv);
+    if (issues.length === 0) {
+      handleDownloadPdf();
+      return;
+    }
+    setChecklistIssues(issues);
+    trackDownloadChecklist(issues.length);
+  }, [cv, handleDownloadPdf]);
+
+  const handleSaveFile = useCallback(() => {
+    downloadCvFile({ cv, templateId, displaySettings, styleOverrides });
+    trackCvFileSave();
+  }, [cv, templateId, displaySettings, styleOverrides]);
+
   const handleStartFromScratch = useCallback(() => {
     setCv(createEmptyCvModel());
-    setIsFromScratch(true);
-  }, [setCv]);
+    // No PDF to detect the language from, so match the CV headings to the app language
+    const cvLanguage: CvLanguage = locale === "sv" ? "sv" : "en";
+    setDisplaySettings((prev) => ({ ...prev, cvLanguage }));
+    clearImportError();
+    trackOnboardingComplete("scratch");
+    openEditor("basics");
+  }, [setCv, setDisplaySettings, locale, clearImportError, openEditor]);
 
-  const handleOnboardingComplete = useCallback(() => {
-    setShowOnboarding(false);
-  }, []);
+  const handleTemplateSelect = (id: string) => { setTemplateId(id); trackTemplateSwitch(id); };
+  const openPreview = () => { setShowPreview(true); trackFullscreenPreview(); };
+
+  // Rendered above the result and the editor so the notices are always in view
+  const banner = (
+    <>
+      {exportFailed && (
+        <div className="print:hidden mb-2 rounded-md bg-destructive/10 border border-destructive/20 px-3 py-2 text-xs text-destructive">
+          {t("actions.downloadError")}
+        </div>
+      )}
+      <TrimWarning
+        cv={cv}
+        renderModel={renderModel}
+        metrics={metrics}
+        isFitting={isFitting}
+        pageTarget={displaySettings.pageTarget}
+        onAutoFit={handleAutoFit}
+        onUseTwoPages={handleUseTwoPages}
+        onEditLimits={() => openEditor("visibility")}
+      />
+    </>
+  );
+
+  const isEditor = effectiveView === "editor";
 
   return (
-    <div className="min-h-screen lg:min-h-0 lg:h-screen lg:overflow-hidden bg-muted/30 flex flex-col">
+    <div className={cn("min-h-screen bg-background flex flex-col", isEditor && "lg:min-h-0 lg:h-screen lg:overflow-hidden")}>
       <AppHeader
         title="Free Resume"
         locale={locale}
         onImportPdf={() => setShowImport(true)}
-        onDownloadPdf={handleDownloadPdf}
+        onDownloadPdf={requestDownload}
+        onSaveFile={handleSaveFile}
         downloading={downloading}
-        showActions={!effectiveShowOnboarding}
+        showActions={effectiveView !== "start"}
         labels={header}
         helpLabels={helpLabels}
       />
 
-      <main className="flex-1 lg:min-h-0 lg:overflow-hidden">
-        {effectiveShowOnboarding ? (
-          <OnboardingWizard
-            labels={onboarding}
+      <main className={cn("flex-1", isEditor && "lg:min-h-0 lg:overflow-hidden")}>
+        {effectiveView === "start" && (
+          <StartScreen
             processing={processing}
-            pdfError={pdfError}
-            onClearError={clearPdfError}
-            cv={cv}
-            isFromScratch={isFromScratch}
+            phase={phase}
+            error={importError}
             onFileSelected={handleFileSelected}
             onStartFromScratch={handleStartFromScratch}
-            onComplete={handleOnboardingComplete}
           />
-        ) : (
-          <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 py-6 sm:py-8 pb-24 lg:pb-8 flex flex-col lg:h-full">
-            {exportFailed && (
-              <div className="print:hidden mb-2 rounded-md bg-destructive/10 border border-destructive/20 px-3 py-2 text-xs text-destructive">
-                {t("actions.downloadError")}
-              </div>
-            )}
-            {/* Rendered above the grid so the warning (and auto-fit) is
-                visible on mobile, where the preview column is off-screen */}
-            <TrimWarning
-              cv={cv}
-              renderModel={renderModel}
-              metrics={metrics}
-              isFitting={isFitting}
-              onAutoFit={handleAutoFit}
-            />
+        )}
+
+        {effectiveView === "result" && (
+          <ResultView
+            cv={cv}
+            source={importSource}
+            renderModel={renderModel}
+            templateId={templateId}
+            onTemplateSelect={handleTemplateSelect}
+            displaySettings={displaySettings}
+            styleSettings={styleSettings}
+            styleOverrides={styleOverrides}
+            onStyleOverridesChange={setStyleOverrides}
+            onMeasure={setMetrics}
+            onDownload={requestDownload}
+            downloading={downloading}
+            onEdit={() => openEditor("basics")}
+            banner={banner}
+          />
+        )}
+
+        {isEditor && (
+          <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 py-6 sm:py-8 pb-28 lg:pb-8 flex flex-col lg:h-full">
+            {banner}
             <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-6 lg:min-h-0 lg:flex-1">
               <div className="print:hidden lg:overflow-y-auto lg:min-h-0 min-w-0">
                 <CvEditor
@@ -134,19 +217,23 @@ export default function MainPage() {
                     onStyleOverridesChange: setStyleOverrides,
                   }}
                   templateId={templateId}
-                  onTemplateSelect={(id: string) => { setTemplateId(id); trackTemplateSwitch(id); }}
+                  onTemplateSelect={handleTemplateSelect}
+                  activeStep={activeStep}
+                  onStepChange={setActiveStep}
+                  onDownload={requestDownload}
+                  downloading={downloading}
                   labels={editor}
                 />
               </div>
 
               {/* Desktop: visible. Mobile: off-screen but in DOM for html2canvas + MeasureView */}
-              <div className="max-lg:fixed max-lg:-left-[200vw] max-lg:w-[794px] lg:overflow-y-auto lg:min-h-0 min-w-0">
+              <div className="max-lg:fixed max-lg:-left-[200vw] max-lg:w-[794px] lg:overflow-y-auto lg:min-h-0 min-w-0 lg:rounded-2xl lg:bg-desk lg:p-6">
                 <div className="relative">
                   <Button
                     variant="outline"
                     size="icon-sm"
                     className="absolute top-2 right-2 z-10 bg-background/80 backdrop-blur-sm shadow-sm opacity-70 hover:opacity-100 transition-opacity"
-                    onClick={() => { setShowPreview(true); trackFullscreenPreview(); }}
+                    onClick={openPreview}
                     title={t("preview.fullscreen")}
                     aria-label={t("preview.fullscreen")}
                   >
@@ -162,13 +249,22 @@ export default function MainPage() {
       </main>
 
       {/* Mobile floating action bar */}
-      {!effectiveShowOnboarding && (
+      {isEditor && (
         <div className="lg:hidden fixed bottom-0 inset-x-0 z-40 p-3 bg-background/95 backdrop-blur-sm border-t safe-area-pb">
           <div className="flex gap-2 max-w-lg mx-auto">
-            <Button variant="outline" className="flex-1" onClick={() => { setShowPreview(true); trackFullscreenPreview(); }}>
-              <Maximize2 className="h-4 w-4 mr-2" /> {t("preview.fullscreen")}
-            </Button>
-            <Button className="flex-1" onClick={handleDownloadPdf} disabled={downloading}>
+            {/* Live thumbnail so changes are visible without leaving the form. A plain
+                button, the shared Button would resize the template's own icons. */}
+            <button
+              type="button"
+              onClick={openPreview}
+              className="flex flex-1 items-center gap-3 rounded-md border bg-background px-2 py-1.5 text-sm font-medium shadow-xs hover:bg-accent"
+            >
+              <span aria-hidden className="pointer-events-none w-8 shrink-0 overflow-hidden rounded-[2px]">
+                <CvPreview renderModel={renderModel} templateId={templateId} styleSettings={styleSettings} />
+              </span>
+              {t("preview.show")}
+            </button>
+            <Button className="flex-1 h-auto" onClick={requestDownload} disabled={downloading}>
               {downloading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Download className="h-4 w-4 mr-2" />}
               {downloading ? t("actions.generating") : t("actions.downloadPdf")}
             </Button>
@@ -177,15 +273,22 @@ export default function MainPage() {
       )}
 
       {/* Extra bottom padding on mobile so the fixed action bar doesn't cover the footer links */}
-      <AppFooter labels={footer} className={effectiveShowOnboarding ? undefined : "pb-20 lg:pb-0"} />
+      <AppFooter labels={footer} className={isEditor ? "pb-24 lg:pb-0" : undefined} />
 
       <ImportPdfDialog
         open={showImport}
-        onOpenChange={(open) => { setShowImport(open); if (!open) clearPdfError(); }}
+        onOpenChange={(open) => { setShowImport(open); if (!open) clearImportError(); }}
         onFileSelected={handleFileSelected}
         processing={processing}
-        error={pdfError}
+        error={importError}
         labels={importDialog}
+      />
+
+      <DownloadChecklistDialog
+        issues={checklistIssues}
+        onClose={() => setChecklistIssues(null)}
+        onFix={(step) => { setChecklistIssues(null); openEditor(step); }}
+        onDownloadAnyway={() => { setChecklistIssues(null); handleDownloadPdf(); }}
       />
 
       <FullscreenPreviewDialog

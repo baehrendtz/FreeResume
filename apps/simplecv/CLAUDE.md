@@ -47,9 +47,13 @@ Uses `next-intl` with URL-based locale routing (`/[locale]/...`). Messages in `s
 
 `src/lib/parser/linkedinParser.ts` detects two-column layout (sidebar vs main), builds lines from positioned text items, then parses sections using `sectionDetector.ts` which maps headers to section types in both English and Swedish.
 
+### Views
+
+`page.tsx` switches between three views: `start` (`components/start/StartScreen.tsx`: LinkedIn "Save to PDF" steps, window-wide file drop, example CV), `result` (`components/result/ResultView.tsx`: the finished CV right after an import with download, template and color) and `editor`. A restored session opens the editor directly. The result view and the editor each render the `exportSource` CvPreview and MeasureView, so auto-fit and PDF export work in both.
+
 ### Editor
 
-Form state is managed via `react-hook-form` with `zodResolver(cvModelSchema)`. The editor uses a wizard sidebar (`WizardSidebar`) with step-based navigation. Each section (Experience, Education, Skills, etc.) has its own form component. Changes propagate to the parent via `watch()` subscription with 150ms debounce.
+Form state is managed via `react-hook-form` with `zodResolver(cvModelSchema)`. The editor uses a wizard sidebar (`WizardSidebar`) with step-based navigation. Step order lives in `src/lib/wizard/steps.ts` (`STEP_GROUPS`, `STEP_ORDER`): content first, then template, then optional settings. `activeStep` is owned by `page.tsx` so the fit banner can jump to settings. Each step shows "Step X of Y", a hint (`editor.hints.*`) and previous/next buttons; the template and settings steps end with a download button. Each section (Experience, Education, Skills, etc.) has its own form component. Changes propagate to the parent via `watch()` subscription with 150ms debounce.
 
 ### Session persistence
 

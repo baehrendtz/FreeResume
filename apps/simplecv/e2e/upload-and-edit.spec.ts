@@ -14,19 +14,20 @@ test.describe("LinkedIn PDF upload and edit flow", () => {
   }) => {
     await page.goto("/sv");
 
-    const fileInput = page.locator('input[type="file"][accept=".pdf"]');
+    const fileInput = page.locator('input[type="file"]');
     await fileInput.setInputFiles(fixturePdf);
 
+    // The finished CV is shown right away, ready to download
     await expect(
-      page.getByText("Ditt CV är redo att redigera!")
+      page.getByRole("heading", { name: "Ditt CV är klart" })
     ).toBeVisible({ timeout: 15_000 });
-
-    await page.getByRole("button", { name: "Börja redigera" }).click();
-
     await waitForEditor(page);
+    // The template renders once its code has loaded, then the page gets its full height
+    await expect
+      .poll(async () => (await page.locator("#cv-preview").boundingBox())?.height ?? 0)
+      .toBeGreaterThan(200);
 
-    const box = await page.locator("#cv-preview").boundingBox();
-    expect(box).not.toBeNull();
-    expect(box!.height).toBeGreaterThan(200);
+    await page.getByRole("button", { name: "Redigera innehåll" }).click();
+    await expect(page.getByLabel("Fullständigt namn")).toBeVisible();
   });
 });

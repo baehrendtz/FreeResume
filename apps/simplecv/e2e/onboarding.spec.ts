@@ -9,7 +9,7 @@ test.describe("Onboarding", () => {
   test("shows the onboarding title on first visit", async ({ page }) => {
     await page.goto("/en");
     await expect(
-      page.getByRole("heading", { name: "Create your professional CV" })
+      page.getByRole("heading", { name: "Turn your LinkedIn profile into a polished CV in a minute" })
     ).toBeVisible();
   });
 
@@ -22,14 +22,9 @@ test.describe("Onboarding", () => {
       name: /Start from scratch/,
     });
     await scratchBtn.click();
-    // Success step should appear
-    await expect(
-      page.getByText("Your blank CV is ready")
-    ).toBeVisible({ timeout: 10_000 });
-    // Click the CTA to enter editor
-    await page.getByRole("button", { name: "Start editing" }).click();
-    // Editor should be visible with the CV preview
+    // A blank CV has nothing to review, so the editor opens directly
     await waitForEditor(page);
+    await expect(page.getByLabel("Full Name")).toBeVisible();
   });
 
   test("skips onboarding when session already exists", async ({ page }) => {
@@ -39,25 +34,24 @@ test.describe("Onboarding", () => {
     await waitForEditor(page);
     // Onboarding title should not be visible
     await expect(
-      page.getByRole("heading", { name: "Create your professional CV" })
+      page.getByRole("heading", { name: "Turn your LinkedIn profile into a polished CV in a minute" })
     ).not.toBeVisible();
   });
 
-  test("LinkedIn guide accordion toggles open and closed", async ({
+  test("shows the LinkedIn steps with a link to the profile", async ({
     page,
   }) => {
     await page.goto("/en");
-    const trigger = page.getByText("How do I get my LinkedIn PDF?");
-    await expect(trigger).toBeVisible();
-
-    // Click to open
-    await trigger.click();
-    await expect(page.getByText("Go to your LinkedIn profile")).toBeVisible();
-
-    // Click to close
-    await trigger.click();
     await expect(
-      page.getByText("Go to your LinkedIn profile")
-    ).not.toBeVisible();
+      page.getByRole("heading", { name: "Click Resources and choose Save to PDF" })
+    ).toBeVisible();
+    const profileLink = page.getByRole("link", { name: "Open my profile" });
+    await expect(profileLink).toHaveAttribute("href", "https://www.linkedin.com/in/me/");
+
+    // Troubleshooting tips are collapsed until asked for
+    const tip = page.getByText("Look for More instead of Resources.");
+    await expect(tip).not.toBeVisible();
+    await page.getByText("Can't find the button?").click();
+    await expect(tip).toBeVisible();
   });
 });

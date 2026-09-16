@@ -13,6 +13,7 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import {
   Upload,
   FileDown,
+  Save,
   MoreVertical,
   Sun,
   Moon,
@@ -41,10 +42,12 @@ interface AppHeaderProps {
   locale: string;
   onImportPdf: () => void;
   onDownloadPdf: () => void;
+  onSaveFile: () => void;
   downloading: boolean;
   showActions?: boolean;
   labels: {
     importPdf: string;
+    saveFile: string;
     downloadPdf: string;
     generating: string;
     moreActions: string;
@@ -59,6 +62,7 @@ export function AppHeader({
   locale,
   onImportPdf,
   onDownloadPdf,
+  onSaveFile,
   downloading,
   showActions = true,
   labels,
@@ -78,17 +82,17 @@ export function AppHeader({
 
   const actions = [
     { id: "import", label: labels.importPdf, icon: Upload, onClick: onImportPdf, disabled: false },
+    { id: "save", label: labels.saveFile, icon: Save, onClick: onSaveFile, disabled: false },
     { id: "download", label: downloading ? labels.generating : labels.downloadPdf, icon: FileDown, onClick: onDownloadPdf, disabled: downloading },
   ] as const;
 
   return (
     <header className="print:hidden border-b bg-background/80 backdrop-blur-sm sticky top-0 z-10">
-      <div className="h-1 bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600" />
-      <div className="container mx-auto px-4 py-2.5 flex items-center justify-between">
+      <div className="mx-auto flex max-w-screen-2xl items-center justify-between px-4 py-2.5 sm:px-6">
         <img src="/logo.png" alt={title} className="h-9 w-auto" />
 
         <div className="flex items-center gap-2">
-          {/* Desktop action buttons, hidden during onboarding */}
+          {/* Desktop action buttons, hidden on the start screen */}
           {showActions && actions.map((action) => (
             <Button
               key={action.id}

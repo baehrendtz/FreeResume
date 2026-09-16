@@ -95,3 +95,19 @@ export function trackOnboardingComplete(method: "upload" | "scratch") {
 export function trackOnboardingSkip(fromStep: string) {
   gtagEvent("onboarding_skip", { from_step: fromStep });
 }
+
+export function trackCvFileSave() {
+  gtagEvent("cv_file_save");
+}
+
+export function trackCvFileOpen(result: "success" | "failure") {
+  gtagEvent("cv_file_open", { result });
+}
+
+export function trackRememberToggle(enabled: boolean) {
+  gtagEvent("remember_toggle", { enabled });
+}
+
+export function trackDownloadChecklist(issueCount: number) {
+  gtagEvent("download_checklist", { issue_count: String(issueCount) });
+}

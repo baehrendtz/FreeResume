@@ -1,9 +1,10 @@
 {
   "upload": {
-    "dropzone": "Drag and drop your PDF here, or click to browse",
-    "invalidFileType": "Please select a PDF file",
+    "dropzone": "Drag and drop your LinkedIn PDF or saved CV file here, or click to browse",
+    "invalidFileType": "Please select a PDF or a saved CV file (.json)",
     "processing": "Processing PDF...",
-    "error": "Could not parse this PDF. Please make sure it is a LinkedIn profile export."
+    "error": "Could not parse this PDF. Please make sure it is a LinkedIn profile export.",
+    "fileError": "Could not open the CV file. Make sure it was saved from Free Resume."
   },
   "editor": {
     "tabs": {
@@ -18,9 +19,9 @@
       "visibility": "Settings"
     },
     "groups": {
-      "theme": "Template",
       "content": "Content",
-      "settings": "Settings"
+      "theme": "Design",
+      "settings": "Optional"
     },
     "sidebar": {
       "expand": "Expand menu",
@@ -39,11 +40,20 @@
       "photoUpload": "Upload Photo",
       "photoRemove": "Remove",
       "photoTooLarge": "Photo must be under 2MB",
-      "photoReadError": "Could not read photo file"
+      "photoReadError": "Could not read photo file",
+      "placeholders": {
+        "name": "e.g. Anna Andersson",
+        "headline": "e.g. IT Project Manager",
+        "email": "anna.andersson@example.com",
+        "phone": "+46 70 123 45 67",
+        "location": "e.g. Stockholm, Sweden",
+        "linkedIn": "linkedin.com/in/annaandersson",
+        "website": "annaandersson.com"
+      }
     },
     "summary": {
       "label": "Professional Summary",
-      "placeholder": "Write a brief summary of your professional background..."
+      "placeholder": "e.g. Project manager with 8 years of experience in IT. I help teams collaborate and deliver on time, and I'm looking for my next challenge."
     },
     "experience": {
       "title": "Job Title",
@@ -52,21 +62,30 @@
       "startDate": "Start Date",
       "endDate": "End Date",
       "datePlaceholder": "e.g. Jan 2020",
-      "endDatePlaceholder": "e.g. Present",
       "description": "Description",
-      "bullets": "Bullet points (one per line)",
-      "bulletsHint": "One bullet point per line. Empty lines are ignored.",
+      "bullets": "Bullet points",
+      "bulletsHint": "Press Enter for a new bullet. Drag the handle to reorder.",
       "add": "Add Experience",
       "remove": "Remove",
-      "hide": "Hide",
-      "show": "Show",
+      "hide": "Hide in CV",
+      "show": "Show in CV",
       "at": " at ",
       "emptyState": "No experience entries yet. Click below to add one.",
       "confirm": "Confirm?",
       "moveUp": "Move up",
       "moveDown": "Move down",
       "groupWith": "Group with previous",
-      "ungroupFrom": "Separate from group"
+      "ungroupFrom": "Separate from group",
+      "untitled": "New job",
+      "titlePlaceholder": "e.g. Sales Manager",
+      "companyPlaceholder": "e.g. Acme Inc.",
+      "locationPlaceholder": "e.g. London",
+      "descriptionPlaceholder": "A short line about the role and your responsibilities (optional)",
+      "bulletsPlaceholder": "e.g. Increased sales by 20% in one year",
+      "excluded": "Doesn't fit in the CV",
+      "addBullet": "Add bullet",
+      "removeBullet": "Remove bullet",
+      "dragBullet": "Drag to reorder"
     },
     "education": {
       "institution": "Institution",
@@ -75,16 +94,20 @@
       "startDate": "Start Date",
       "endDate": "End Date",
       "datePlaceholder": "e.g. Jan 2020",
-      "endDatePlaceholder": "e.g. Present",
       "description": "Description",
       "add": "Add Education",
       "remove": "Remove",
-      "hide": "Hide",
-      "show": "Show",
+      "hide": "Hide in CV",
+      "show": "Show in CV",
       "emptyState": "No education entries yet. Click below to add one.",
       "confirm": "Confirm?",
       "moveUp": "Move up",
-      "moveDown": "Move down"
+      "moveDown": "Move down",
+      "untitled": "New education",
+      "institutionPlaceholder": "e.g. Stockholm University",
+      "degreePlaceholder": "e.g. Bachelor's degree",
+      "fieldPlaceholder": "e.g. Economics",
+      "excluded": "Doesn't fit in the CV"
     },
     "skills": {
       "label": "Skills",
@@ -157,48 +180,56 @@
       "cvLanguageEn": "English",
       "cvLanguageSv": "Svenska",
       "template": "Template",
-      "overflows": "Content overflows (~{pages} pages)",
-      "autoFit": "Auto-fit",
-      "fitting": "Fitting...",
       "trimmedJobs": "{shown} of {total} jobs shown",
       "trimmedEducation": "{shown} of {total} education entries shown",
       "trimmedSkills": "{shown} of {total} skills shown",
       "trimmedExtras": "{shown} of {total} extras shown",
-      "summaryTruncated": "Summary truncated"
+      "summaryTruncated": "summary shortened"
+    },
+    "nav": {
+      "stepOf": "Step {current} of {total}",
+      "previous": "Back",
+      "next": "Next: {step}",
+      "moreSettings": "More settings",
+      "finishHint": "All done! Check the preview and download your CV."
+    },
+    "hints": {
+      "basics": "Start with your name and how employers can reach you. The headline is a short line about who you are, such as your job title.",
+      "summary": "Write 2-3 sentences about who you are, what you're good at and what you're looking for. It's the first thing a recruiter reads.",
+      "experience": "Add your jobs, most recent first. Aim for 2-4 bullet points about what you achieved, ideally with numbers. Click a job to edit it.",
+      "education": "Add your education, most recent first. Degree and school are usually enough.",
+      "skills": "Type one skill at a time and press Enter. Pick the ones most relevant to the job you're applying for.",
+      "languages": "Pick a language and your level. Include your native language and any languages you can use at work.",
+      "extras": "Optional. Add certifications, a driving licence, volunteering or anything else that strengthens your CV.",
+      "template": "Pick the design you like best. Your content moves over automatically and you can switch at any time.",
+      "visibility": "Optional. Choose which sections to show, how long the CV may be and which language the headings use."
+    },
+    "fit": {
+      "overflowTitle": "Your CV doesn't fit, it runs to about {pages} pages.",
+      "trimmedTitle": "Not everything fits, so some content is hidden in the CV.",
+      "autoFit": "Shorten automatically",
+      "fitting": "Shortening...",
+      "useTwoPages": "Use 2 pages",
+      "editLimits": "Choose what to show"
+    },
+    "storage": {
+      "title": "Save between visits",
+      "description": "By default your CV disappears when you close the tab.",
+      "remember": "Remember my CV in this browser",
+      "rememberHint": "Turn this off on shared computers. You can also keep a copy with \"Save CV file\"."
+    },
+    "dates": {
+      "month": "Month",
+      "year": "Year",
+      "ongoing": "Ongoing"
     }
   },
   "preview": {
     "title": "CV Preview",
     "fullscreen": "Fullscreen preview",
     "zoomIn": "Zoom in",
-    "zoomOut": "Zoom out"
-  },
-  "onboarding": {
-    "choose": {
-      "title": "Create your professional CV",
-      "subtitle": "Import your LinkedIn profile or start from scratch",
-      "importTitle": "Import from LinkedIn",
-      "importDescription": "Upload your LinkedIn PDF to auto-fill your CV",
-      "scratchTitle": "Start from scratch",
-      "scratchDescription": "Begin with a blank CV and fill in your details",
-      "howToGetPdf": "How do I get my LinkedIn PDF?"
-    },
-    "guide": {
-      "title": "How to get your LinkedIn PDF",
-      "step1": "Go to your LinkedIn profile",
-      "step2": "Click 'More' > 'Save to PDF'",
-      "step3": "Upload the file here"
-    },
-    "success": {
-      "title": "Your CV is ready to edit!",
-      "scratchTitle": "Your blank CV is ready",
-      "scratchDescription": "Let's start with the basics: your name and contact details.",
-      "cta": "Start editing",
-      "experience": "experiences",
-      "education": "education",
-      "skills": "skills",
-      "back": "Upload a different file"
-    }
+    "zoomOut": "Zoom out",
+    "show": "Preview"
   },
   "actions": {
     "downloadPdf": "Download PDF",
@@ -207,7 +238,8 @@
     "importPdf": "Import PDF",
     "importWarning": "This will replace your current CV data",
     "moreActions": "More actions",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "saveFile": "Save CV file"
   },
   "theme": {
     "toggle": "Toggle theme"
@@ -223,7 +255,7 @@
     "downloadTitle": "Download your CV",
     "downloadText": "Click the \"Download PDF\" button in the top menu. Your CV is generated directly in the browser.",
     "dataTitle": "Your data",
-    "dataText": "All CV data is stored locally in your browser (sessionStorage). If you accept analytics cookies, anonymous usage data is sent to Google Analytics to help us improve the service. No personal information is shared.",
+    "dataText": "Your CV only lives in your browser and disappears when you close the tab. To continue later, save a CV file or turn on \"Remember my CV\" under Settings. If you accept analytics cookies, anonymous usage data is sent to Google Analytics. No personal information is shared.",
     "footer": "Free Resume is free and open source."
   },
   "consent": {
@@ -235,5 +267,84 @@
   "footer": {
     "copyright": "© {year} Free Resume",
     "openSource": "Free & open source"
+  },
+  "checklist": {
+    "title": "Before you download",
+    "description": "A few things could make your CV stronger. Fix them or download anyway.",
+    "fix": "Fix",
+    "downloadAnyway": "Download anyway",
+    "issues": {
+      "missingName": "Your name is missing",
+      "missingEmail": "Email address is missing",
+      "invalidEmail": "The email address doesn't look right",
+      "missingPhone": "Phone number is missing",
+      "longHeadline": "The headline is long, try to keep it under {max} characters",
+      "missingSummary": "Summary is missing",
+      "noExperience": "No experience added",
+      "jobsWithoutDetails": "{count, plural, one {# job has} other {# jobs have}} no description or bullet points"
+    }
+  },
+  "templates": {
+    "basic": {
+      "name": "Classic",
+      "description": "One column, clean and timeless"
+    },
+    "professional": {
+      "name": "Professional",
+      "description": "Dark header with a sidebar"
+    },
+    "basic2": {
+      "name": "Modern",
+      "description": "Sidebar with a large photo"
+    },
+    "creative": {
+      "name": "Creative",
+      "description": "Colourful with a sidebar"
+    }
+  },
+  "start": {
+    "title": "Turn your LinkedIn profile into a polished CV in a minute",
+    "trust": "Free, no account needed. Your PDF is read in your browser and never uploaded to a server.",
+    "mobileNotice": "LinkedIn can only save your profile as a PDF in a desktop browser, not in the mobile app. If the file is already on your phone, choose it below.",
+    "step1Title": "Open your LinkedIn profile on a computer",
+    "step1Action": "Open my profile",
+    "step2Title": "Click Resources and choose Save to PDF",
+    "step2Hint": "The button is below your name. On some accounts it's called More.",
+    "mock": {
+      "openTo": "Open to",
+      "addSection": "Add profile section",
+      "resources": "Resources",
+      "sendProfile": "Send profile in a message",
+      "savePdf": "Save to PDF"
+    },
+    "troubleTitle": "Can't find the button?",
+    "trouble1": "Look for More instead of Resources.",
+    "trouble2": "Use LinkedIn in a browser on a computer, not in the app.",
+    "trouble3": "If the button is missing, temporarily switching LinkedIn's language to English can help.",
+    "trouble4": "If it still doesn't work, you can start from scratch further down.",
+    "step3Title": "Upload the PDF here",
+    "dropTitle": "Drag your LinkedIn PDF here",
+    "dropTitleTouch": "Tap to choose your LinkedIn PDF",
+    "welcomeBack": "Welcome back! Drag in the PDF you just saved.",
+    "dropHint": "The file is usually called Profile.pdf and is in your Downloads folder. PDF only, max 10 MB.",
+    "dropButton": "Choose PDF file",
+    "dropOverlay": "Drop the file to create your CV",
+    "reading": "Reading the PDF",
+    "parsing": "Finding jobs, education and skills",
+    "pdfError": "This PDF couldn't be read as a LinkedIn profile. Save it with Resources and Save to PDF on your profile (step 2) and try again.",
+    "noLinkedIn": "No LinkedIn account?",
+    "scratch": "Start from scratch",
+    "openSaved": "Open a saved CV file",
+    "sampleCaption": "What your CV can look like"
+  },
+  "result": {
+    "title": "Your CV is ready",
+    "importedSummary": "Imported from your LinkedIn profile: {jobs, plural, one {# job} other {# jobs}}, {education, plural, one {# education entry} other {# education entries}} and {skills, plural, one {# skill} other {# skills}}.",
+    "fileSummary": "Your saved CV is open.",
+    "reviewHint": "Read through the text before you send your CV, the import may need small fixes.",
+    "edit": "Edit content",
+    "templateTitle": "Choose a template",
+    "colorTitle": "Color",
+    "editHint": "In Edit content you can change the text, add a photo and choose what to show."
   }
 }

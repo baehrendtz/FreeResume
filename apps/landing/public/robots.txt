@@ -1,5 +1,14 @@
 User-agent: *
 Allow: /
-Allow: /en/
+
+# Assistants and AI crawlers are welcome, the content is meant to be quoted
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
 
 Sitemap: https://freeresume.eu/sitemap-index.xml

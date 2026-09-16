@@ -1,40 +1,69 @@
 ---
 import { BRAND } from "@freeresume/shared/brand";
 import CookieConsent from "../components/CookieConsent.astro";
+import type { Lang } from "../types";
 
 interface Props {
   title: string;
   description: string;
-  lang: string;
+  lang: Lang;
+  /** Path of the same page in the other language, defaults to the start pages. */
+  altPath?: string;
+  /** Keep the page out of search results, used for the 404 page. */
+  noindex?: boolean;
 }
 
-const { title, description, lang } = Astro.props;
-const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://freeresume.eu');
-const ogImage = new URL('/og-image.png', canonicalURL.origin).href;
+const { title, description, lang, altPath, noindex = false } = Astro.props;
+
+const site = Astro.site ?? new URL(BRAND.site);
+const canonicalURL = new URL(Astro.url.pathname, site);
+const ogImage = new URL('/og-image.png', site).href;
 const locale = lang === 'sv' ? 'sv_SE' : 'en_US';
 const altLocale = lang === 'sv' ? 'en_US' : 'sv_SE';
-const altHref = lang === 'sv'
-  ? new URL('/en/', canonicalURL.origin).href
-  : new URL('/', canonicalURL.origin).href;
+const altURL = new URL(altPath ?? (lang === 'sv' ? '/en/' : '/'), site).href;
+// x-default points at the Swedish start page, in the same form as its canonical
+const defaultURL = new URL('/', site).href;
 
-const keywords = lang === 'sv'
-  ? 'gratis CV, free resume, skapa CV, CV-mall, LinkedIn CV, CV online, gratis CV-verktyg, CV-generator, free CV builder'
-  : 'free resume, free CV, resume builder, CV template, LinkedIn CV, online CV, free resume builder, CV generator, create CV free';
+const organization = {
+  "@type": "Organization",
+  "@id": `${site.origin}/#organization`,
+  "name": BRAND.name,
+  "url": `${site.origin}/`,
+  "logo": `${site.origin}/logo.png`,
+  "sameAs": ["https://github.com/baehrendtz/FreeResume"],
+};
 
 const structuredData = {
   "@context": "https://schema.org",
-  "@type": "WebApplication",
-  "name": "Free Resume",
-  "url": canonicalURL.origin,
-  "description": description,
-  "applicationCategory": "BusinessApplication",
-  "operatingSystem": "Web",
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "SEK"
-  },
-  "inLanguage": [lang],
+  "@graph": [
+    organization,
+    {
+      "@type": "WebSite",
+      "@id": `${site.origin}/#website`,
+      "url": `${site.origin}/`,
+      "name": BRAND.name,
+      "inLanguage": lang,
+      "publisher": { "@id": organization["@id"] },
+    },
+    {
+      "@type": "WebApplication",
+      "@id": `${site.origin}/#app`,
+      "name": BRAND.name,
+      "url": `https://${BRAND.domains.app}/${lang}`,
+      "description": description,
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web browser",
+      "browserRequirements": "Requires JavaScript",
+      "inLanguage": lang,
+      "isAccessibleForFree": true,
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": lang === 'sv' ? 'SEK' : 'EUR',
+      },
+      "publisher": { "@id": organization["@id"] },
+    },
+  ],
 };
 ---
 
@@ -44,7 +73,7 @@ const structuredData = {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
-    <meta name="keywords" content={keywords} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
     <meta name="theme-color" content={BRAND.themeColor} />
     <script is:inline>
       (function() {
@@ -73,14 +102,16 @@ const structuredData = {
       })();
     </script>
     <link rel="canonical" href={canonicalURL.href} />
-    <link rel="alternate" hreflang={lang === 'sv' ? 'en' : 'sv'} href={altHref} />
     <link rel="alternate" hreflang={lang} href={canonicalURL.href} />
-    <link rel="alternate" hreflang="x-default" href={canonicalURL.origin} />
-    <link rel="icon" type="image/png" href="/logowithouttext.png" />
+    <link rel="alternate" hreflang={lang === 'sv' ? 'en' : 'sv'} href={altURL} />
+    <link rel="alternate" hreflang="x-default" href={defaultURL} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
       rel="stylesheet"
     />
     <title>{title}</title>
@@ -93,10 +124,10 @@ const structuredData = {
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content={lang === 'sv' ? 'Free Resume — Skapa gratis CV från LinkedIn' : 'Free Resume — Create a free CV from LinkedIn'} />
+    <meta property="og:image:alt" content={lang === 'sv' ? 'Free Resume: gratis CV från din LinkedIn-profil' : 'Free Resume: a free CV from your LinkedIn profile'} />
     <meta property="og:locale" content={locale} />
     <meta property="og:locale:alternate" content={altLocale} />
-    <meta property="og:site_name" content="Free Resume" />
+    <meta property="og:site_name" content={BRAND.name} />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -110,6 +141,6 @@ const structuredData = {
   </head>
   <body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 font-['Inter',sans-serif] antialiased">
     <slot />
-    <CookieConsent lang={lang as 'sv' | 'en'} />
+    <CookieConsent lang={lang} />
   </body>
 </html>

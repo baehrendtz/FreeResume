@@ -79,7 +79,7 @@ export function PdfUploader({
       <input
         ref={inputRef}
         type="file"
-        accept=".pdf"
+        accept=".pdf,.json"
         className="hidden"
         onChange={handleChange}
       />

@@ -1,0 +1,166 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import { appUrl, paths } from '../links';
+
+const linkedInProfileUrl = 'https://www.linkedin.com/in/me/';
+
+const steps = [
+  {
+    title: 'Öppna din profil på en dator',
+    body: 'Logga in på LinkedIn i en webbläsare på datorn och gå till din egen profil. Exporten finns inte i mobilappen.',
+  },
+  {
+    title: 'Klicka på Resurser under ditt namn',
+    body: 'Knappen ligger i profilhuvudet, bredvid Tillgänglig för och Lägg till profilavsnitt. På vissa konton heter den fortfarande Mer.',
+  },
+  {
+    title: 'Välj Spara som PDF',
+    body: 'Filen laddas ner direkt. Den heter oftast Profile.pdf och hamnar i mappen Hämtade filer.',
+  },
+  {
+    title: 'Ladda upp filen i Free Resume',
+    body: 'Dra in PDF:en i verktyget. Jobb, utbildning, kompetenser och språk fylls i automatiskt. Sedan väljer du mall och laddar ner ditt CV.',
+  },
+];
+
+const troubleshooting = [
+  'Ser du ingen knapp som heter Resurser? Leta efter Mer, den gamla benämningen används fortfarande på en del konton.',
+  'Använd LinkedIn i en webbläsare på datorn. I mobilappen finns inte valet Spara som PDF.',
+  'Saknas valet helt kan det hjälpa att tillfälligt byta LinkedIns språk till engelska och ladda om profilen.',
+  'Fungerar det ändå inte kan du börja från grunden i Free Resume och fylla i uppgifterna själv.',
+];
+
+const faq = [
+  {
+    q: 'Kostar det något att spara profilen som PDF?',
+    a: 'Nej, funktionen ingår i LinkedIn och kräver inget premiumkonto.',
+  },
+  {
+    q: 'Kan jag spara någon annans profil som PDF?',
+    a: 'Ja, samma meny finns på andra profiler. LinkedIn har dock en gräns för hur många profiler du kan spara per månad.',
+  },
+  {
+    q: 'Fungerar exporten på svenska?',
+    a: 'Ja. Knapparna heter Resurser och Spara som PDF. LinkedIns hjälpsida nämner att profilen kan behöva vara på engelska, men i praktiken fungerar det oftast ändå. Free Resume läser både svenska och engelska profiler.',
+  },
+];
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Free Resume", "item": "https://freeresume.eu/" },
+        { "@type": "ListItem", "position": 2, "name": "Spara LinkedIn som PDF", "item": "https://freeresume.eu/spara-linkedin-som-pdf/" },
+      ],
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": faq.map((item) => ({
+        "@type": "Question",
+        "name": item.q,
+        "acceptedAnswer": { "@type": "Answer", "text": item.a },
+      })),
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title="Spara LinkedIn-profilen som PDF: steg för steg"
+  description="Så laddar du ner din LinkedIn-profil som PDF på datorn, vad filen heter och vad du gör om knappen Spara som PDF saknas. Sedan gör du ett gratis CV av den."
+  lang="sv"
+  altPath="/en/save-linkedin-as-pdf/"
+>
+  <Navbar lang="sv" />
+
+  <main class="pt-28 pb-16 sm:pt-32">
+    <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      <nav aria-label="Brödsmulor" class="text-sm text-gray-500 dark:text-gray-400">
+        <a href={paths.sv.home} class="hover:underline">Free Resume</a>
+        <span class="mx-2" aria-hidden="true">/</span>
+        <span>Spara LinkedIn som PDF</span>
+      </nav>
+
+      <h1 class="mt-4 text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 dark:text-white text-balance">
+        Så sparar du din LinkedIn-profil som PDF
+      </h1>
+      <p class="mt-4 text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
+        LinkedIn kan spara hela din profil som en PDF. Den filen är utgångspunkten när du gör ett CV i Free Resume.
+        Här är stegen, och vad du gör om knappen saknas.
+      </p>
+
+      <a
+        href={linkedInProfileUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="mt-6 inline-flex items-center gap-2 rounded-lg border border-gray-200 dark:border-gray-700 px-4 py-2.5 font-semibold text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+      >
+        Öppna din LinkedIn-profil
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+        </svg>
+      </a>
+
+      <ol class="mt-10 space-y-8">
+        {steps.map((step, i) => (
+          <li class="flex gap-5">
+            <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-600 text-white font-semibold">{i + 1}</span>
+            <div>
+              <h2 class="text-lg font-semibold text-gray-900 dark:text-white">{step.title}</h2>
+              <p class="mt-1 text-gray-600 dark:text-gray-400 leading-relaxed">{step.body}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+
+      <h2 class="mt-14 text-2xl font-bold text-gray-900 dark:text-white">Hittar du inte knappen?</h2>
+      <ul class="mt-4 space-y-2.5">
+        {troubleshooting.map((item) => (
+          <li class="flex gap-2.5 text-gray-600 dark:text-gray-400 leading-relaxed">
+            <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-600 dark:bg-brand-400" aria-hidden="true"></span>
+            {item}
+          </li>
+        ))}
+      </ul>
+
+      <h2 class="mt-14 text-2xl font-bold text-gray-900 dark:text-white">Vad LinkedIns PDF innehåller</h2>
+      <p class="mt-4 text-gray-600 dark:text-gray-400 leading-relaxed">
+        PDF:en är en utskrift av profilen: rubrik, sammanfattning, alla jobb, utbildningar, kompetenser och språk.
+        Den har också LinkedIns egen layout och blir ofta fyra sidor eller mer. Free Resume läser innehållet och
+        bygger om det till ett CV på en eller två sidor, där du själv väljer vad som ska visas.
+      </p>
+
+      <div class="mt-10 rounded-2xl bg-gray-50 dark:bg-gray-900 p-6 sm:p-8">
+        <h2 class="text-xl font-bold text-gray-900 dark:text-white">Nästa steg: gör CV:t</h2>
+        <p class="mt-2 text-gray-600 dark:text-gray-400">
+          Ladda upp PDF:en så fylls allt i automatiskt. Gratis, utan konto, och filen stannar i din webbläsare.
+        </p>
+        <div class="mt-5 flex flex-col sm:flex-row gap-3">
+          <a href={appUrl('sv')} class="inline-flex items-center justify-center bg-brand-600 hover:bg-brand-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors">
+            Ladda upp din LinkedIn-PDF
+          </a>
+          <a href={paths.sv.templates} class="inline-flex items-center justify-center px-5 py-3 rounded-lg font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            Se CV-mallarna
+          </a>
+        </div>
+      </div>
+
+      <h2 class="mt-14 text-2xl font-bold text-gray-900 dark:text-white">Vanliga frågor</h2>
+      <dl class="mt-4 divide-y divide-gray-200 dark:divide-gray-800">
+        {faq.map((item) => (
+          <div class="py-5">
+            <dt class="font-semibold text-gray-900 dark:text-white">{item.q}</dt>
+            <dd class="mt-1 text-gray-600 dark:text-gray-400 leading-relaxed">{item.a}</dd>
+          </div>
+        ))}
+      </dl>
+    </article>
+  </main>
+
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  <Footer lang="sv" />
+</BaseLayout>

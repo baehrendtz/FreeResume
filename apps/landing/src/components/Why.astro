@@ -9,11 +9,11 @@ const { lang } = Astro.props;
 
 const t = {
   sv: {
-    text: 'Att göra ett CV borde vara enkelt. LinkedIn har redan all info — så jag byggde ett verktyg som gör jobbet åt dig. Ditt CV skapas direkt i webbläsaren och ingen persondata sparas. Vi samlar bara in anonym statistik.',
+    text: 'Att göra ett CV borde vara enkelt. LinkedIn har redan all info, så jag byggde ett verktyg som gör jobbet åt dig. Ditt CV skapas direkt i webbläsaren och ingen persondata sparas. Vi samlar bara in anonym statistik.',
     name: 'Fabian Baehrendtz',
   },
   en: {
-    text: 'Making a CV should be easy. LinkedIn already has all your info — so I built a tool that does the work for you. Your CV is generated right in the browser and no personal data is stored. We only collect anonymous statistics.',
+    text: 'Making a CV should be easy. LinkedIn already has all your info, so I built a tool that does the work for you. Your CV is generated right in the browser and no personal data is stored. We only collect anonymous statistics.',
     name: 'Fabian Baehrendtz',
   },
 }[lang];
@@ -29,7 +29,7 @@ const t = {
             "{t.text}"
           </p>
           <a href="https://www.fabianbaehrendtz.se/" target="_blank" rel="noopener noreferrer" class="mt-4 inline-block text-sm font-medium text-gray-900 dark:text-white hover:text-brand-600 dark:hover:text-brand-400 transition-colors">
-            — {t.name}
+            {t.name}
           </a>
         </div>
       </div>

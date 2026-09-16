@@ -66,9 +66,9 @@ const DEFAULT_DISPLAY_SETTINGS = {
  * Seeds sessionStorage with a minimal CV session so that the app
  * skips onboarding and goes directly to the editor.
  */
-export async function seedSession(page: Page) {
+export async function seedSession(page: Page, cvOverrides: Partial<typeof MINIMAL_CV> = {}) {
   const session = {
-    cv: MINIMAL_CV,
+    cv: { ...MINIMAL_CV, ...cvOverrides },
     templateId: "basic",
     displaySettings: DEFAULT_DISPLAY_SETTINGS,
   };

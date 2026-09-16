@@ -1,15 +1,17 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
+import { isCvFile } from "@/lib/export/cvFile";
 
 interface UsePdfDropOptions {
   onFileSelected: (file: File) => void;
   invalidFileTypeMessage: string;
 }
 
-/** True if the file looks like a PDF. Some platforms deliver dropped files
- *  with an empty MIME type, match extractText's lenient rule. */
-function isPdfFile(file: File): boolean {
+/** True if the file looks like a PDF or a saved CV file. Some platforms deliver
+ *  dropped files with an empty MIME type, match extractText's lenient rule. */
+function isImportFile(file: File): boolean {
+  if (isCvFile(file)) return true;
   if (file.type) return file.type === "application/pdf";
   return file.name.toLowerCase().endsWith(".pdf");
 }
@@ -21,7 +23,7 @@ export function usePdfDrop({ onFileSelected, invalidFileTypeMessage }: UsePdfDro
 
   const handleFile = useCallback(
     (file: File) => {
-      if (isPdfFile(file)) {
+      if (isImportFile(file)) {
         setError(null);
         onFileSelected(file);
       } else {
@@ -62,5 +64,5 @@ export function usePdfDrop({ onFileSelected, invalidFileTypeMessage }: UsePdfDro
     setDragOver(false);
   }, []);
 
-  return { dragOver, inputRef, handleDrop, handleChange, handleDragOver, handleDragLeave, error };
+  return { dragOver, inputRef, handleFile, handleDrop, handleChange, handleDragOver, handleDragLeave, error };
 }

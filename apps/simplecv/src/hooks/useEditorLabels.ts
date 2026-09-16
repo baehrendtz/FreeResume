@@ -12,6 +12,11 @@ export function useEditorLabels() {
   return useMemo(() => {
   const proficiency = getCvProficiencyLabels(cvLang);
   const extrasCats = getCvExtrasCategoryLabels(cvLang);
+  const dates = {
+    month: t("editor.dates.month"),
+    year: t("editor.dates.year"),
+    ongoing: t("editor.dates.ongoing"),
+  };
 
   const editor = {
     tabs: {
@@ -30,9 +35,35 @@ export function useEditorLabels() {
       content: t("editor.groups.content"),
       settings: t("editor.groups.settings"),
     },
+    storage: {
+      title: t("editor.storage.title"),
+      description: t("editor.storage.description"),
+      remember: t("editor.storage.remember"),
+      rememberHint: t("editor.storage.rememberHint"),
+    },
     sidebar: {
       expand: t("editor.sidebar.expand"),
       collapse: t("editor.sidebar.collapse"),
+    },
+    nav: {
+      stepOf: (current: number, total: number) => t("editor.nav.stepOf", { current, total }),
+      previous: t("editor.nav.previous"),
+      next: (step: string) => t("editor.nav.next", { step }),
+      moreSettings: t("editor.nav.moreSettings"),
+      finishHint: t("editor.nav.finishHint"),
+      download: t("actions.downloadPdf"),
+      generating: t("actions.generating"),
+    },
+    hints: {
+      basics: t("editor.hints.basics"),
+      summary: t("editor.hints.summary"),
+      experience: t("editor.hints.experience"),
+      education: t("editor.hints.education"),
+      skills: t("editor.hints.skills"),
+      languages: t("editor.hints.languages"),
+      extras: t("editor.hints.extras"),
+      template: t("editor.hints.template"),
+      visibility: t("editor.hints.visibility"),
     },
     basics: {
       name: t("editor.basics.name"),
@@ -48,6 +79,15 @@ export function useEditorLabels() {
       photoRemove: t("editor.basics.photoRemove"),
       photoTooLarge: t("editor.basics.photoTooLarge"),
       photoReadError: t("editor.basics.photoReadError"),
+      placeholders: {
+        name: t("editor.basics.placeholders.name"),
+        headline: t("editor.basics.placeholders.headline"),
+        email: t("editor.basics.placeholders.email"),
+        phone: t("editor.basics.placeholders.phone"),
+        location: t("editor.basics.placeholders.location"),
+        linkedIn: t("editor.basics.placeholders.linkedIn"),
+        website: t("editor.basics.placeholders.website"),
+      },
     },
     summary: {
       label: t("editor.summary.label"),
@@ -60,7 +100,6 @@ export function useEditorLabels() {
       startDate: t("editor.experience.startDate"),
       endDate: t("editor.experience.endDate"),
       datePlaceholder: t("editor.experience.datePlaceholder"),
-      endDatePlaceholder: t("editor.experience.endDatePlaceholder"),
       description: t("editor.experience.description"),
       bullets: t("editor.experience.bullets"),
       bulletsHint: t("editor.experience.bulletsHint"),
@@ -75,6 +114,17 @@ export function useEditorLabels() {
       moveDown: t("editor.experience.moveDown"),
       groupWith: t("editor.experience.groupWith"),
       ungroupFrom: t("editor.experience.ungroupFrom"),
+      untitled: t("editor.experience.untitled"),
+      titlePlaceholder: t("editor.experience.titlePlaceholder"),
+      companyPlaceholder: t("editor.experience.companyPlaceholder"),
+      locationPlaceholder: t("editor.experience.locationPlaceholder"),
+      descriptionPlaceholder: t("editor.experience.descriptionPlaceholder"),
+      bulletsPlaceholder: t("editor.experience.bulletsPlaceholder"),
+      addBullet: t("editor.experience.addBullet"),
+      removeBullet: t("editor.experience.removeBullet"),
+      dragBullet: t("editor.experience.dragBullet"),
+      excluded: t("editor.experience.excluded"),
+      dates,
     },
     education: {
       institution: t("editor.education.institution"),
@@ -83,7 +133,6 @@ export function useEditorLabels() {
       startDate: t("editor.education.startDate"),
       endDate: t("editor.education.endDate"),
       datePlaceholder: t("editor.education.datePlaceholder"),
-      endDatePlaceholder: t("editor.education.endDatePlaceholder"),
       description: t("editor.education.description"),
       add: t("editor.education.add"),
       remove: t("editor.education.remove"),
@@ -93,6 +142,12 @@ export function useEditorLabels() {
       confirm: t("editor.education.confirm"),
       moveUp: t("editor.education.moveUp"),
       moveDown: t("editor.education.moveDown"),
+      untitled: t("editor.education.untitled"),
+      institutionPlaceholder: t("editor.education.institutionPlaceholder"),
+      degreePlaceholder: t("editor.education.degreePlaceholder"),
+      fieldPlaceholder: t("editor.education.fieldPlaceholder"),
+      excluded: t("editor.education.excluded"),
+      dates,
     },
     skills: {
       label: t("editor.skills.label"),
@@ -176,6 +231,7 @@ export function useEditorLabels() {
 
   const header = {
     importPdf: t("actions.importPdf"),
+    saveFile: t("actions.saveFile"),
     downloadPdf: t("actions.downloadPdf"),
     generating: t("actions.generating"),
     moreActions: t("actions.moreActions"),
@@ -197,38 +253,13 @@ export function useEditorLabels() {
     footer: t("help.footer"),
   };
 
-  const onboarding = {
-    chooseTitle: t("onboarding.choose.title"),
-    chooseSubtitle: t("onboarding.choose.subtitle"),
-    importTitle: t("onboarding.choose.importTitle"),
-    importDescription: t("onboarding.choose.importDescription"),
-    scratchTitle: t("onboarding.choose.scratchTitle"),
-    scratchDescription: t("onboarding.choose.scratchDescription"),
-    howToGetPdf: t("onboarding.choose.howToGetPdf"),
-    guideTitle: t("onboarding.guide.title"),
-    guideStep1: t("onboarding.guide.step1"),
-    guideStep2: t("onboarding.guide.step2"),
-    guideStep3: t("onboarding.guide.step3"),
-    uploadDropzone: t("upload.dropzone"),
-    uploadProcessing: t("upload.processing"),
-    uploadError: t("upload.error"),
-    uploadInvalidFileType: t("upload.invalidFileType"),
-    successTitle: t("onboarding.success.title"),
-    successScratchTitle: t("onboarding.success.scratchTitle"),
-    successScratchDescription: t("onboarding.success.scratchDescription"),
-    successCta: t("onboarding.success.cta"),
-    successExperience: t("onboarding.success.experience"),
-    successEducation: t("onboarding.success.education"),
-    successSkills: t("onboarding.success.skills"),
-    successBack: t("onboarding.success.back"),
-  };
-
   const importDialog = {
     title: t("actions.importPdf"),
     warning: t("actions.importWarning"),
     dropzone: t("upload.dropzone"),
     processing: t("upload.processing"),
     error: t("upload.error"),
+    fileError: t("upload.fileError"),
     invalidFileType: t("upload.invalidFileType"),
     cancel: t("actions.cancel"),
   };
@@ -239,6 +270,6 @@ export function useEditorLabels() {
     cookieSettings: t("consent.settings"),
   };
 
-  return { editor, header, helpLabels, onboarding, importDialog, footer };
+  return { editor, header, helpLabels, importDialog, footer };
   }, [t, cvLang]);
 }

@@ -74,7 +74,7 @@ export function CvPreview({ renderModel, templateId, zoomLevel, styleSettings, p
     <TemplateErrorBoundary resetKey={templateId}>
       <Suspense
         fallback={
-          <div className="p-8 text-center text-gray-500">
+          <div data-template-loading className="p-8 text-center text-gray-500">
             Loading template...
           </div>
         }

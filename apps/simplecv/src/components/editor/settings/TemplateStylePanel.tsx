@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { NumericStepper } from "@/components/ui/numeric-stepper";
 import { ColorPickerField } from "@/components/ui/color-picker-field";
 import { SettingsSection } from "./SettingsSection";
-import { FONT_SIZE_RANGE, PHOTO_SIZE_RANGE, LINE_HEIGHT_RANGE } from "@/lib/constants";
+import { FONT_SIZE_RANGE, PHOTO_SIZE_RANGE, LINE_HEIGHT_RANGE, ACCENT_COLOR_PRESETS, SIDEBAR_COLOR_PRESETS } from "@/lib/constants";
 import type { PerTemplateStyleOverrides, TemplateStyleValues } from "@/lib/model/TemplateStyleSettings";
 
 export interface StyleLabels {
@@ -70,6 +70,7 @@ export function TemplateStylePanel({
       {/* Accent color */}
       <ColorPickerField
         id="accent-color"
+        presets={ACCENT_COLOR_PRESETS}
         label={labels.accentColor}
         value={styleSettings.accentColor}
         onChange={(v) => updateField("accentColor", v)}
@@ -79,6 +80,7 @@ export function TemplateStylePanel({
       {supportsSecondaryColor && (
         <ColorPickerField
           id="secondary-color"
+          presets={ACCENT_COLOR_PRESETS}
           label={labels.secondaryColor}
           value={styleSettings.secondaryColor}
           onChange={(v) => updateField("secondaryColor", v)}
@@ -89,6 +91,7 @@ export function TemplateStylePanel({
       {supportsSidebar && (
         <ColorPickerField
           id="sidebar-bg-color"
+          presets={SIDEBAR_COLOR_PRESETS}
           label={labels.sidebarBgColor}
           value={styleSettings.sidebarBgColor}
           onChange={(v) => updateField("sidebarBgColor", v)}

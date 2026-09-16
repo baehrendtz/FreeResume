@@ -1,5 +1,6 @@
 ---
 import type { Lang } from '../types';
+import { appUrl, githubUrl, paths } from '../links';
 
 interface Props {
   lang: Lang;
@@ -9,45 +10,73 @@ const { lang } = Astro.props;
 
 const t = {
   sv: {
-    rights: 'Gratis CV - Alltid gratis',
-    app: 'Gå till appen',
-    github: 'GitHub',
+    tagline: 'Gratis CV-verktyg. Alltid gratis.',
+    product: 'Produkt',
+    app: 'Skapa CV gratis',
+    templates: 'CV-mallar',
+    guide: 'Spara LinkedIn som PDF',
+    about: 'Om',
+    github: 'Källkod på GitHub',
     cookieSettings: 'Cookieinställningar',
+    language: 'English',
+    languageHref: '/en/',
   },
   en: {
-    rights: 'Free Resume - Forever Free',
-    app: 'Go to the app',
-    github: 'GitHub',
+    tagline: 'Free CV builder. Free forever.',
+    product: 'Product',
+    app: 'Create a free CV',
+    templates: 'CV templates',
+    guide: 'Save LinkedIn as PDF',
+    about: 'About',
+    github: 'Source code on GitHub',
     cookieSettings: 'Cookie settings',
+    language: 'Svenska',
+    languageHref: '/',
   },
 }[lang];
+
+const p = paths[lang];
+const year = new Date().getFullYear();
 ---
 
-<footer class="border-t border-gray-100 dark:border-gray-800 py-8">
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-    <div class="flex items-center gap-2">
-      <img src="/logowithouttext.png" alt="Free Resume" class="h-6 w-6" />
-      <span class="text-sm text-gray-500 dark:text-gray-400">{t.rights}</span>
+<footer class="border-t border-gray-100 dark:border-gray-800 py-10">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col gap-8 sm:flex-row sm:justify-between">
+      <div class="max-w-xs">
+        <a href={p.home} class="flex items-center gap-2">
+          <img src="/logowithouttext.png" alt="" width="256" height="219" class="h-6 w-6 object-contain" />
+          <span class="font-semibold">Free Resume</span>
+        </a>
+        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">{t.tagline}</p>
+      </div>
+
+      <div class="flex flex-col gap-2 text-sm">
+        <span class="font-semibold text-gray-900 dark:text-white">{t.product}</span>
+        <a href={appUrl(lang)} class="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">{t.app}</a>
+        <a href={p.templates} class="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">{t.templates}</a>
+        <a href={p.guide} class="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">{t.guide}</a>
+      </div>
+
+      <div class="flex flex-col gap-2 text-sm">
+        <span class="font-semibold text-gray-900 dark:text-white">{t.about}</span>
+        <a href={githubUrl} target="_blank" rel="noopener noreferrer" class="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">{t.github}</a>
+        <a href={t.languageHref} class="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">{t.language}</a>
+        <button
+          id="cookie-settings-btn"
+          type="button"
+          class="text-left text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+        >
+          {t.cookieSettings}
+        </button>
+      </div>
     </div>
-    <div class="flex items-center gap-6">
-      <button
-        id="cookie-settings-btn"
-        type="button"
-        class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
-      >
-        {t.cookieSettings}
-      </button>
-      <a href="https://app.freeresume.eu" class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
-        {t.app}
-      </a>
-      <a href="https://github.com/baehrendtz/FreeResume" target="_blank" rel="noopener noreferrer" class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
-        {t.github}
-      </a>
-    </div>
-    <script>
-      document.getElementById('cookie-settings-btn')?.addEventListener('click', () => {
-        window.dispatchEvent(new Event('show-cookie-consent'));
-      });
-    </script>
+
+    <p class="mt-8 text-xs text-gray-400 dark:text-gray-500">© {year} Free Resume</p>
   </div>
+
+  <script>
+    document.getElementById('cookie-settings-btn')?.addEventListener('click', () => {
+      window.dispatchEvent(new Event('show-cookie-consent'));
+    });
+  </script>
 </footer>

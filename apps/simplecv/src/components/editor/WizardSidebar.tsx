@@ -1,8 +1,10 @@
 "use client";
 
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useFormContext, useWatch } from "react-hook-form";
+import { Check, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { WIZARD_STEPS, STEP_GROUPS } from "@/lib/wizard/steps";
+import type { CvModel } from "@/lib/model/CvModel";
 
 interface WizardSidebarProps {
   activeStep: string;
@@ -12,6 +14,30 @@ interface WizardSidebarProps {
   sidebarLabels: { expand: string; collapse: string };
   collapsed: boolean;
   onToggleCollapse: () => void;
+}
+
+/** Progress per content step: an item count for list steps, a done flag for the rest. */
+type StepProgress = Partial<Record<string, number | boolean>>;
+
+function useStepProgress(): StepProgress {
+  const { control } = useFormContext<CvModel>();
+  const [name, summary, experience, education, skills, languages, extras] = useWatch({
+    control,
+    name: ["name", "summary", "experience", "education", "skills", "languages", "extras"],
+  });
+  return {
+    basics: !!name?.trim(),
+    summary: !!summary?.trim(),
+    experience: experience?.length ?? 0,
+    education: education?.length ?? 0,
+    skills: skills?.length ?? 0,
+    languages: languages?.length ?? 0,
+    extras: (extras ?? []).reduce((sum, g) => sum + g.items.length, 0),
+  };
+}
+
+function isStepDone(progress: number | boolean | undefined): boolean {
+  return typeof progress === "number" ? progress > 0 : !!progress;
 }
 
 /** Resolve step ids to their WIZARD_STEPS definitions, skipping unknown ids. */
@@ -28,6 +54,8 @@ export function WizardSidebar({
   collapsed,
   onToggleCollapse,
 }: WizardSidebarProps) {
+  const progress = useStepProgress();
+
   return (
     <>
       {/* Desktop sidebar */}
@@ -63,7 +91,7 @@ export function WizardSidebar({
               )}
 
               {!collapsed && (
-                <div className="px-3 pt-1 pb-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                <div className="px-3 pt-1 pb-1 text-xs font-medium text-muted-foreground">
                   {groupLabels[group.id]}
                 </div>
               )}
@@ -71,6 +99,7 @@ export function WizardSidebar({
               {groupSteps.map((step) => {
                 const Icon = step.icon;
                 const isActive = step.id === activeStep;
+                const stepProgress = progress[step.id];
                 return (
                   <button
                     key={step.id}
@@ -88,6 +117,13 @@ export function WizardSidebar({
                   >
                     <Icon className="h-4 w-4 shrink-0" />
                     {!collapsed && <span className="truncate">{tabLabels[step.id]}</span>}
+                    {!collapsed && typeof stepProgress === "number" && stepProgress > 0 && (
+                      // Visual only, keeps the button's accessible name equal to the step label
+                      <span aria-hidden className="ml-auto text-xs tabular-nums text-muted-foreground">{stepProgress}</span>
+                    )}
+                    {!collapsed && stepProgress === true && (
+                      <Check className="ml-auto h-3.5 w-3.5 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                    )}
                   </button>
                 );
               })}
@@ -97,7 +133,7 @@ export function WizardSidebar({
       </nav>
 
       {/* Mobile stepper */}
-      <nav className="md:hidden flex gap-1.5 overflow-x-auto scrollbar-hide pb-2 px-1">
+      <nav className="md:hidden flex gap-1.5 overflow-x-auto scrollbar-hide pt-1 pb-2 px-1">
         {STEP_GROUPS.map((group, groupIndex) =>
           resolveSteps(group.steps).map((step) => {
             const Icon = step.icon;
@@ -108,7 +144,7 @@ export function WizardSidebar({
                 type="button"
                 onClick={() => onStepSelect(step.id)}
                 className={cn(
-                  "flex items-center justify-center shrink-0 w-10 h-10 rounded-full text-xs font-medium transition-colors",
+                  "relative flex items-center justify-center shrink-0 w-10 h-10 rounded-full text-xs font-medium transition-colors",
                   isActive
                     ? "bg-primary text-primary-foreground"
                     : "bg-muted text-muted-foreground",
@@ -119,6 +155,9 @@ export function WizardSidebar({
                 aria-current={isActive ? "step" : undefined}
               >
                 <Icon className="h-4 w-4" />
+                {!isActive && isStepDone(progress[step.id]) && (
+                  <span aria-hidden className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-background" />
+                )}
               </button>
             );
           }),

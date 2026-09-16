@@ -1,9 +1,10 @@
 {
   "upload": {
-    "dropzone": "Dra och släpp din PDF här, eller klicka för att bläddra",
-    "invalidFileType": "Välj en PDF-fil",
+    "dropzone": "Dra och släpp din LinkedIn-PDF eller sparade CV-fil här, eller klicka för att bläddra",
+    "invalidFileType": "Välj en PDF eller en sparad CV-fil (.json)",
     "processing": "Bearbetar PDF...",
-    "error": "Kunde inte tolka denna PDF. Kontrollera att det är en LinkedIn-profilsexport."
+    "error": "Kunde inte tolka denna PDF. Kontrollera att det är en LinkedIn-profilsexport.",
+    "fileError": "Kunde inte öppna CV-filen. Kontrollera att den är sparad från Free Resume."
   },
   "editor": {
     "tabs": {
@@ -18,9 +19,9 @@
       "visibility": "Inställningar"
     },
     "groups": {
-      "theme": "Mall",
       "content": "Innehåll",
-      "settings": "Inställningar"
+      "theme": "Utseende",
+      "settings": "Valfritt"
     },
     "sidebar": {
       "expand": "Expandera menyn",
@@ -39,11 +40,20 @@
       "photoUpload": "Ladda upp foto",
       "photoRemove": "Ta bort",
       "photoTooLarge": "Fotot måste vara under 2MB",
-      "photoReadError": "Kunde inte läsa fotofilen"
+      "photoReadError": "Kunde inte läsa fotofilen",
+      "placeholders": {
+        "name": "t.ex. Anna Andersson",
+        "headline": "t.ex. Projektledare inom IT",
+        "email": "anna.andersson@exempel.se",
+        "phone": "070-123 45 67",
+        "location": "t.ex. Stockholm, Sverige",
+        "linkedIn": "linkedin.com/in/annaandersson",
+        "website": "annaandersson.se"
+      }
     },
     "summary": {
       "label": "Professionell sammanfattning",
-      "placeholder": "Skriv en kort sammanfattning av din professionella bakgrund..."
+      "placeholder": "t.ex. Projektledare med 8 års erfarenhet inom IT. Jag hjälper team att samarbeta och leverera i tid och söker nu min nästa utmaning."
     },
     "experience": {
       "title": "Jobbtitel",
@@ -52,21 +62,30 @@
       "startDate": "Startdatum",
       "endDate": "Slutdatum",
       "datePlaceholder": "t.ex. Jan 2020",
-      "endDatePlaceholder": "t.ex. Pågående",
       "description": "Beskrivning",
-      "bullets": "Punkter (en per rad)",
-      "bulletsHint": "En punkt per rad. Tomma rader ignoreras.",
+      "bullets": "Punkter",
+      "bulletsHint": "Tryck Enter för en ny punkt. Dra i handtaget för att ändra ordning.",
       "add": "Lägg till erfarenhet",
       "remove": "Ta bort",
-      "hide": "Dölj",
-      "show": "Visa",
+      "hide": "Dölj i CV",
+      "show": "Visa i CV",
       "at": " på ",
       "emptyState": "Inga erfarenheter ännu. Klicka nedan för att lägga till.",
       "confirm": "Bekräfta?",
       "moveUp": "Flytta upp",
       "moveDown": "Flytta ner",
       "groupWith": "Gruppera med föregående",
-      "ungroupFrom": "Separera från grupp"
+      "ungroupFrom": "Separera från grupp",
+      "untitled": "Nytt jobb",
+      "titlePlaceholder": "t.ex. Säljare",
+      "companyPlaceholder": "t.ex. Företaget AB",
+      "locationPlaceholder": "t.ex. Göteborg",
+      "descriptionPlaceholder": "Kort om rollen och ditt ansvar (valfritt)",
+      "bulletsPlaceholder": "t.ex. Ökade försäljningen med 20 % på ett år",
+      "excluded": "Får inte plats i CV:t",
+      "addBullet": "Lägg till punkt",
+      "removeBullet": "Ta bort punkt",
+      "dragBullet": "Dra för att flytta"
     },
     "education": {
       "institution": "Lärosäte",
@@ -75,16 +94,20 @@
       "startDate": "Startdatum",
       "endDate": "Slutdatum",
       "datePlaceholder": "t.ex. Jan 2020",
-      "endDatePlaceholder": "t.ex. Pågående",
       "description": "Beskrivning",
       "add": "Lägg till utbildning",
       "remove": "Ta bort",
-      "hide": "Dölj",
-      "show": "Visa",
+      "hide": "Dölj i CV",
+      "show": "Visa i CV",
       "emptyState": "Inga utbildningar ännu. Klicka nedan för att lägga till.",
       "confirm": "Bekräfta?",
       "moveUp": "Flytta upp",
-      "moveDown": "Flytta ner"
+      "moveDown": "Flytta ner",
+      "untitled": "Ny utbildning",
+      "institutionPlaceholder": "t.ex. Stockholms universitet",
+      "degreePlaceholder": "t.ex. Kandidatexamen",
+      "fieldPlaceholder": "t.ex. Ekonomi",
+      "excluded": "Får inte plats i CV:t"
     },
     "skills": {
       "label": "Kompetenser",
@@ -157,48 +180,56 @@
       "cvLanguageEn": "English",
       "cvLanguageSv": "Svenska",
       "template": "Mall",
-      "overflows": "Innehållet svämmar över (~{pages} sidor)",
-      "autoFit": "Autopassa",
-      "fitting": "Passar in...",
       "trimmedJobs": "{shown} av {total} jobb visas",
       "trimmedEducation": "{shown} av {total} utbildningar visas",
       "trimmedSkills": "{shown} av {total} kompetenser visas",
       "trimmedExtras": "{shown} av {total} övriga poster visas",
-      "summaryTruncated": "Sammanfattningen är förkortad"
+      "summaryTruncated": "sammanfattningen är förkortad"
+    },
+    "nav": {
+      "stepOf": "Steg {current} av {total}",
+      "previous": "Tillbaka",
+      "next": "Nästa: {step}",
+      "moreSettings": "Fler inställningar",
+      "finishHint": "Klart! Kontrollera förhandsgranskningen och ladda ner ditt CV."
+    },
+    "hints": {
+      "basics": "Börja med ditt namn och hur arbetsgivare kan nå dig. Rubriken är en kort rad om vem du är, till exempel din yrkesroll.",
+      "summary": "Skriv 2-3 meningar om vem du är, vad du är bra på och vad du söker. Det är det första en rekryterare läser.",
+      "experience": "Lägg till dina jobb, det senaste först. Skriv gärna 2-4 punkter om vad du åstadkom, helst med siffror. Klicka på ett jobb för att redigera det.",
+      "education": "Lägg till din utbildning, den senaste först. Examen och lärosäte räcker oftast.",
+      "skills": "Skriv en kompetens i taget och tryck Enter. Välj de som är mest relevanta för jobbet du söker.",
+      "languages": "Välj språk och nivå. Ta med ditt modersmål och de språk du kan använda i jobbet.",
+      "extras": "Valfritt. Lägg till certifikat, körkort, ideellt arbete eller annat som stärker ditt CV.",
+      "template": "Välj den mall du gillar bäst. Innehållet flyttas med automatiskt och du kan byta när som helst.",
+      "visibility": "Valfritt. Välj vilka sektioner som visas, hur långt CV:t får bli och vilket språk rubrikerna ska ha."
+    },
+    "fit": {
+      "overflowTitle": "Ditt CV får inte plats, det blir ungefär {pages} sidor.",
+      "trimmedTitle": "Allt får inte plats, så en del visas inte i CV:t.",
+      "autoFit": "Korta ner automatiskt",
+      "fitting": "Kortar ner...",
+      "useTwoPages": "Använd 2 sidor",
+      "editLimits": "Välj vad som visas"
+    },
+    "storage": {
+      "title": "Spara mellan besök",
+      "description": "Som standard försvinner ditt CV när du stänger fliken.",
+      "remember": "Kom ihåg mitt CV i den här webbläsaren",
+      "rememberHint": "Stäng av på delade datorer. Du kan också spara en kopia med knappen \"Spara CV-fil\"."
+    },
+    "dates": {
+      "month": "Månad",
+      "year": "År",
+      "ongoing": "Pågående"
     }
   },
   "preview": {
     "title": "CV-förhandsgranskning",
     "fullscreen": "Helskärmsvy",
     "zoomIn": "Zooma in",
-    "zoomOut": "Zooma ut"
-  },
-  "onboarding": {
-    "choose": {
-      "title": "Skapa ditt professionella CV",
-      "subtitle": "Importera din LinkedIn-profil eller börja från grunden",
-      "importTitle": "Importera från LinkedIn",
-      "importDescription": "Ladda upp din LinkedIn-PDF för att fylla i ditt CV automatiskt",
-      "scratchTitle": "Börja från grunden",
-      "scratchDescription": "Börja med ett tomt CV och fyll i dina uppgifter",
-      "howToGetPdf": "Hur får jag min LinkedIn-PDF?"
-    },
-    "guide": {
-      "title": "Så här får du din LinkedIn-PDF",
-      "step1": "Gå till din LinkedIn-profil",
-      "step2": "Klicka 'Mer' > 'Spara som PDF'",
-      "step3": "Ladda upp filen här"
-    },
-    "success": {
-      "title": "Ditt CV är redo att redigera!",
-      "scratchTitle": "Ditt tomma CV är redo",
-      "scratchDescription": "Låt oss börja med grunduppgifterna: ditt namn och kontaktuppgifter.",
-      "cta": "Börja redigera",
-      "experience": "erfarenheter",
-      "education": "utbildningar",
-      "skills": "kompetenser",
-      "back": "Ladda upp en annan fil"
-    }
+    "zoomOut": "Zooma ut",
+    "show": "Förhandsgranska"
   },
   "actions": {
     "downloadPdf": "Ladda ner PDF",
@@ -207,7 +238,8 @@
     "importPdf": "Importera PDF",
     "importWarning": "Detta ersätter ditt nuvarande CV",
     "moreActions": "Fler åtgärder",
-    "cancel": "Avbryt"
+    "cancel": "Avbryt",
+    "saveFile": "Spara CV-fil"
   },
   "theme": {
     "toggle": "Byt tema"
@@ -223,7 +255,7 @@
     "downloadTitle": "Ladda ner ditt CV",
     "downloadText": "Klicka på \"Ladda ner PDF\"-knappen i övre menyn. CV:t genereras direkt i webbläsaren.",
     "dataTitle": "Din data",
-    "dataText": "All CV-data sparas lokalt i din webbläsare (sessionStorage). Om du accepterar analyticscookies skickas anonym användningsdata till Google Analytics för att hjälpa oss förbättra tjänsten. Ingen personlig information delas.",
+    "dataText": "Ditt CV finns bara i din webbläsare och försvinner när du stänger fliken. Vill du fortsätta senare kan du spara en CV-fil eller slå på \"Kom ihåg mitt CV\" under Inställningar. Om du accepterar analyscookies skickas anonym användningsdata till Google Analytics. Ingen personlig information delas.",
     "footer": "Free Resume är gratis och open source."
   },
   "consent": {
@@ -235,5 +267,84 @@
   "footer": {
     "copyright": "© {year} Free Resume",
     "openSource": "Gratis och öppen källkod"
+  },
+  "checklist": {
+    "title": "Innan du laddar ner",
+    "description": "Några saker kan göra ditt CV starkare. Åtgärda dem eller ladda ner ändå.",
+    "fix": "Åtgärda",
+    "downloadAnyway": "Ladda ner ändå",
+    "issues": {
+      "missingName": "Ditt namn saknas",
+      "missingEmail": "E-postadress saknas",
+      "invalidEmail": "E-postadressen ser inte ut att stämma",
+      "missingPhone": "Telefonnummer saknas",
+      "longHeadline": "Rubriken är lång, försök hålla den under {max} tecken",
+      "missingSummary": "Sammanfattning saknas",
+      "noExperience": "Ingen erfarenhet är tillagd",
+      "jobsWithoutDetails": "{count} jobb saknar beskrivning och punkter"
+    }
+  },
+  "templates": {
+    "basic": {
+      "name": "Klassisk",
+      "description": "En kolumn, ren och tidlös"
+    },
+    "professional": {
+      "name": "Professionell",
+      "description": "Mörkt sidhuvud och sidofält"
+    },
+    "basic2": {
+      "name": "Modern",
+      "description": "Sidofält med stort foto"
+    },
+    "creative": {
+      "name": "Kreativ",
+      "description": "Färgstark med sidofält"
+    }
+  },
+  "start": {
+    "title": "Från LinkedIn-profil till snyggt CV på en minut",
+    "trust": "Gratis och utan konto. PDF:en läses direkt i din webbläsare och laddas aldrig upp till någon server.",
+    "mobileNotice": "LinkedIn kan bara spara profilen som PDF i webbläsaren på en dator, inte i mobilappen. Har du redan filen i telefonen kan du välja den nedan.",
+    "step1Title": "Öppna din LinkedIn-profil på en dator",
+    "step1Action": "Öppna min profil",
+    "step2Title": "Klicka på Resurser och välj Spara som PDF",
+    "step2Hint": "Knappen sitter under ditt namn. På vissa konton heter den Mer.",
+    "mock": {
+      "openTo": "Tillgänglig för",
+      "addSection": "Lägg till profilavsnitt",
+      "resources": "Resurser",
+      "sendProfile": "Skicka profil i ett meddelande",
+      "savePdf": "Spara som PDF"
+    },
+    "troubleTitle": "Hittar du inte knappen?",
+    "trouble1": "Leta efter Mer i stället för Resurser.",
+    "trouble2": "Använd LinkedIn i en webbläsare på datorn, inte i appen.",
+    "trouble3": "Saknas knappen kan det hjälpa att tillfälligt byta LinkedIns språk till engelska.",
+    "trouble4": "Går det ändå inte kan du börja från grunden längre ner.",
+    "step3Title": "Ladda upp PDF:en här",
+    "dropTitle": "Dra hit din LinkedIn-PDF",
+    "dropTitleTouch": "Tryck för att välja din LinkedIn-PDF",
+    "welcomeBack": "Välkommen tillbaka! Dra hit PDF:en du just sparade.",
+    "dropHint": "Filen heter oftast Profile.pdf och ligger i Hämtade filer. Endast PDF, max 10 MB.",
+    "dropButton": "Välj PDF-fil",
+    "dropOverlay": "Släpp filen för att skapa ditt CV",
+    "reading": "Läser PDF:en",
+    "parsing": "Hämtar jobb, utbildning och kompetenser",
+    "pdfError": "PDF:en kunde inte läsas som en LinkedIn-profil. Spara den med Resurser och Spara som PDF på din profil (steg 2) och försök igen.",
+    "noLinkedIn": "Inget LinkedIn-konto?",
+    "scratch": "Börja från grunden",
+    "openSaved": "Öppna sparad CV-fil",
+    "sampleCaption": "Så här kan ditt CV se ut"
+  },
+  "result": {
+    "title": "Ditt CV är klart",
+    "importedSummary": "Från din LinkedIn-profil hämtades {jobs} jobb, {education, plural, one {# utbildning} other {# utbildningar}} och {skills, plural, one {# kompetens} other {# kompetenser}}.",
+    "fileSummary": "Ditt sparade CV är öppnat.",
+    "reviewHint": "Läs igenom texterna innan du skickar CV:t, importen kan behöva små justeringar.",
+    "edit": "Redigera innehåll",
+    "templateTitle": "Välj mall",
+    "colorTitle": "Färg",
+    "editHint": "Under Redigera innehåll kan du ändra texter, lägga till ett foto och välja vad som ska synas."
   }
 }

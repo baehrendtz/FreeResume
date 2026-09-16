@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useFormContext, useFieldArray, useWatch, Controller } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -8,6 +8,9 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Plus, Link, Unlink } from "lucide-react";
 import { EntryCard } from "./EntryCard";
+import { DateField } from "./DateField";
+import { BulletListField } from "./BulletListField";
+import { resolveExcludedExperience } from "@/lib/model/groupExperience";
 import type { CvModel } from "@/lib/model/CvModel";
 import { trackExperienceAdd, trackExperienceRemove } from "@/lib/analytics/gtag";
 
@@ -18,7 +21,6 @@ interface ExperienceLabels {
   startDate: string;
   endDate: string;
   datePlaceholder: string;
-  endDatePlaceholder: string;
   description: string;
   bullets: string;
   bulletsHint: string;
@@ -33,16 +35,30 @@ interface ExperienceLabels {
   moveDown: string;
   groupWith: string;
   ungroupFrom: string;
+  untitled: string;
+  titlePlaceholder: string;
+  companyPlaceholder: string;
+  locationPlaceholder: string;
+  descriptionPlaceholder: string;
+  bulletsPlaceholder: string;
+  addBullet: string;
+  removeBullet: string;
+  dragBullet: string;
+  excluded: string;
+  dates: { month: string; year: string; ongoing: string };
 }
 
 interface ExperienceFormProps {
   labels: ExperienceLabels;
+  /** Display limit on company groups, entries beyond it get a "doesn't fit" note. */
+  maxEntries: number;
 }
 
 interface ExperienceEntryProps {
   index: number;
   total: number;
   labels: ExperienceLabels;
+  excluded: boolean;
   onMove: (fromIndex: number, toIndex: number) => void;
   onRemove: (index: number) => void;
   onGroupWithPrevious: (index: number) => void;
@@ -57,6 +73,7 @@ function ExperienceEntry({
   index,
   total,
   labels,
+  excluded,
   onMove,
   onRemove,
   onGroupWithPrevious,
@@ -66,6 +83,8 @@ function ExperienceEntry({
 
   const title = useWatch({ control, name: `experience.${index}.title` });
   const company = useWatch({ control, name: `experience.${index}.company` });
+  const startDate = useWatch({ control, name: `experience.${index}.startDate` });
+  const endDate = useWatch({ control, name: `experience.${index}.endDate` });
   const isHidden = useWatch({ control, name: `experience.${index}.hidden` }) ?? false;
   const currentGroupId = useWatch({ control, name: `experience.${index}.companyGroupId` });
   // Hooks can't be conditional, watch index 0 for the first entry and ignore the value
@@ -88,6 +107,9 @@ function ExperienceEntry({
       )}
       <EntryCard
         summary={summary}
+        subtitle={[startDate, endDate].filter(Boolean).join(" - ")}
+        defaultOpen={!summary}
+        note={excluded ? labels.excluded : undefined}
         hidden={isHidden}
         onToggleHidden={() => setValue(`experience.${index}.hidden`, !isHidden)}
         onRemove={() => onRemove(index)}
@@ -99,6 +121,7 @@ function ExperienceEntry({
           show: labels.show,
           remove: labels.remove,
           confirm: labels.confirm,
+          untitled: labels.untitled,
           moveUp: labels.moveUp,
           moveDown: labels.moveDown,
         }}
@@ -106,15 +129,15 @@ function ExperienceEntry({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="space-y-1">
             <Label className="text-xs">{labels.title}</Label>
-            <Input {...register(`experience.${index}.title`)} />
+            <Input {...register(`experience.${index}.title`)} placeholder={labels.titlePlaceholder} />
           </div>
           <div className="space-y-1">
             <Label className="text-xs">{labels.company}</Label>
-            <Input {...register(`experience.${index}.company`)} />
+            <Input {...register(`experience.${index}.company`)} placeholder={labels.companyPlaceholder} />
           </div>
           <div className="space-y-1">
             <Label className="text-xs">{labels.location}</Label>
-            <Input {...register(`experience.${index}.location`)} />
+            <Input {...register(`experience.${index}.location`)} placeholder={labels.locationPlaceholder} />
           </div>
           {index > 0 && (
             <div className="sm:col-span-2 flex items-center gap-2">
@@ -143,27 +166,40 @@ function ExperienceEntry({
               )}
             </div>
           )}
-          <div className="space-y-1 sm:col-span-2 grid grid-cols-2 gap-3">
-            <div className="space-y-1">
-              <Label className="text-xs">{labels.startDate}</Label>
-              <Input
-                {...register(`experience.${index}.startDate`)}
-                placeholder={labels.datePlaceholder}
-              />
-            </div>
-            <div className="space-y-1">
-              <Label className="text-xs">{labels.endDate}</Label>
-              <Input
-                {...register(`experience.${index}.endDate`)}
-                placeholder={labels.endDatePlaceholder}
-              />
-            </div>
+          <div className="sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <Controller
+              control={control}
+              name={`experience.${index}.startDate`}
+              render={({ field }) => (
+                <DateField
+                  id={`experience-${index}-start`}
+                  label={labels.startDate}
+                  value={field.value}
+                  onChange={field.onChange}
+                  labels={{ ...labels.dates, placeholder: labels.datePlaceholder }}
+                />
+              )}
+            />
+            <Controller
+              control={control}
+              name={`experience.${index}.endDate`}
+              render={({ field }) => (
+                <DateField
+                  id={`experience-${index}-end`}
+                  label={labels.endDate}
+                  value={field.value}
+                  onChange={field.onChange}
+                  allowOngoing
+                  labels={{ ...labels.dates, placeholder: labels.datePlaceholder }}
+                />
+              )}
+            />
           </div>
         </div>
 
         <div className="space-y-1">
           <Label className="text-xs">{labels.description}</Label>
-          <Textarea rows={2} {...register(`experience.${index}.description`)} />
+          <Textarea rows={2} {...register(`experience.${index}.description`)} placeholder={labels.descriptionPlaceholder} />
         </div>
 
         <div className="space-y-1">
@@ -172,12 +208,14 @@ function ExperienceEntry({
             control={control}
             name={`experience.${index}.bullets`}
             render={({ field: bulletField }) => (
-              <Textarea
-                rows={4}
-                value={(bulletField.value ?? []).join("\n")}
-                onChange={(e) => {
-                  const lines = e.target.value.split("\n");
-                  bulletField.onChange(lines);
+              <BulletListField
+                value={bulletField.value ?? []}
+                onChange={bulletField.onChange}
+                labels={{
+                  add: labels.addBullet,
+                  remove: labels.removeBullet,
+                  drag: labels.dragBullet,
+                  placeholder: labels.bulletsPlaceholder,
                 }}
               />
             )}
@@ -189,8 +227,14 @@ function ExperienceEntry({
   );
 }
 
-export function ExperienceForm({ labels }: ExperienceFormProps) {
+export function ExperienceForm({ labels, maxEntries }: ExperienceFormProps) {
   const { control, setValue, getValues } = useFormContext<CvModel>();
+  const experience = useWatch({ control, name: "experience" });
+  const sectionVisible = useWatch({ control, name: "sectionsVisibility.experience" });
+  const excluded = useMemo(
+    () => (sectionVisible ? resolveExcludedExperience(experience ?? [], maxEntries) : new Set<number>()),
+    [experience, sectionVisible, maxEntries],
+  );
   const { fields, append, remove, move } = useFieldArray({
     control,
     name: "experience",
@@ -235,6 +279,7 @@ export function ExperienceForm({ labels }: ExperienceFormProps) {
           index={index}
           total={fields.length}
           labels={labels}
+          excluded={excluded.has(index)}
           onMove={handleMove}
           onRemove={handleRemove}
           onGroupWithPrevious={handleGroupWithPrevious}

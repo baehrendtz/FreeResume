@@ -1,0 +1,47 @@
+---
+import type { Lang } from '../types';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+
+const t = {
+  sv: {
+    heading: 'PDF:en har ett textlager som går att söka i',
+    body: 'Rekryteringssystem läser text, inte bilder. Free Resume lägger in ett textlager i PDF:en, så att innehållet går att markera, kopiera och söka i. Vi lovar inte att ett visst system godkänner ditt CV, men texten går att läsa maskinellt.',
+    points: [
+      'En kolumn, som är enklast för systemen att tolka',
+      'Vanliga rubriker som Erfarenhet, Utbildning och Kompetenser',
+      'Vanliga typsnitt och text som går att kopiera',
+    ],
+  },
+  en: {
+    heading: 'Your PDF has a searchable text layer',
+    body: 'Applicant tracking systems read text, not pictures. Free Resume adds a text layer to the PDF, so the content can be selected, copied and searched. We do not promise that a given system will approve your CV, but the text can be read by a machine.',
+    points: [
+      'One column, which is the easiest layout for systems to read',
+      'Standard headings such as Experience, Education and Skills',
+      'Standard fonts and text you can copy',
+    ],
+  },
+}[lang];
+---
+
+<section class="py-14 sm:py-20 bg-gray-50 dark:bg-gray-900/50">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white text-balance">{t.heading}</h2>
+    <p class="mt-4 text-lg text-gray-600 dark:text-gray-300 leading-relaxed">{t.body}</p>
+    <ul class="mt-6 space-y-2.5">
+      {t.points.map((point) => (
+        <li class="flex gap-2.5 text-gray-700 dark:text-gray-300">
+          <svg class="w-5 h-5 shrink-0 text-green-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+          </svg>
+          {point}
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
