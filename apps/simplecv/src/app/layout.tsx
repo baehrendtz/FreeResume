@@ -44,7 +44,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${inter.variable} antialiased lg:overflow-hidden`}
+        className={`${inter.variable} antialiased`}
       >
         {children}
       </body>

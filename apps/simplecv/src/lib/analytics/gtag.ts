@@ -88,7 +88,7 @@ export function trackOnboardingStep(step: string) {
   gtagEvent("onboarding_step", { step });
 }
 
-export function trackOnboardingComplete(method: "upload" | "scratch") {
+export function trackOnboardingComplete(method: "upload" | "scratch" | "sample") {
   gtagEvent("onboarding_complete", { method });
 }
 

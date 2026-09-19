@@ -1,5 +1,8 @@
 import { type CvModel, createEmptyCvModel } from "@/lib/model/CvModel";
 
+/** Template the example is shown with, on the start screen and when opened as a CV. */
+export const SAMPLE_TEMPLATE_ID = "professional";
+
 /** Example CV shown on the start screen, so people see the result before uploading anything. */
 export function createSampleCv(locale: string): CvModel {
   const sv = locale === "sv";

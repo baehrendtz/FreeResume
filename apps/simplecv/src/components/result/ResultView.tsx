@@ -16,7 +16,7 @@ import { ACCENT_COLOR_PRESETS } from "@/lib/constants";
 
 interface ResultViewProps {
   cv: CvModel;
-  source: "pdf" | "file";
+  source: "pdf" | "file" | "sample";
   renderModel: RenderModel;
   templateId: string;
   onTemplateSelect: (id: string) => void;
@@ -60,7 +60,9 @@ export function ResultView({
   const summary =
     source === "file"
       ? t("result.fileSummary")
-      : t("result.importedSummary", {
+      : source === "sample"
+        ? t("result.sampleSummary")
+        : t("result.importedSummary", {
           jobs: cv.experience.length,
           education: cv.education.length,
           skills: cv.skills.length,

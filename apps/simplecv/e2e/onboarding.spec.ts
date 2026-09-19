@@ -38,6 +38,17 @@ test.describe("Onboarding", () => {
     ).not.toBeVisible();
   });
 
+  test('"Try with an example" opens the result with the sample CV', async ({
+    page,
+  }) => {
+    await page.goto("/en");
+    await page.getByRole("button", { name: "Try with an example" }).click();
+    await expect(page.getByRole("heading", { name: "Your CV is ready" })).toBeVisible();
+    await expect(page.getByText("This is an example CV.", { exact: false })).toBeVisible();
+    await page.getByRole("button", { name: "Edit content" }).click();
+    await expect(page.getByLabel("Full Name")).toHaveValue("Anna Lindqvist");
+  });
+
   test("shows the LinkedIn steps with a link to the profile", async ({
     page,
   }) => {

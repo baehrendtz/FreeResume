@@ -321,8 +321,7 @@
     "trouble1": "Look for More instead of Resources.",
     "trouble2": "Use LinkedIn in a browser on a computer, not in the app.",
     "trouble3": "If the button is missing, temporarily switching LinkedIn's language to English can help.",
-    "trouble4": "If it still doesn't work, you can start from scratch further down.",
-    "step3Title": "Upload the PDF here",
+    "trouble4": "If it still doesn't work, use Start from scratch above the guide.",
     "dropTitle": "Drag your LinkedIn PDF here",
     "dropTitleTouch": "Tap to choose your LinkedIn PDF",
     "welcomeBack": "Welcome back! Drag in the PDF you just saved.",
@@ -332,10 +331,13 @@
     "reading": "Reading the PDF",
     "parsing": "Finding jobs, education and skills",
     "pdfError": "This PDF couldn't be read as a LinkedIn profile. Save it with Resources and Save to PDF on your profile (step 2) and try again.",
-    "noLinkedIn": "No LinkedIn account?",
     "scratch": "Start from scratch",
     "openSaved": "Open a saved CV file",
-    "sampleCaption": "What your CV can look like"
+    "sampleCaption": "What your CV can look like",
+    "noPdf": "No PDF yet?",
+    "example": "Try with an example",
+    "howToTitle": "How to get your LinkedIn PDF",
+    "howToHint": "Takes about a minute. LinkedIn saves your whole profile as one PDF file."
   },
   "result": {
     "title": "Your CV is ready",
@@ -345,6 +347,7 @@
     "edit": "Edit content",
     "templateTitle": "Choose a template",
     "colorTitle": "Color",
-    "editHint": "In Edit content you can change the text, add a photo and choose what to show."
+    "editHint": "In Edit content you can change the text, add a photo and choose what to show.",
+    "sampleSummary": "This is an example CV. Replace the text with your own under Edit content."
   }
 }

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { Check, ChevronDown, ExternalLink, FileText, FolderOpen, Loader2, Smartphone, Upload } from "lucide-react";
+import { Check, ChevronDown, ExternalLink, FileText, FolderOpen, Loader2, Smartphone, Sparkles, Upload } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { CvPreview } from "@/components/CvPreview";
 import { LinkedInSaveMock } from "./LinkedInSaveMock";
@@ -12,12 +12,11 @@ import type { ImportError, ImportPhase } from "@/hooks/usePdfImport";
 import { buildRenderModel } from "@/lib/fitting";
 import { defaultDisplaySettings } from "@/lib/model/DisplaySettings";
 import { getTemplateMeta, getTemplateDefaultStyle } from "@/templates/templateRegistry";
-import { createSampleCv } from "@/lib/sampleCv";
+import { createSampleCv, SAMPLE_TEMPLATE_ID } from "@/lib/sampleCv";
 import { cn } from "@/lib/utils";
 
 /** LinkedIn redirects this to the signed-in member's own profile. */
 const LINKEDIN_PROFILE_URL = "https://www.linkedin.com/in/me/";
-const SAMPLE_TEMPLATE_ID = "professional";
 
 interface StepProps {
   number: number;
@@ -35,7 +34,7 @@ function Step({ number, title, hint, isLast = false, children }: StepProps) {
         {number}
       </span>
       <div className="min-w-0 flex-1 pt-1">
-        <h2 className="font-semibold leading-snug">{title}</h2>
+        <h3 className="font-semibold leading-snug">{title}</h3>
         {hint && <p className="mt-1 text-sm text-muted-foreground">{hint}</p>}
         <div className="mt-2.5">{children}</div>
       </div>
@@ -60,10 +59,14 @@ interface StartScreenProps {
   error: ImportError | null;
   onFileSelected: (file: File) => void;
   onStartFromScratch: () => void;
+  onTryExample: () => void;
 }
 
-/** First screen: how to get the LinkedIn PDF, where to drop it, and what the result looks like. */
-export function StartScreen({ processing, phase, error, onFileSelected, onStartFromScratch }: StartScreenProps) {
+/**
+ * First screen. The upload comes first, since most visitors either already have
+ * the PDF or want to start right away. The LinkedIn guide sits below for the rest.
+ */
+export function StartScreen({ processing, phase, error, onFileSelected, onStartFromScratch, onTryExample }: StartScreenProps) {
   const t = useTranslations("start");
   const tUpload = useTranslations("upload");
   const locale = useLocale();
@@ -113,113 +116,124 @@ export function StartScreen({ processing, phase, error, onFileSelected, onStartF
           {t("mobileNotice")}
         </p>
 
-        <ol className="mt-8">
-          <Step number={1} title={t("step1Title")}>
-            <Button variant="outline" size="sm" asChild>
-              <a
-                href={LINKEDIN_PROFILE_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => setOpenedLinkedIn(true)}
-              >
-                {t("step1Action")}
-                <ExternalLink className="h-3.5 w-3.5" />
-              </a>
-            </Button>
-          </Step>
-
-          <Step number={2} title={t("step2Title")} hint={t("step2Hint")}>
-            <LinkedInSaveMock
-              labels={{
-                openTo: t("mock.openTo"),
-                addSection: t("mock.addSection"),
-                resources: t("mock.resources"),
-                sendProfile: t("mock.sendProfile"),
-                savePdf: t("mock.savePdf"),
-              }}
-            />
-            <details className="group mt-2.5 max-w-sm text-sm">
-              <summary className="flex cursor-pointer list-none items-center gap-1 font-medium text-primary [&::-webkit-details-marker]:hidden">
-                {t("troubleTitle")}
-                <ChevronDown className="h-4 w-4 transition-transform group-open:rotate-180" />
-              </summary>
-              <ul className="mt-2 list-disc space-y-1 pl-5 text-muted-foreground">
-                <li>{t("trouble1")}</li>
-                <li>{t("trouble2")}</li>
-                <li>{t("trouble3")}</li>
-                <li>{t("trouble4")}</li>
-              </ul>
-            </details>
-          </Step>
-
-          <Step number={3} title={t("step3Title")} isLast>
-            <div
-              role="button"
-              tabIndex={processing ? -1 : 0}
-              aria-label={t("dropButton")}
-              aria-describedby="drop-hint"
-              aria-disabled={processing}
-              onClick={openFilePicker}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  openFilePicker();
-                }
-              }}
-              className={cn(
-                "flex min-h-44 flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed px-6 py-6 text-center transition-colors outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50",
-                processing
-                  ? "cursor-default border-border"
-                  : isDragging || returned
-                    ? "cursor-pointer border-primary bg-primary/5"
-                    : errorMessage
-                      ? "cursor-pointer border-destructive/50 bg-destructive/5"
-                      : "cursor-pointer border-border hover:border-primary/60 hover:bg-muted/50",
-              )}
-            >
-              {processing ? (
-                <ul className="space-y-2 text-left text-sm" aria-live="polite">
-                  <PhaseRow label={t("reading")} state={phase === "parsing" ? "done" : "active"} />
-                  <PhaseRow label={t("parsing")} state={phase === "parsing" ? "active" : "pending"} />
-                </ul>
-              ) : (
-                <>
-                  <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
-                    <Upload className="h-6 w-6" />
-                  </span>
-                  <div>
-                    <p className="font-semibold">
-                      {returned ? (
-                        t("welcomeBack")
-                      ) : (
-                        <>
-                          <span className="pointer-coarse:hidden">{t("dropTitle")}</span>
-                          <span className="hidden pointer-coarse:inline">{t("dropTitleTouch")}</span>
-                        </>
-                      )}
-                    </p>
-                    <p id="drop-hint" className="mx-auto mt-1 max-w-sm text-sm text-muted-foreground">
-                      {t("dropHint")}
-                    </p>
-                  </div>
-                  <span className={buttonVariants({ size: "sm" })}>{t("dropButton")}</span>
-                </>
-              )}
-            </div>
-            {errorMessage && (
-              <p role="alert" className="mt-2 text-sm text-destructive">
-                {errorMessage}
-              </p>
+        <div className="mt-8">
+          <div
+            role="button"
+            tabIndex={processing ? -1 : 0}
+            aria-label={t("dropButton")}
+            aria-describedby="drop-hint"
+            aria-disabled={processing}
+            onClick={openFilePicker}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                openFilePicker();
+              }
+            }}
+            className={cn(
+              "flex min-h-44 flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed px-6 py-6 text-center transition-colors outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50",
+              processing
+                ? "cursor-default border-border"
+                : isDragging || returned
+                  ? "cursor-pointer border-primary bg-primary/5"
+                  : errorMessage
+                    ? "cursor-pointer border-destructive/50 bg-destructive/5"
+                    : "cursor-pointer border-border hover:border-primary/60 hover:bg-muted/50",
             )}
-          </Step>
-        </ol>
+          >
+            {processing ? (
+              <ul className="space-y-2 text-left text-sm" aria-live="polite">
+                <PhaseRow label={t("reading")} state={phase === "parsing" ? "done" : "active"} />
+                <PhaseRow label={t("parsing")} state={phase === "parsing" ? "active" : "pending"} />
+              </ul>
+            ) : (
+              <>
+                <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+                  <Upload className="h-6 w-6" />
+                </span>
+                <div>
+                  <p className="font-semibold">
+                    {returned ? (
+                      t("welcomeBack")
+                    ) : (
+                      <>
+                        <span className="pointer-coarse:hidden">{t("dropTitle")}</span>
+                        <span className="hidden pointer-coarse:inline">{t("dropTitleTouch")}</span>
+                      </>
+                    )}
+                  </p>
+                  <p id="drop-hint" className="mx-auto mt-1 max-w-sm text-sm text-muted-foreground">
+                    {t("dropHint")}
+                  </p>
+                </div>
+                <span className={buttonVariants({ size: "sm" })}>{t("dropButton")}</span>
+              </>
+            )}
+          </div>
+          {errorMessage && (
+            <p role="alert" className="mt-2 text-sm text-destructive">
+              {errorMessage}
+            </p>
+          )}
 
-        <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 border-t pt-5 text-sm">
-          <span className="text-muted-foreground">{t("noLinkedIn")}</span>
-          <Button variant="link" className="h-auto p-0" onClick={onStartFromScratch} disabled={processing}>
-            <FileText className="h-4 w-4" />
-            {t("scratch")}
-          </Button>
+          <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm">
+            <span className="text-muted-foreground">{t("noPdf")}</span>
+            <Button variant="outline" size="sm" onClick={onStartFromScratch} disabled={processing}>
+              <FileText className="h-4 w-4" />
+              {t("scratch")}
+            </Button>
+            <Button variant="outline" size="sm" onClick={onTryExample} disabled={processing}>
+              <Sparkles className="h-4 w-4" />
+              {t("example")}
+            </Button>
+          </div>
+        </div>
+
+        <section className="mt-10 border-t pt-8">
+          <h2 className="text-lg font-semibold">{t("howToTitle")}</h2>
+          <p className="mt-1 text-sm text-muted-foreground">{t("howToHint")}</p>
+          <ol className="mt-6">
+            <Step number={1} title={t("step1Title")}>
+              <Button variant="outline" size="sm" asChild>
+                <a
+                  href={LINKEDIN_PROFILE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setOpenedLinkedIn(true)}
+                >
+                  {t("step1Action")}
+                  <ExternalLink className="h-3.5 w-3.5" />
+                </a>
+              </Button>
+            </Step>
+
+            <Step number={2} title={t("step2Title")} hint={t("step2Hint")} isLast>
+              <LinkedInSaveMock
+                labels={{
+                  openTo: t("mock.openTo"),
+                  addSection: t("mock.addSection"),
+                  resources: t("mock.resources"),
+                  sendProfile: t("mock.sendProfile"),
+                  savePdf: t("mock.savePdf"),
+                }}
+              />
+              <details className="group mt-2.5 max-w-sm text-sm">
+                <summary className="flex cursor-pointer list-none items-center gap-1 font-medium text-primary [&::-webkit-details-marker]:hidden">
+                  {t("troubleTitle")}
+                  <ChevronDown className="h-4 w-4 transition-transform group-open:rotate-180" />
+                </summary>
+                <ul className="mt-2 list-disc space-y-1 pl-5 text-muted-foreground">
+                  <li>{t("trouble1")}</li>
+                  <li>{t("trouble2")}</li>
+                  <li>{t("trouble3")}</li>
+                  <li>{t("trouble4")}</li>
+                </ul>
+              </details>
+            </Step>
+          </ol>
+        </section>
+
+        <div className="mt-8 border-t pt-5 text-sm">
           <Button variant="link" className="h-auto p-0" onClick={openFilePicker} disabled={processing}>
             <FolderOpen className="h-4 w-4" />
             {t("openSaved")}

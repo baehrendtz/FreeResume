@@ -321,8 +321,7 @@
     "trouble1": "Leta efter Mer i stället för Resurser.",
     "trouble2": "Använd LinkedIn i en webbläsare på datorn, inte i appen.",
     "trouble3": "Saknas knappen kan det hjälpa att tillfälligt byta LinkedIns språk till engelska.",
-    "trouble4": "Går det ändå inte kan du börja från grunden längre ner.",
-    "step3Title": "Ladda upp PDF:en här",
+    "trouble4": "Går det ändå inte, använd Börja från grunden ovanför guiden.",
     "dropTitle": "Dra hit din LinkedIn-PDF",
     "dropTitleTouch": "Tryck för att välja din LinkedIn-PDF",
     "welcomeBack": "Välkommen tillbaka! Dra hit PDF:en du just sparade.",
@@ -332,10 +331,13 @@
     "reading": "Läser PDF:en",
     "parsing": "Hämtar jobb, utbildning och kompetenser",
     "pdfError": "PDF:en kunde inte läsas som en LinkedIn-profil. Spara den med Resurser och Spara som PDF på din profil (steg 2) och försök igen.",
-    "noLinkedIn": "Inget LinkedIn-konto?",
     "scratch": "Börja från grunden",
     "openSaved": "Öppna sparad CV-fil",
-    "sampleCaption": "Så här kan ditt CV se ut"
+    "sampleCaption": "Så här kan ditt CV se ut",
+    "noPdf": "Ingen PDF än?",
+    "example": "Prova med ett exempel",
+    "howToTitle": "Så hämtar du din LinkedIn-PDF",
+    "howToHint": "Tar ungefär en minut. LinkedIn sparar hela din profil som en PDF-fil."
   },
   "result": {
     "title": "Ditt CV är klart",
@@ -345,6 +347,7 @@
     "edit": "Redigera innehåll",
     "templateTitle": "Välj mall",
     "colorTitle": "Färg",
-    "editHint": "Under Redigera innehåll kan du ändra texter, lägga till ett foto och välja vad som ska synas."
+    "editHint": "Under Redigera innehåll kan du ändra texter, lägga till ett foto och välja vad som ska synas.",
+    "sampleSummary": "Det här är ett exempel-CV. Byt ut texten mot din egen under Redigera innehåll."
   }
 }

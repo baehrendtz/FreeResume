@@ -4,6 +4,7 @@ import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { createEmptyCvModel } from "@/lib/model/CvModel";
+import { createSampleCv, SAMPLE_TEMPLATE_ID } from "@/lib/sampleCv";
 import { defaultDisplaySettings, twoPageDisplayDefaults } from "@/lib/model/DisplaySettings";
 import type { CvLanguage } from "@/lib/cvLocale";
 import { checkCv, type CvIssue } from "@/lib/cvChecks";
@@ -46,7 +47,7 @@ export default function MainPage() {
 
   // --- UI state ---
   const [view, setView] = useState<View>("start");
-  const [importSource, setImportSource] = useState<ImportResult["source"]>("pdf");
+  const [importSource, setImportSource] = useState<ImportResult["source"] | "sample">("pdf");
   const [showImport, setShowImport] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [activeStep, setActiveStep] = useState("basics");
@@ -133,6 +134,18 @@ export default function MainPage() {
     openEditor("basics");
   }, [setCv, setDisplaySettings, locale, clearImportError, openEditor]);
 
+  // The example on the start screen, opened as a real CV so people can see the result without a PDF
+  const handleTryExample = useCallback(() => {
+    setCv(createSampleCv(locale));
+    setTemplateId(SAMPLE_TEMPLATE_ID);
+    const cvLanguage: CvLanguage = locale === "sv" ? "sv" : "en";
+    setDisplaySettings((prev) => ({ ...prev, cvLanguage }));
+    clearImportError();
+    setImportSource("sample");
+    trackOnboardingComplete("sample");
+    setView("result");
+  }, [setCv, setTemplateId, setDisplaySettings, locale, clearImportError]);
+
   const handleTemplateSelect = (id: string) => { setTemplateId(id); trackTemplateSwitch(id); };
   const openPreview = () => { setShowPreview(true); trackFullscreenPreview(); };
 
@@ -181,6 +194,7 @@ export default function MainPage() {
             error={importError}
             onFileSelected={handleFileSelected}
             onStartFromScratch={handleStartFromScratch}
+            onTryExample={handleTryExample}
           />
         )}
 

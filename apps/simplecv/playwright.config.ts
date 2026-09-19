@@ -1,5 +1,8 @@
 import { defineConfig, devices } from "@playwright/test";
 
+// Port 3000 is often taken by another local dev server, so allow an override
+const port = process.env.PORT ?? "3000";
+
 export default defineConfig({
   testDir: "./e2e",
   fullyParallel: true,
@@ -8,7 +11,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: "html",
   use: {
-    baseURL: "http://localhost:3000",
+    baseURL: `http://localhost:${port}`,
     trace: "on-first-retry",
   },
   projects: [
@@ -22,8 +25,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "pnpm dev",
-    url: "http://localhost:3000",
+    command: `pnpm dev -p ${port}`,
+    url: `http://localhost:${port}`,
     reuseExistingServer: !process.env.CI,
     timeout: 60_000,
   },
